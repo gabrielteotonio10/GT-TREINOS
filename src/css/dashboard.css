@@ -1,0 +1,110 @@
+/* Texto de Boas-vindas */
+.text-presentation {
+  margin: 2rem 0;
+  padding: 0 2rem;
+}
+.text-presentation p {
+  font-weight: bold;
+}
+
+/* Grid dos 3 Cards Superiores */
+.website-presentation {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 0 2rem;
+  margin-bottom: 3rem;
+}
+.website-presentation h2 {
+  color: var(--text-secondary-color);
+}
+
+/* Estilo Visual dos Cards */
+.dashboard-card {
+  background-color: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e1e1e1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.dashboard-card h2 {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--background-secondary-color);
+  padding-bottom: 10px;
+}
+
+/* Lista de Dias da Semana */
+.week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.day-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #555;
+}
+.day-item i {
+  font-size: 18px;
+  color: #ccc;
+}
+.day-item i.checked {
+  color: var(--secondary-color);
+}
+
+/* Conteúdo Interno dos Cards */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-grow: 1;
+  gap: 10px;
+}
+.card-content h3 {
+  font-size: 2rem;
+  color: var(--text-primary-color);
+}
+.status-badge {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.action-btn {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  width: 100%;
+  margin-top: 10px;
+}
+.action-btn:hover {
+  background-color: var(--primary-color);
+}
+
+/* Responsividade do Dashboard */
+@media (max-width: 900px) {
+  .website-presentation {
+    grid-template-columns: 1fr;
+  }
+
+  .text-presentation,
+  .website-presentation {
+    padding: 0 1.5rem;
+  }
+}

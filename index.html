@@ -1,18 +1,140 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <!--Ícone-->
-    <link rel="icon" type="image/svg+xml" href="public/iconeMetaLogo.PNG" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--Descrições-->
-    <meta name="description" content="Gerencie seus treinos de forma simples e eficiente com o GT Treinos. Crie rotinas personalizadas, controle suas séries e acompanhe sua evolução com uma interface limpa e intuitiva. O aliado ideal para sua rotina na academia."/>
-    <meta property="og.title" content="GT Treinos - Gerencie seus treinos de forma simples e eficiente"/>
-    <meta property="og.description" content="Gerencie seus treinos de forma simples e eficiente com o GT Treinos. Crie rotinas personalizadas, controle suas séries e acompanhe sua evolução"/>
-    <title>gt-treinos</title>
-  </head>
-  <body>
-    
-    <div id="app"></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <!--Ícone-->
+  <link rel="icon" type="image/svg+xml" href="public/iconeMetaLogo.PNG" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Descrições-->
+  <meta name="description"
+    content="Gerencie seus treinos de forma simples e eficiente com o GT Treinos. Crie rotinas personalizadas, controle suas séries e acompanhe sua evolução com uma interface limpa e intuitiva. O aliado ideal para sua rotina na academia." />
+  <meta property="og.title" content="GT Treinos - Gerencie seus treinos de forma simples e eficiente" />
+  <meta property="og.description"
+    content="Gerencie seus treinos de forma simples e eficiente com o GT Treinos. Crie rotinas personalizadas, controle suas séries e acompanhe sua evolução" />
+  <!--Links-->
+  <link rel="stylesheet" href="src/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <title>gt-treinos</title>
+</head>
+
+<body>
+  <header class="main-header">
+    <section class="header-elements">
+      <button class="menu-mobile-btn">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <a href="index.html"><img src="public/img/logoCompleta.PNG" alt="Logo GT TREINOS" class="logo-principal"></a>
+      <nav class="menu-header">
+        <button class="nav-btn">Treinos</button>
+        <button class="nav-btn">Resultados</button>
+        <button class="nav-btn">Perfil</button>
+      </nav>
+    </section>
+  </header>
+
+  <main>
+    <section class="text-presentation">
+      <h1>Bom dia, Gabriel!</h1>
+      <p>Vamos manter o foco hoje?</p>
+    </section>
+
+    <section class="website-presentation">
+
+      <div class="dashboard-card training-history">
+        <h2>Dias treinados:</h2>
+        <div class="week-list">
+          <div class="day-item">
+            <i class="fa-solid fa-circle checked"></i>
+            <span>Segunda-feira</span>
+          </div>
+          <div class="day-item">
+            <i class="fa-solid fa-circle checked"></i>
+            <span>Terça-feira</span>
+          </div>
+          <div class="day-item">
+            <i class="fa-regular fa-circle"></i>
+            <span>Quarta-feira</span>
+          </div>
+          <div class="day-item">
+            <i class="fa-regular fa-circle"></i>
+            <span>Quinta-feira</span>
+          </div>
+          <div class="day-item">
+            <i class="fa-regular fa-circle"></i>
+            <span>Sexta-feira</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card last-training">
+        <h2>Último Treino:</h2>
+        <div class="card-content">
+          <h3>Treino A</h3>
+          <p>Peito e Tríceps</p>
+          <span class="status-badge">Concluído</span>
+          <p class="small-text">Ontem às 18:30</p>
+        </div>
+      </div>
+
+      <div class="dashboard-card suggested-training">
+        <h2>Treino Sugerido:</h2>
+        <div class="card-content highlight">
+          <h3>Treino B</h3>
+          <p>Costas e Bíceps</p>
+          <button class="action-btn">Começar Agora</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="my-workouts-section">
+      <h2>Meus Treinos</h2>
+      <div class="workouts-grid">
+        <div class="workout-card">
+          <div class="icon-container"><i class="fa-solid fa-dumbbell"></i></div>
+          <h3>Treino A</h3>
+          <p>Peito e Tríceps</p>
+        </div>
+        <div class="workout-card">
+          <div class="icon-container"><i class="fa-solid fa-person-running"></i></div>
+          <h3>Treino B</h3>
+          <p>Costas e Bíceps</p>
+        </div>
+        <div class="workout-card">
+          <div class="icon-container"><i class="fa-solid fa-medal"></i></div>
+          <h3>Treino C</h3>
+          <p>Pernas e Ombros</p>
+        </div>
+        <div class="workout-card add-new">
+          <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
+          <h3>Novo Treino</h3>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-container">
+    <div class="footer-content">
+      <div class="footer-section about">
+        <img src="public/img/logoNome.PNG" alt="Logo GT TREINOS" class="footer-logo">
+        <p>Transformando sua rotina de treinos em Belo Horizonte e além.</p>
+      </div>
+
+      <div class="footer-section social">
+        <h3>Conecte-se</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="#"><i class="fa-brands fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Gabriel Teotônio - Todos os direitos reservados.</p>
+    </div>
+  </footer>
+  <script type="module" src="/src/js/main.js"></script>
+</body>
+
 </html>

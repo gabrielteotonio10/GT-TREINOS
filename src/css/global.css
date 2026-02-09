@@ -1,0 +1,46 @@
+/* Fontes */
+@font-face {
+  font-family: "Montserrat";
+  src: url(../fonts/Montserrat-VariableFont_wght.ttf);
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Variáveis de Cores e Pesos */
+:root {
+  --primary-color: #164e80;
+  --secondary-color: #3f88c0;
+  --third-color: #ffffff;
+  --background-primary-color: #ffffff;
+  --background-secondary-color: #e6f0f7;
+  --text-primary-color: #000000;
+  --text-secondary-color: #164e80;
+  --text-third-color: #ffffff;
+  --title-weight: 900;
+  --text-weight: 500;
+  --menu-text-weight: 800;
+}
+
+/* Reset Básico */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Montserrat", sans-serif;
+  color: var(--text-primary-color);
+  font-size: var(--text-weight);
+  background-color: var(--background-primary-color);
+}
+h1 {
+  font-weight: var(--title-weight);
+  color: var(--text-secondary-color);
+}
+
+/* Centralizador Geral do Site */
+main {
+  width: 100%;
+  max-width: 1500px;
+  margin: auto;
+}
