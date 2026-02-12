@@ -1,3 +1,23 @@
 .clear{
     display: none;
 }
+
+/* Estilo do aviso flutuante */
+.toast-aviso {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background-color: #4CAF50; /* Verde sucesso */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+  font-weight: bold;
+}
+
+/* Classe para o efeito de sumir suavemente */
+.toast-aviso.fade-out {
+  opacity: 0;
+}

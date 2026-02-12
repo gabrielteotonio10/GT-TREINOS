@@ -20,20 +20,6 @@ linksModificados.forEach((link) => {
 
 
 
-// Abrir e fechar modal de adicionar treino
-const modal = document.querySelector(".modal-container");
-const addTrainingCard = document.querySelector(".add-new-training");
-const closeModalBtn = document.querySelector("#btn-fechar-x");
-const cancelModalBtn = document.querySelector("#btn-cancelar");
 
-addTrainingCard.addEventListener("click", () => {
-  modal.classList.add("active");
-});
-const fecharModal = () => {
-  modal.classList.remove("active");
-};
-
-closeModalBtn.addEventListener("click", fecharModal);
-cancelModalBtn.addEventListener("click", fecharModal);
 
 

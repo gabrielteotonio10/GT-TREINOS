@@ -1,9 +1,10 @@
-const URL_BASE = "http://localhost:3000"; 
+const URL_BASE = "http://localhost:3000";
 
 const apiTraining = {
+  // Procura os treinos registrados
   async searchTraining() {
     try {
-      const response = await fetch(`${URL_BASE}/training`); 
+      const response = await fetch(`${URL_BASE}/training`);
       if (!response.ok) throw new Error("Erro ao buscar training");
       return await response.json();
     } catch (error) {
@@ -12,22 +13,7 @@ const apiTraining = {
     }
   },
 
-  async saveTraining(training) {
-    try {
-      const response = await fetch(`${URL_BASE}/training`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(training),
-      });
-      return await response.json();
-    } catch (error) {
-      alert("Erro ao salvar o treino"); 
-      throw error;
-    }
-  },
-
+  // Procura um treino pelo Id
   async searchTrainingById(id) {
     try {
       const response = await fetch(`${URL_BASE}/training/${id}`);
@@ -38,6 +24,22 @@ const apiTraining = {
     }
   },
 
+  // Salva um treino
+  async saveTraining(training) {
+    const response = await fetch(`${URL_BASE}/training`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(training),
+    });
+    if (!response.ok) {
+      throw new Error(`Erro no servidor: ${response.status}`);
+    }
+    return await response.json();
+  },
+
+  // Edita um treino
   async editTraining(training) {
     try {
       const response = await fetch(`${URL_BASE}/training/${training.id}`, {
@@ -54,6 +56,7 @@ const apiTraining = {
     }
   },
 
+  // Deleta um treino
   async deleteTraining(id) {
     try {
       const response = await fetch(`${URL_BASE}/training/${id}`, {

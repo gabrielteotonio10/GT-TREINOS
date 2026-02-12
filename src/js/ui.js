@@ -1,13 +1,75 @@
 import apiTraining from "./api.js";
 
+let fotoConvertida = "";
+
 const uiTraining = {
-  async fillForm(trainingId) {
-    const training = await apiTraining.searchTrainingById(trainingId);
-    document.getElementById("nome-treino").value = training.id;
-    document.getElementById("pensamento-conteudo").value = pensamento.conteudo;
-    document.getElementById("pensamento-autoria").value = pensamento.autoria;
+  // Converte uma foto enviada, caso tenha, para ser armazenada, diminuindo seu tamanho
+  convertPhoto(arquivo) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const MAX_WIDTH = 400;
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        fotoConvertida = canvas.toDataURL("image/jpeg", 0.7);
+
+        console.log("Foto redimensionada e pronta!");
+        document.querySelector(".upload i").style.color = "#4CAF50";
+      };
+    };
+    reader.readAsDataURL(arquivo);
   },
 
+  // Captura as informações de um formulário
+  getFormData() {
+    const id = document.querySelector("#training-id").value;
+    let image = document.querySelector(
+      'input[name="icon-treino"]:checked',
+    ).value;
+    if (fotoConvertida != "") image = fotoConvertida;
+    const name = document.querySelector("#nome-treino").value;
+    return { id, name, image };
+  },
+
+  // Limpa o formulário totalmente
+  clearForm() {
+    document.querySelector("#form-novo-treino").reset();
+    document.querySelector("#training-id").value = "";
+    fotoConvertida = "";
+    document.querySelector(".upload i").style.color = "";
+  },
+
+  // Preenche o formulário
+  async fillForm(trainingId) {
+    const training = await apiTraining.searchTrainingById(trainingId);
+    document.querySelector("#training-id").value = training.id;
+    document.querySelector("#nome-treino").value = training.name;
+  },
+
+  // Mostra um aviso quando treino é criado ou editado
+  showSuccess(mensagem) {
+    const aviso = document.createElement("div");
+    aviso.textContent = mensagem;
+    aviso.classList.add("toast-aviso");
+    document.body.appendChild(aviso);
+    setTimeout(() => {
+      aviso.classList.add("fade-out");
+      aviso.addEventListener("transitionend", () => aviso.remove());
+    }, 3000);
+  },
+
+
+
+
+  
   async renderizarPensamentos() {
     const listaPensamentos = document.getElementById("lista-pensamentos");
 
@@ -22,10 +84,6 @@ const uiTraining = {
     } catch {
       alert("Erro ao renderizar pensamentos");
     }
-  },
-
-  limparFormulario() {
-    document.getElementById("pensamento-form").reset();
   },
 
   adicionarPensamentoNaLista(pensamento) {
