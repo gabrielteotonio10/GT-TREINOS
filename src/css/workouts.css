@@ -49,3 +49,206 @@
     padding: 0 1.5rem;
   }
 }
+
+
+
+
+/* --- MODAL E FORMULÁRIO --- */
+.modal-container {
+  display: none;
+  margin: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(22, 78, 128, 0.4); 
+  backdrop-filter: blur(2px); 
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  z-index: 2000;
+  padding: 20px;
+}
+.modal-container.active { /* Exibe o modal quando a classe "active" é adicionada */
+  display: flex;
+}
+.form-card { 
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh; 
+  overflow-y: auto; 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Header do Modal */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+}
+.close-modal-btn:hover {
+  color: #c25959;
+}
+
+/* Grupos de Formulário */
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: var(--text-secondary-color);
+}
+
+/* Inputs de Texto */
+.form-card input[type="text"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--background-secondary-color);
+  border-radius: 10px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+}
+.form-card input[type="text"]:focus {
+  border-color: var(--secondary-color);
+}
+
+/* Grid de Ícones (Radio Buttons estilizados) */
+.icon-selector-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.icon-option input {
+  display: none; /* Esconde a bolinha do radio */
+}
+.icon-box {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--background-secondary-color);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  transition: 0.3s;
+}
+
+/* Efeito quando selecionado */
+.icon-option input:checked + .icon-box {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(22, 78, 128, 0.3);
+}
+.icon-box:hover {
+  border-color: var(--secondary-color);
+}
+
+/* Botão de Upload diferente */
+.icon-box.upload {
+  border-style: dashed;
+}
+
+/* Barra de Pesquisa com Botão Acoplado */
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.search-bar-container input {
+  padding-left: 40px !important; /* Espaço para o ícone de lupa */
+  padding-right: 50px !important; /* Espaço para o botão + */
+}
+.search-icon {
+  position: absolute;
+  left: 15px;
+  color: #aaa;
+}
+.btn-create-exercise {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  bottom: 5px;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  width: 35px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-create-exercise:hover {
+  background-color: var(--primary-color);
+}
+
+/* Lista de Exercícios Selecionados (Vazia por enquanto) */
+.selected-exercises-list {
+  margin-top: 15px;
+  background-color: var(--background-secondary-color);
+  border-radius: 10px;
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #ccc;
+}
+.empty-state {
+  color: #888;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Botões do Rodapé */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+}
+.btn-cancelar {
+  background: none;
+  border: 2px solid transparent;
+  color: #666;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-cancelar:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}

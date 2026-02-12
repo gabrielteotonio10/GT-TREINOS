@@ -1,0 +1,56 @@
+{
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Supino Reto com Barra",
+      "muscle": "Peitoral Maior",
+      "equipment": "Barra Olímpica e Banco",
+      "image_url": "src/assets/exercicios/supino-reto.gif",
+      "times_completed": 0
+    },
+    {
+      "id": 2,
+      "name": "Tríceps Pulley",
+      "muscle": "Tríceps",
+      "equipment": "Polia",
+      "image_url": "src/assets/exercicios/triceps-pulley.gif",
+      "times_completed": 0
+    }
+  ],
+
+  "training": [
+    {
+      "id": 1,
+      "image": "https://via.placeholder.com/150",
+      "workout_name": "Treino A",
+      "exercises": [
+        {
+          "exercise_id": 1,
+          "series": 4,
+          "repetitions": "10-12",
+          "load": 60
+        }
+      ],
+      "times_completed": 0
+    }
+  ],
+
+  "history": [
+    {
+      "id": "log_001",
+      "date": "2026-02-10T18:30:00Z",
+      "training_id": 23,
+      "training_name": "Treino A - Peito e Tríceps",
+      "duration_minutes": 55,
+      "mood": "Forte"
+    },
+    {
+      "id": "log_002",
+      "date": "2026-02-12T19:00:00Z",
+      "training_id": 24,
+      "training_name": "Treino B - Costas e Bíceps",
+      "duration_minutes": 60,
+      "mood": "Cansado"
+    }
+  ]
+}

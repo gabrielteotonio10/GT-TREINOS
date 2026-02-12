@@ -14,6 +14,7 @@
 .logo-principal {
   width: 300px;
   margin-left: 10px;
+  cursor: pointer;
 }
 
 /* Botão Menu Mobile */
@@ -63,13 +64,14 @@
     position: fixed;
     top: 70px;
     left: -100%;
-    width: 60%; /* Ajuste visual para celular */
+    width: 60%; 
     height: calc(100vh - 70px);
     background-color: var(--primary-color);
     transition: 0.3s ease-in-out;
     padding-top: 50px;
-    margin-top: 0; /* Ajuste para remover margem extra */
+    margin-top: 0; 
     z-index: 1000;
+    margin-top: 40px;
   }
   .menu-header.active {
     left: 0;

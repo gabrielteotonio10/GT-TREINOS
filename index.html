@@ -24,9 +24,9 @@
       <button class="menu-mobile-btn">
         <i class="fa-solid fa-bars"></i>
       </button>
-      <a href="index.html"><img src="public/img/logoCompleta.PNG" alt="Logo GT TREINOS" class="logo-principal"></a>
+      <img src="public/img/logoCompleta.PNG" alt="Logo GT TREINOS" class="logo-principal">
       <nav class="menu-header">
-        <button class="nav-btn">Treinos</button>
+        <button class="training-btn nav-btn">Treinos</button>
         <button class="nav-btn">Resultados</button>
         <button class="nav-btn">Perfil</button>
       </nav>
@@ -105,12 +105,98 @@
           <h3>Treino C</h3>
           <p>Pernas e Ombros</p>
         </div>
-        <div class="workout-card add-new">
+        <div class="workout-card add-new-training">
           <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
           <h3>Novo Treino</h3>
         </div>
       </div>
     </section>
+
+    <section id="modal-form-treino" class="modal-container">
+      <div class="form-card">
+        <div class="modal-header">
+          <h2>Novo Treino</h2>
+          <button class="close-modal-btn" id="btn-fechar-x"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="form-novo-treino">
+          <div class="icon-selector-grid">
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="dumbbell" checked>
+              <div class="icon-box"><i class="fa-solid fa-dumbbell"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="arm-muscle">
+              <div class="icon-box"><i class="fa-solid fa-hand-fist"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="back">
+              <div class="icon-box"><i class="fa-solid fa-child"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="legs">
+              <div class="icon-box"><i class="fa-solid fa-shoe-prints"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="heart">
+              <div class="icon-box"><i class="fa-solid fa-heart-pulse"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="running">
+              <div class="icon-box"><i class="fa-solid fa-person-running"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="medal">
+              <div class="icon-box"><i class="fa-solid fa-medal"></i></div>
+            </label>
+
+            <label class="icon-option">
+              <input type="radio" name="icon-treino" value="fire">
+              <div class="icon-box"><i class="fa-solid fa-fire"></i></div>
+            </label>
+
+            <label class="icon-option upload-option">
+              <input type="file" id="input-foto-treino" accept="image/*" style="display: none;">
+              <div class="icon-box upload"><i class="fa-solid fa-camera"></i></div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="nome-treino">Nome da Ficha</label>
+            <input type="text" id="nome-treino" placeholder="Ex: Treino C - Ombros e Perna" required>
+          </div>
+
+          <div class="form-group exercise-area">
+            <label>Adicionar Exercícios</label>
+            <div class="search-bar-container">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="search-exercise" placeholder="Buscar ou criar novo...">
+              <button type="button" class="btn-create-exercise" title="Criar Novo Exercício">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <div class="selected-exercises-list">
+              <div class="empty-state">
+                <p>Nenhum exercício adicionado ainda.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="btn-cancelar" id="btn-cancelar">Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar Treino</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer-container">
@@ -134,7 +220,12 @@
       <p>&copy; 2026 Gabriel Teotônio - Todos os direitos reservados.</p>
     </div>
   </footer>
+
+  <script type="module" src="/src/js/api.js"></script>
+  <script type="module" src="/src/js/ui.js"></script>
   <script type="module" src="/src/js/main.js"></script>
+  <script type="module" src="/src/js/others.js"></script>
+  <script type="module" src="/src/js/pages.js"></script>
 </body>
 
 </html>

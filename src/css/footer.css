@@ -19,7 +19,6 @@
 }
 .footer-logo {
   font-size: 24px;
-  margin-bottom: 15px;
   width: 200px;
 }
 .footer-section h3 {
@@ -47,7 +46,7 @@
 
 /* Redes Sociais */
 .social {
-  margin-top: 20px;
+  margin-top: 50px;
 }
 .social-icons {
   display: flex;
