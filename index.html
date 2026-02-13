@@ -3,16 +3,13 @@
 
 <head>
   <meta charset="UTF-8" />
-  <!--Ícone-->
-  <link rel="icon" type="image/svg+xml" href="public/iconeMetaLogo.PNG" />
+  <link rel="icon" type="image/svg+xml" href="/iconeMetaLogo.PNG" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!--Descrições-->
   <meta name="description"
     content="Gerencie seus treinos de forma simples e eficiente com o GT Treinos. Crie rotinas personalizadas, controle suas séries e acompanhe sua evolução com uma interface limpa e intuitiva. O aliado ideal para sua rotina na academia." />
   <meta property="og.title" content="GT Treinos - Gerencie seus treinos de forma simples e eficiente" />
   <meta property="og.description"
     content="Gerencie seus treinos de forma simples e eficiente com o GT Treinos. Crie rotinas personalizadas, controle suas séries e acompanhe sua evolução" />
-  <!--Links-->
   <link rel="stylesheet" href="src/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <title>gt-treinos</title>
@@ -21,11 +18,11 @@
 <body>
   <header class="main-header">
     <section class="header-elements">
-      <button class="menu-mobile-btn">
+      <button class="mobile-menu-btn">
         <i class="fa-solid fa-bars"></i>
       </button>
-      <img src="public/img/logoCompleta.PNG" alt="Logo GT TREINOS" class="logo-principal">
-      <nav class="menu-header">
+      <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="main-logo">
+      <nav class="header-menu">
         <button class="training-btn nav-btn">Treinos</button>
         <button class="nav-btn">Resultados</button>
         <button class="nav-btn">Perfil</button>
@@ -34,7 +31,7 @@
   </header>
 
   <main>
-    <section class="text-presentation">
+    <section class="presentation-text">
       <h1>Bom dia, Gabriel!</h1>
       <p>Vamos manter o foco hoje?</p>
     </section>
@@ -87,99 +84,91 @@
       </div>
     </section>
 
-    <section class="my-workouts-section">
+    <section class="workouts-section">
       <h2>Meus Treinos</h2>
-      <div class="workouts-grid">
-        <div class="workout-card">
-          <div class="icon-container"><i class="fa-solid fa-dumbbell"></i></div>
-          <h3>Treino A</h3>
-          <p>Peito e Tríceps</p>
-        </div>
-        <div class="workout-card">
-          <div class="icon-container"><i class="fa-solid fa-person-running"></i></div>
-          <h3>Treino B</h3>
-          <p>Costas e Bíceps</p>
-        </div>
-        <div class="workout-card">
-          <div class="icon-container"><i class="fa-solid fa-medal"></i></div>
-          <h3>Treino C</h3>
-          <p>Pernas e Ombros</p>
-        </div>
-        <div class="workout-card add-new-training">
+      <div class="workouts-grid" id="workouts-grid">
+        <div class="workout-card add-new-workout">
           <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
           <h3>Novo Treino</h3>
         </div>
+
       </div>
     </section>
+     
 
-    <section id="modal-form-treino" class="modal-container">
+    <section id="training-modal" class="modal-container">
       <div class="form-card">
         <div class="modal-header">
           <h2>Novo Treino</h2>
-          <button class="close-modal-btn" id="btn-fechar-x"><i class="fa-solid fa-xmark"></i></button>
+          <button class="close-modal-btn" id="close-x-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <form id="form-novo-treino">
+        <form id="training-form">
           <input type="hidden" id="training-id" />
 
           <div class="icon-selector-grid">
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="dumbbell" checked>
+              <input type="radio" name="training-icon" value="dumbbell" checked>
               <div class="icon-box"><i class="fa-solid fa-dumbbell"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="arm-muscle">
+              <input type="radio" name="training-icon" value="arm-muscle">
               <div class="icon-box"><i class="fa-solid fa-hand-fist"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="back">
+              <input type="radio" name="training-icon" value="back">
               <div class="icon-box"><i class="fa-solid fa-child"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="legs">
+              <input type="radio" name="training-icon" value="legs">
               <div class="icon-box"><i class="fa-solid fa-shoe-prints"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="heart">
+              <input type="radio" name="training-icon" value="heart">
               <div class="icon-box"><i class="fa-solid fa-heart-pulse"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="running">
+              <input type="radio" name="training-icon" value="running">
               <div class="icon-box"><i class="fa-solid fa-person-running"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="medal">
+              <input type="radio" name="training-icon" value="medal">
               <div class="icon-box"><i class="fa-solid fa-medal"></i></div>
             </label>
 
             <label class="icon-option">
-              <input type="radio" name="icon-treino" value="fire">
+              <input type="radio" name="training-icon" value="fire">
               <div class="icon-box"><i class="fa-solid fa-fire"></i></div>
             </label>
 
             <label class="icon-option upload-option">
-              <input type="file" id="input-foto-treino" accept="image/*" style="display: none;">
+              <input type="file" id="training-photo-input" accept="image/*" style="display: none;">
               <div class="icon-box upload"><i class="fa-solid fa-camera"></i></div>
             </label>
           </div>
 
           <div class="form-group">
-            <label for="nome-treino">Nome da Ficha</label>
-            <input type="text" id="nome-treino" placeholder="Ex: Treino C - Ombros e Perna" required>
+            <label for="training-name">Nome da Ficha</label>
+            <input type="text" id="training-name" placeholder="Ex: Treino C - Ombros e Perna" required>
+          </div>
+
+          <div class="form-group">
+            <label for="training-subtitle">Subtítulo / Descrição</label>
+            <input type="text" id="training-subtitle" placeholder="Ex: Peito e Tríceps" required>
           </div>
 
           <div class="form-group exercise-area">
             <label>Adicionar Exercícios</label>
             <div class="search-bar-container">
               <i class="fa-solid fa-magnifying-glass search-icon"></i>
-              <input type="text" id="search-exercise" placeholder="Buscar ou criar novo...">
-              <button type="button" class="btn-create-exercise" title="Criar Novo Exercício">
+              <input type="text" id="exercise-search" placeholder="Buscar ou criar novo...">
+              <button type="button" class="create-exercise-btn" title="Criar Novo Exercício">
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
@@ -192,8 +181,8 @@
           </div>
 
           <div class="form-buttons">
-            <button type="button" class="btn-cancelar" id="btn-cancelar">Cancelar</button>
-            <button type="submit" class="btn-primary">Salvar Treino</button>
+            <button type="button" class="cancel-btn" id="cancel-btn">Cancelar</button>
+            <button type="submit" class="primary-btn">Salvar Treino</button>
           </div>
         </form>
       </div>
@@ -204,7 +193,7 @@
   <footer class="footer-container">
     <div class="footer-content">
       <div class="footer-section about">
-        <img src="public/img/logoNome.PNG" alt="Logo GT TREINOS" class="footer-logo">
+        <img src="img/logoNome.PNG" alt="Logo GT TREINOS" class="footer-logo">
         <p>Transformando sua rotina de treinos em Belo Horizonte e além.</p>
       </div>
 

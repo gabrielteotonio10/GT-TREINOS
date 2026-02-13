@@ -1,47 +1,70 @@
 import uiTraining from "./ui.js";
-import apiTraining from "./api.js";
+import trainingApi from "./api.js";
 
-// ---------- FUNÇÕES GERAIS ----------
+// ---------- FUNÇÕES GERAIS (GENERAL FUNCTIONS) ----------
 
 // Abrir e fechar modal de adicionar treino
-const modal = document.querySelector(".modal-container");
-const addTrainingCard = document.querySelector(".add-new-training");
-const closeModalBtn = document.querySelector("#btn-fechar-x");
-const cancelModalBtn = document.querySelector("#btn-cancelar");
+const modalContainer = document.querySelector(".modal-container");
+const addNewWorkoutCard = document.querySelector(".add-new-workout"); 
+const closeXBtn = document.querySelector("#close-x-btn"); 
+const cancelBtn = document.querySelector("#cancel-btn"); 
 
-addTrainingCard.addEventListener("click", () => {
-  modal.classList.add("active");
+// Evento para abrir o modal
+addNewWorkoutCard.addEventListener("click", () => {
+  modalContainer.classList.add("active");
 });
-const fecharModal = () => {
-  modal.classList.remove("active");
+
+// Evento para abrir o modal se não existir treino
+document.addEventListener("click", (event) => {
+  const btn = event.target.closest(".add-new-workout-btn");
+
+  if (btn) {
+    const modalContainer = document.querySelector(".modal-container");
+    if (modalContainer) {
+      modalContainer.classList.add("active");
+    }
+  }
+});
+
+// Função para fechar o modal
+const closeModal = () => {
+  modalContainer.classList.remove("active");
 };
-closeModalBtn.addEventListener("click", fecharModal);
-cancelModalBtn.addEventListener("click", fecharModal);
 
-// ---------- TREINOS ----------
+// Eventos de fechar
+closeXBtn.addEventListener("click", closeModal);
+cancelBtn.addEventListener("click", closeModal);
 
-// Captura as informações do formulário salvar
+// ---------- TREINOS (WORKOUTS) ----------
+
+// Inicialização do DOM
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("#form-novo-treino");
-  //Quando formulário for enviado
-  form.addEventListener("submit", async (event) => {
+  uiTraining.renderTrainings();
+  const trainingForm = document.querySelector("#training-form"); 
+
+  // Quando formulário for enviado
+  trainingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const { id, name, image } = uiTraining.getFormData();
+    // Obtém dados do UI
+    const { id, name, subtitle, icon } = uiTraining.getFormData(); 
     try {
-      // Se tem id edita, senão salva
+      // Se tem ID edita (Update), senão salva (Create)
       if (id) {
-        await apiTraining.editTraining({ id, name, image });
-        console.log("id");
+        await trainingApi.updateTraining({ id, name, subtitle, icon });
       } else {
-        await apiTraining.saveTraining({ name, image });
+        await trainingApi.createTraining({ name, subtitle, icon });
       }
+      // Limpeza e Feedback
       uiTraining.clearForm();
-      fecharModal();
+      closeModal();
       // Mensagem sucesso
-      const mensagemSucesso = id
+      const successMessage = id
         ? "Treino atualizado com sucesso!"
         : "Treino criado com sucesso!";
-      uiTraining.showSuccess(mensagemSucesso);
+      uiTraining.showToast(successMessage);
+      // Renderizar treinos
+      uiTraining.renderTrainings();
+      event.preventDefault();
     } catch (error) {
       console.error("Erro detalhado:", error);
       alert("Não foi possível salvar: " + error.message);
@@ -49,45 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Captura a imagem seleciona
-const inputPhoto = document.querySelector("#input-foto-treino");
-inputPhoto.addEventListener("change", (event) => {
-  const arquivo = event.target.files[0];
-  if (arquivo) {
-    uiTraining.convertPhoto(arquivo);
+// Captura a imagem selecionada
+const trainingPhotoInput = document.querySelector("#training-photo-input"); 
+trainingPhotoInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    uiTraining.convertPhoto(file);
   }
-});
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  ui.renderizarPensamentos();
-
-  const formularioPensamento = document.getElementById("pensamento-form");
-  formularioPensamento.addEventListener("submit", manipularSubmissaoFormulario);
-});
-
-async function manipularSubmissaoFormulario(event) {
-  event.preventDefault(); // Evita o comportamento padrão de recarregar a página
-  const id = document.getElementById("pensamento-id").value;
-  const conteudo = document.getElementById("pensamento-conteudo").value;
-  const autoria = document.getElementById("pensamento-autoria").value;
-
-  try {
-    if (id) {
-      await api.editarPensamento({ id, conteudo, autoria });
-    } else {
-      await api.salvarPensamento({ conteudo, autoria });
-    }
-    ui.renderizarPensamentos();
-  } catch {
-    alert("Erro ao salvar pensamento");
-  }
-}
-
-const buttonCancel = document.getElementById("botao-cancelar");
-buttonCancel.addEventListener("click", () => {
-  ui.limparFormulario();
 });

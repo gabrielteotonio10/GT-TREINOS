@@ -6,16 +6,23 @@
   font-display: swap;
 }
 
-/* Variáveis de Cores e Pesos */
+/* Variáveis de Cores e Pesos (Root Variables) */
 :root {
+  /* Cores Principais */
   --primary-color: #164e80;
   --secondary-color: #3f88c0;
-  --third-color: #ffffff;
+  --tertiary-color: #ffffff; 
+  
+  /* Cores de Fundo */
   --background-primary-color: #ffffff;
   --background-secondary-color: #e6f0f7;
+  
+  /* Cores de Texto */
   --text-primary-color: #000000;
   --text-secondary-color: #164e80;
-  --text-third-color: #ffffff;
+  --text-tertiary-color: #ffffff; 
+  
+  /* Pesos da Fonte */
   --title-weight: 900;
   --text-weight: 500;
   --menu-text-weight: 800;
@@ -27,18 +34,21 @@
   margin: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: "Montserrat", sans-serif;
   color: var(--text-primary-color);
-  font-size: var(--text-weight);
+  font-size: 1rem; 
+  font-weight: var(--text-weight);
   background-color: var(--background-primary-color);
 }
+
 h1 {
   font-weight: var(--title-weight);
   color: var(--text-secondary-color);
 }
 
-/* Centralizador Geral do Site */
+/* Centralizador Geral do Site (Main Container) */
 main {
   width: 100%;
   max-width: 1500px;

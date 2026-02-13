@@ -1,21 +1,25 @@
-.my-workouts-section {
+/* --- SEÇÃO DE TREINOS --- */
+.workouts-section {
   padding: 0 2rem;
   margin-bottom: 4rem;
 }
-.my-workouts-section h2 {
-  margin-bottom: 20px;
+
+.workouts-section h2 {
+  margin-bottom: 25px;
   color: var(--text-secondary-color);
 }
+
 .workouts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 25px;
 }
+
 .workout-card {
   background-color: white;
   border: 2px solid var(--background-secondary-color);
-  border-radius: 15px;
-  padding: 30px;
+  border-radius: 18px; /* Arredondamento um pouco maior */
+  padding: 40px 30px; /* Padding aumentado para dar mais "ar" ao card */
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -23,35 +27,78 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
+  position: relative; /* Necessário para o ícone de editar */
 }
-.workout-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--secondary-color);
-  box-shadow: 0 5px 15px rgba(22, 78, 128, 0.2);
-}
-.workout-card .icon-container {
-  font-size: 2.5rem;
-  color: var(--primary-color);
-  margin-bottom: 10px;
-}
-.workout-card.add-new {
-  border-style: dashed;
-  background-color: transparent;
-}
-.workout-card.add-new .icon-container {
+
+/* Estilo do Ícone de Editar */
+.edit-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
   color: #ccc;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-/* Responsividade */
-@media (max-width: 900px) {
-  .my-workouts-section {
-    padding: 0 1.5rem;
-  }
+.edit-icon:hover {
+  color: var(--secondary-color);
 }
 
+.workout-card:hover {
+  transform: translateY(-8px); /* Subida levemente maior */
+  border-color: var(--secondary-color);
+  box-shadow: 0 8px 20px rgba(22, 78, 128, 0.15);
+}
 
+.workout-card .icon-container {
+  font-size: 5rem; 
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
 
+.workout-card h3 {
+  font-size: 1.3rem;
+  color: var(--text-primary-color);
+}
+
+.workout-card p {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Card de Adicionar Novo (Tracejado) */
+.workout-card.add-new-workout { 
+  border-style: dashed;
+  background-color: rgba(230, 240, 247, 0.3);
+  order: 9999; 
+}
+
+.workout-card.add-new-workout .icon-container {
+  color: #bbb;
+  font-size: 4rem; 
+}
+
+/* Imagem */
+.workout-image {
+  width: 110px;   
+  height: 110px;
+  object-fit: cover; 
+  border-radius: 50%; 
+  border: 3px solid var(--background-secondary-color);
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px; 
+  height: 120px;
+  margin-bottom: 20px; 
+}
 
 /* --- MODAL E FORMULÁRIO --- */
 .modal-container {
@@ -66,11 +113,10 @@
   backdrop-filter: blur(2px); 
   justify-content: center;
   align-items: center;
-  margin: auto;
   z-index: 2000;
   padding: 20px;
 }
-.modal-container.active { /* Exibe o modal quando a classe "active" é adicionada */
+.modal-container.active {
   display: flex;
 }
 .form-card { 
@@ -83,6 +129,21 @@
   overflow-y: auto; 
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   position: relative;
+}
+
+/* Nome da ficha */
+.workout-card h3 {
+  font-size: 1.3rem;
+  color: var(--text-primary-color);
+  margin-bottom: 4px; /* Espaço pequeno para o subtítulo */
+}
+
+.workout-card p {
+  font-size: 0.9rem;
+  color: #888; /* Cinza um pouco mais claro */
+  font-weight: 500;
+  text-transform: uppercase; /* Deixa o subtítulo mais elegante */
+  letter-spacing: 0.5px;
 }
 
 /* Header do Modal */
@@ -137,7 +198,7 @@
   flex-wrap: wrap;
 }
 .icon-option input {
-  display: none; /* Esconde a bolinha do radio */
+  display: none; 
 }
 .icon-box {
   width: 50px;
@@ -177,15 +238,15 @@
   position: relative;
 }
 .search-bar-container input {
-  padding-left: 40px !important; /* Espaço para o ícone de lupa */
-  padding-right: 50px !important; /* Espaço para o botão + */
+  padding-left: 40px !important; 
+  padding-right: 50px !important; 
 }
 .search-icon {
   position: absolute;
   left: 15px;
   color: #aaa;
 }
-.btn-create-exercise {
+.create-exercise-btn {
   position: absolute;
   right: 5px;
   top: 5px;
@@ -198,11 +259,11 @@
   cursor: pointer;
   transition: 0.2s;
 }
-.btn-create-exercise:hover {
+.create-exercise-btn:hover {
   background-color: var(--primary-color);
 }
 
-/* Lista de Exercícios Selecionados (Vazia por enquanto) */
+/* Lista de Exercícios Selecionados */
 .selected-exercises-list {
   margin-top: 15px;
   background-color: var(--background-secondary-color);
@@ -226,7 +287,7 @@
   gap: 15px;
   margin-top: 30px;
 }
-.btn-primary {
+.primary-btn { 
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -236,10 +297,10 @@
   cursor: pointer;
   transition: 0.3s;
 }
-.btn-primary:hover {
+.primary-btn:hover {
   background-color: var(--secondary-color);
 }
-.btn-cancelar {
+.cancel-btn {
   background: none;
   border: 2px solid transparent;
   color: #666;
@@ -248,7 +309,14 @@
   font-weight: bold;
   cursor: pointer;
 }
-.btn-cancelar:hover {
+.cancel-btn:hover {
   background-color: #f0f0f0;
   color: #333;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .workouts-grid {
+    grid-template-columns: 1fr;
+  }
 }

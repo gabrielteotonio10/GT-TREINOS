@@ -3,6 +3,7 @@
   padding: 20px 0;
   border-bottom: var(--secondary-color) 3px solid;
 }
+
 .header-elements {
   display: flex;
   margin: 0 auto;
@@ -11,69 +12,72 @@
   width: 100%;
   max-width: 1300px;
 }
-.logo-principal {
+
+.main-logo {
   width: 300px;
   margin-left: 10px;
   cursor: pointer;
 }
 
 /* Botão Menu Mobile */
-.menu-mobile-btn {
+.mobile-menu-btn {
   display: none;
   background: none;
   border: none;
   font-size: 30px;
-  color: var(--text-third-color);
+  color: var(--text-tertiary-color); 
   cursor: pointer;
 }
-.menu-mobile-btn:hover {
+
+.mobile-menu-btn:hover {
   color: var(--secondary-color);
 }
 
 /* Navegação Desktop */
-.menu-header {
+.header-menu {
   display: flex;
   gap: 70px;
 }
-.menu-header button {
+
+.header-menu button {
   background: none;
   border: none;
   font-size: 20px;
   font-weight: var(--menu-text-weight);
-  color: var(--third-color);
+  color: var(--tertiary-color); 
   cursor: pointer;
   margin: 0 10px;
   transition: 0.3s;
 }
-.menu-header button:hover {
+
+.header-menu button:hover {
   color: var(--secondary-color);
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .menu-mobile-btn {
+  .mobile-menu-btn {
     display: block;
     margin-left: 30px;
   }
-  .logo-principal {
+  .main-logo {
     margin-right: 30px;
   }
-  .menu-header {
+  .header-menu {
     display: flex;
     flex-direction: column;
     position: fixed;
     top: 70px;
     left: -100%;
-    width: 60%; 
+    width: 60%;
     height: calc(100vh - 70px);
     background-color: var(--primary-color);
     transition: 0.3s ease-in-out;
     padding-top: 50px;
-    margin-top: 0; 
     z-index: 1000;
     margin-top: 40px;
   }
-  .menu-header.active {
+  .header-menu.active {
     left: 0;
   }
 }

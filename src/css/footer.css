@@ -1,3 +1,4 @@
+/* Container Principal do Rodapé */
 .footer-container {
   background-color: var(--primary-color);
   color: white;
@@ -5,6 +6,8 @@
   margin-top: 50px;
   border-top: 3px solid var(--secondary-color);
 }
+
+/* Conteúdo Flexível do Rodapé */
 .footer-content {
   display: flex;
   justify-content: space-around;
@@ -13,21 +16,25 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* Seções Individuais (Sobre, Social, etc) */
 .footer-section {
   flex: 1;
   min-width: 200px;
 }
+
 .footer-logo {
   font-size: 24px;
   width: 200px;
 }
+
 .footer-section h3 {
   margin-bottom: 20px;
   font-size: 18px;
   color: white;
 }
 
-/* Links do Footer */
+/* Links do Footer (Caso adicione listas no futuro) */
 .footer-section ul {
   list-style: none;
 }
@@ -44,23 +51,28 @@
   padding-left: 5px;
 }
 
-/* Redes Sociais */
+/* Seção de Redes Sociais */
 .social {
-  margin-top: 50px;
+  margin-top: 50px; /* Ajuste conforme necessidade visual */
 }
+
 .social-icons {
   display: flex;
   gap: 20px;
   font-size: 24px;
 }
+
 .social-icons a {
   color: white;
   transition: transform 0.3s, color 0.3s;
 }
+
 .social-icons a:hover {
   color: var(--secondary-color);
   transform: translateY(-5px);
 }
+
+/* Parte Inferior (Copyright) */
 .footer-bottom {
   text-align: center;
   margin-top: 40px;

@@ -1,10 +1,12 @@
-import apiTraining from "./api.js";
+import trainingApi from "./api.js";
 
-let fotoConvertida = "";
+// ---------- TREINO ----------
+
+let convertedPhoto = "";
 
 const uiTraining = {
-  // Converte uma foto enviada, caso tenha, para ser armazenada, diminuindo seu tamanho
-  convertPhoto(arquivo) {
+  // Converte uma foto enviada, caso tenha, para ser armazenada, diminuiTrainingndo seu tamanho
+  convertPhoto(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
@@ -19,137 +21,177 @@ const uiTraining = {
         canvas.height = img.height * scaleSize;
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        fotoConvertida = canvas.toDataURL("image/jpeg", 0.7);
+        convertedPhoto = canvas.toDataURL("image/jpeg", 0.7);
 
         console.log("Foto redimensionada e pronta!");
-        document.querySelector(".upload i").style.color = "#4CAF50";
+        // Atualiza a cor do ícone no HTML refatorado
+        const uploadIcon = document.querySelector(".upload-option .icon-box i");
+        if (uploadIcon) uploadIcon.style.color = "#4CAF50";
       };
     };
-    reader.readAsDataURL(arquivo);
+    reader.readAsDataURL(file);
   },
 
   // Captura as informações de um formulário
   getFormData() {
     const id = document.querySelector("#training-id").value;
-    let image = document.querySelector(
-      'input[name="icon-treino"]:checked',
-    ).value;
-    if (fotoConvertida != "") image = fotoConvertida;
-    const name = document.querySelector("#nome-treino").value;
-    return { id, name, image };
+    // Seleciona o ícone marcado
+    const iconInput = document.querySelector(
+      'input[name="training-icon"]:checked',
+    );
+    let icon = iconInput ? iconInput.value : "dumbbell";
+    if (convertedPhoto !== "") icon = convertedPhoto;
+    const name = document.querySelector("#training-name").value;
+    const subtitle = document.querySelector("#training-subtitle").value;
+    return { id, name, subtitle, icon };
   },
 
   // Limpa o formulário totalmente
   clearForm() {
-    document.querySelector("#form-novo-treino").reset();
+    document.querySelector("#training-form").reset();
     document.querySelector("#training-id").value = "";
-    fotoConvertida = "";
-    document.querySelector(".upload i").style.color = "";
+    convertedPhoto = "";
+    document.querySelector("#training-subtitle").value = "";
+    // Reseta a cor do ícone
+    const uploadIcon = document.querySelector(".upload-option .icon-box i");
+    if (uploadIcon) uploadIcon.style.color = "";
   },
 
-  // Preenche o formulário
+  // Preenche o formulário (Para edição)
   async fillForm(trainingId) {
-    const training = await apiTraining.searchTrainingById(trainingId);
-    document.querySelector("#training-id").value = training.id;
-    document.querySelector("#nome-treino").value = training.name;
-  },
-
-  // Mostra um aviso quando treino é criado ou editado
-  showSuccess(mensagem) {
-    const aviso = document.createElement("div");
-    aviso.textContent = mensagem;
-    aviso.classList.add("toast-aviso");
-    document.body.appendChild(aviso);
-    setTimeout(() => {
-      aviso.classList.add("fade-out");
-      aviso.addEventListener("transitionend", () => aviso.remove());
-    }, 3000);
-  },
-
-
-
-
-  
-  async renderizarPensamentos() {
-    const listaPensamentos = document.getElementById("lista-pensamentos");
-
     try {
-      const pensamentos = await apiTraining.buscarPensamentos();
-      if (pensamentos.length === 0) {
-        listaPensamentos.innerHTML =
-          "<li class='nenhum-pensamento'>Nada por aqui, que tal compartilhar alguma ideia?</li>";
-        return;
+      const training = await trainingApi.getTrainingById(trainingId);
+      document.querySelector("#training-id").value = training.id;
+      document.querySelector("#training-name").value = training.name;
+      document.querySelector("#training-subtitle").value =
+        training.subtitle || "";
+      const iconToSelect = document.querySelector(
+        `input[name="training-icon"][value="${training.icon}"]`,
+      );
+      if (iconToSelect) {
+        iconToSelect.checked = true;
+      } else if (training.icon && training.icon.startsWith("data:image")) {
+        const uploadIcon = document.querySelector(".upload-option .icon-box i");
+        if (uploadIcon) uploadIcon.style.color = "#4CAF50";
       }
-      pensamentos.forEach(ui.adicionarPensamentoNaLista);
-    } catch {
-      alert("Erro ao renderizar pensamentos");
+    } catch (error) {
+      console.error("Erro ao preencher formulário:", error);
     }
   },
 
-  adicionarPensamentoNaLista(pensamento) {
-    // Selecionando a lista onde os pensamentos serão adicionados
-    const listaPensamentos = document.getElementById("lista-pensamentos");
+  // Mostra um aviso quando treino é criado ou editado
+  showToast(message) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.classList.add("toast-notification");
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add("fade-out");
+      toast.addEventListener("transitionend", () => toast.remove());
+    }, 3000);
+  },
 
-    // Criando os elementos HTML necessários para exibir o pensamento
-    const li = document.createElement("li"); // Criando um elemento <li>
-    li.setAttribute("data-id", pensamento.id); // Adicionando o atributo data-id
-    li.classList.add("li-pensamento"); // Adicionando a classe CSS
-
-    // Criando imagem aspas
-    const iconeAspas = document.createElement("img");
-    iconeAspas.src = "assets/imagens/aspas-azuis.png";
-    iconeAspas.alt = "Aspas azuis";
-    iconeAspas.classList.add("icone-aspas");
-
-    // Criando o pensamento conteúdo
-    const pensamentoConteudo = document.createElement("div");
-    pensamentoConteudo.textContent = pensamento.conteudo;
-    pensamentoConteudo.classList.add("pensamento-conteudo");
-
-    // Criando o pensamento autoria
-    const pensamentoAutoria = document.createElement("div");
-    pensamentoAutoria.textContent = pensamento.autoria;
-    pensamentoAutoria.classList.add("pensamento-autoria");
-
-    // Criando o botão editar
-    const botaoEditar = document.createElement("button");
-    botaoEditar.classList.add("botao-editar");
-    botaoEditar.onclick = () => ui.preencherFormulario(pensamento.id);
-    // Icone do botão editar
-    const iconeEditar = document.createElement("img");
-    iconeEditar.src = "assets/imagens/icone-editar.png";
-    iconeEditar.alt = "Editar";
-    botaoEditar.appendChild(iconeEditar);
-
-    // Criando o botão excluir
-    const botaoExcluir = document.createElement("button");
-    botaoExcluir.classList.add("botao-excluir");
-    botaoExcluir.onclick = async () => {
-      try {
-        await apiTraining.excluirPensamento(pensamento.id);
-        ui.renderizarPensamentos();
-      } catch (error) {
-        alert("Erro ao excluir pensamento");
-        throw error;
+  // Renderiza a lista de treinos na tela
+  async renderTrainings() {
+    const sectionTrainings = document.querySelector(".workouts-section");
+    try {
+      const trainings = await trainingApi.getTrainings();
+      const presentationSection = document.querySelector(".presentation-text");
+      const isTrainingPage = presentationSection.classList.contains("hidden");
+      sectionTrainings.innerHTML = `
+        <h2 class="section-title ${isTrainingPage ? "training-view" : ""}">Meus Treinos</h2>
+        <div class="workouts-grid" id="workouts-grid">
+          <div class="workout-card add-new-workout add-new-workout-btn">
+            <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
+            <h3>Novo Treino</h3>
+          </div>
+        </div>
+      `;
+      const trainingsGrid = document.getElementById("workouts-grid");
+      // Se a lista estiver vazia
+      if (trainings.length === 0) {
+        const emptyState = document.createElement("div");
+        emptyState.className = "empty-state-container";
+        emptyState.innerHTML = `
+          <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+          <h3>Você ainda não tem treinos</h3>
+          <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
+          <div class="empty-actions">
+              <button class="suggested-btn">Ver Sugestões</button>
+              <button class="add-new-workout-btn secondary-empty-btn">Criar novo</button>
+          </div>
+        `;
+        trainingsGrid.prepend(emptyState);
+        return;
       }
+      trainings.forEach((training) => uiTraining.addTrainingToList(training));
+    } catch (error) {
+      console.error("Render error:", error);
+      alert("Erro ao renderizar treinos");
+    }
+  },
+
+  // Adiciona um treino a lista de vizualisação
+  addTrainingToList(training) {
+    const trainingsGrid = document.getElementById("workouts-grid");
+
+    // Criando a Div principal do Card
+    const workoutCard = document.createElement("div");
+    workoutCard.setAttribute("data-id", training.id);
+    workoutCard.classList.add("workout-card");
+    // Botão Editar
+    const editBtn = document.createElement("button");
+    editBtn.classList.add("edit-icon");
+    editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    editBtn.onclick = (event) => {
+      event.stopPropagation();
+      uiTraining.fillForm(training.id);
+      document.querySelector(".modal-container").classList.add("active");
     };
-    // Icone do botão excluir
-    const iconeExcluir = document.createElement("img");
-    iconeExcluir.src = "assets/imagens/icone-excluir.png";
-    iconeExcluir.alt = "Excluir";
-    botaoExcluir.appendChild(iconeExcluir);
-
-    const icones = document.createElement("div");
-    icones.classList.add("icones");
-    icones.appendChild(botaoEditar);
-    icones.appendChild(botaoExcluir);
-
-    // Adicionando os elementos filhos ao <li>
-    li.appendChild(iconeAspas);
-    li.appendChild(pensamentoConteudo);
-    li.appendChild(pensamentoAutoria);
-    li.appendChild(icones);
-    listaPensamentos.appendChild(li); // Adicionando o <li> à lista
+    // Container da Imagem/Ícone
+    const iconContainer = document.createElement("div");
+    iconContainer.classList.add("icon-container");
+    // Verifica se é uma imagem Base64 ou URL
+    if (
+      training.icon &&
+      (training.icon.startsWith("data:image") ||
+        training.icon.startsWith("http"))
+    ) {
+      const img = document.createElement("img");
+      img.src = training.icon;
+      img.alt = `Foto de ${training.name}`;
+      img.classList.add("workout-image");
+      iconContainer.appendChild(img);
+    } else {
+      const i = document.createElement("i");
+      const rawValue = training.icon || "dumbbell";
+      const iconMap = {
+        "arm-muscle": "hand-fist",
+        back: "child",
+        legs: "shoe-prints",
+        heart: "heart-pulse",
+        running: "person-running",
+        medal: "medal",
+        fire: "fire",
+        dumbbell: "dumbbell",
+      };
+      const iconName = iconMap[rawValue] || rawValue || "dumbbell";
+      i.className = `fa-solid fa-${iconName}`;
+      iconContainer.appendChild(i);
+    }
+    // Nome
+    const title = document.createElement("h3");
+    title.textContent = training.name;
+    // Subtítulo
+    const subtitle = document.createElement("p");
+    subtitle.textContent = training.subtitle;
+    // Colocando na div
+    workoutCard.appendChild(editBtn);
+    workoutCard.appendChild(iconContainer);
+    workoutCard.appendChild(title);
+    workoutCard.appendChild(subtitle);
+    // Adicionando o card pronto a Grid
+    trainingsGrid.appendChild(workoutCard);
   },
 };
 

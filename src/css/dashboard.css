@@ -1,9 +1,9 @@
 /* Texto de Boas-vindas */
-.text-presentation {
+.presentation-text {
   margin: 2rem 0;
   padding: 0 2rem;
 }
-.text-presentation p {
+.presentation-text p {
   font-weight: bold;
 }
 
@@ -103,7 +103,8 @@
     grid-template-columns: 1fr;
   }
 
-  .text-presentation,
+  /* Ajustado para bater com o novo HTML */
+  .presentation-text,
   .website-presentation {
     padding: 0 1.5rem;
   }

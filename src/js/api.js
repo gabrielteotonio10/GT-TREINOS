@@ -1,10 +1,10 @@
-const URL_BASE = "http://localhost:3000";
+const BASE_URL = "http://localhost:3000";
 
-const apiTraining = {
+const trainingApi = {
   // Procura os treinos registrados
-  async searchTraining() {
+  async getTrainings() {
     try {
-      const response = await fetch(`${URL_BASE}/training`);
+      const response = await fetch(`${BASE_URL}/training`);
       if (!response.ok) throw new Error("Erro ao buscar training");
       return await response.json();
     } catch (error) {
@@ -14,9 +14,9 @@ const apiTraining = {
   },
 
   // Procura um treino pelo Id
-  async searchTrainingById(id) {
+  async getTrainingById(id) {
     try {
-      const response = await fetch(`${URL_BASE}/training/${id}`);
+      const response = await fetch(`${BASE_URL}/training/${id}`);
       return await response.json();
     } catch (error) {
       alert("Erro ao buscar treino por ID");
@@ -24,9 +24,9 @@ const apiTraining = {
     }
   },
 
-  // Salva um treino
-  async saveTraining(training) {
-    const response = await fetch(`${URL_BASE}/training`, {
+  // Salva um treino 
+  async createTraining(training) {
+    const response = await fetch(`${BASE_URL}/training`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,10 +39,10 @@ const apiTraining = {
     return await response.json();
   },
 
-  // Edita um treino
-  async editTraining(training) {
+  // Edita um treino 
+  async updateTraining(training) {
     try {
-      const response = await fetch(`${URL_BASE}/training/${training.id}`, {
+      const response = await fetch(`${BASE_URL}/training/${training.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const apiTraining = {
   // Deleta um treino
   async deleteTraining(id) {
     try {
-      const response = await fetch(`${URL_BASE}/training/${id}`, {
+      const response = await fetch(`${BASE_URL}/training/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -73,4 +73,4 @@ const apiTraining = {
   },
 };
 
-export default apiTraining;
+export default trainingApi;

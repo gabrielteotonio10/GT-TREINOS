@@ -1,0 +1,9 @@
+.section-title-training {
+    font-size: 2rem;               /* Tamanho imponente */
+    font-weight: 800;              /* Bem negrito/Extra bold */
+    color: var(--primary-color);   /* Usa o azul escuro do seu tema */
+    margin-bottom: 30px;           /* Espaço generoso para a grid abaixo */
+    position: relative;            /* Para podermos colocar um detalhe visual */
+    display: inline-block;         /* Ajusta ao tamanho do texto */
+    letter-spacing: -0.5px;        /* Deixa as letras mais juntas e modernas */
+}

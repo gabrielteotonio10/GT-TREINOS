@@ -1,25 +1,27 @@
-// Menu Mobile
-const btnMenu = document.querySelector(".menu-mobile-btn");
-const nav = document.querySelector(".menu-header");
+document.addEventListener("DOMContentLoaded", () => {
+  // Seletores ajustados para o seu HTML
+  const menuBtn = document.querySelector(".mobile-menu-btn");
+  const navMenu = document.querySelector(".header-menu");
+  const navButtons = document.querySelectorAll(".nav-btn");
 
-function toggleMenu(event) {
-  if (event.type === "touchstart") event.preventDefault();
-  nav.classList.toggle("active");
+  // Função de alternância (Toggle)
+  function toggleMenu(event) {
+    if (event.type === "touchstart") event.preventDefault();
+    if (navMenu) {
+      navMenu.classList.toggle("active");
+      const isOpen = navMenu.classList.contains("active");
+      event.currentTarget.setAttribute("aria-expanded", isOpen);
+    }
+  }
 
-  const active = nav.classList.contains("active");
-  event.currentTarget.setAttribute("aria-expanded", active);
-}
-btnMenu.addEventListener("click", toggleMenu);
-btnMenu.addEventListener("touchstart", toggleMenu);
+  if (menuBtn) {
+    menuBtn.addEventListener("click", toggleMenu);
+    menuBtn.addEventListener("touchstart", toggleMenu);
+  }
 
-// Fecha o menu ao clicar em um link (importante para SPAs)
-const linksModificados = document.querySelectorAll(".nav-link");
-linksModificados.forEach((link) => {
-  link.addEventListener("click", () => nav.classList.remove("active"));
+  navButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (navMenu) navMenu.classList.remove("active");
+    });
+  });
 });
-
-
-
-
-
-
