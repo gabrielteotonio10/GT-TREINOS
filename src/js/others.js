@@ -1,5 +1,5 @@
+// Botões para menu mobile
 document.addEventListener("DOMContentLoaded", () => {
-  // Seletores ajustados para o seu HTML
   const menuBtn = document.querySelector(".mobile-menu-btn");
   const navMenu = document.querySelector(".header-menu");
   const navButtons = document.querySelectorAll(".nav-btn");

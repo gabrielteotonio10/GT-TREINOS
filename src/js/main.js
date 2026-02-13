@@ -2,51 +2,24 @@ import uiTraining from "./ui.js";
 import trainingApi from "./api.js";
 
 // ---------- FUNÇÕES GERAIS (GENERAL FUNCTIONS) ----------
-
-// Abrir e fechar modal de adicionar treino
 const modalContainer = document.querySelector(".modal-container");
-const addNewWorkoutCard = document.querySelector(".add-new-workout"); 
-const closeXBtn = document.querySelector("#close-x-btn"); 
-const cancelBtn = document.querySelector("#cancel-btn"); 
-
-// Evento para abrir o modal
-addNewWorkoutCard.addEventListener("click", () => {
-  modalContainer.classList.add("active");
-});
-
-// Evento para abrir o modal se não existir treino
-document.addEventListener("click", (event) => {
-  const btn = event.target.closest(".add-new-workout-btn");
-
-  if (btn) {
-    const modalContainer = document.querySelector(".modal-container");
-    if (modalContainer) {
-      modalContainer.classList.add("active");
-    }
-  }
-});
-
-// Função para fechar o modal
+// Fechar o modal
 const closeModal = () => {
   modalContainer.classList.remove("active");
 };
-
-// Eventos de fechar
-closeXBtn.addEventListener("click", closeModal);
-cancelBtn.addEventListener("click", closeModal);
 
 // ---------- TREINOS (WORKOUTS) ----------
 
 // Inicialização do DOM
 document.addEventListener("DOMContentLoaded", () => {
   uiTraining.renderTrainings();
-  const trainingForm = document.querySelector("#training-form"); 
+  const trainingForm = document.querySelector("#training-form");
 
   // Quando formulário for enviado
   trainingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     // Obtém dados do UI
-    const { id, name, subtitle, icon } = uiTraining.getFormData(); 
+    const { id, name, subtitle, icon } = uiTraining.getFormData();
     try {
       // Se tem ID edita (Update), senão salva (Create)
       if (id) {
@@ -73,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Captura a imagem selecionada
-const trainingPhotoInput = document.querySelector("#training-photo-input"); 
+const trainingPhotoInput = document.querySelector("#training-photo-input");
 trainingPhotoInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file) {

@@ -16,6 +16,7 @@
 </head>
 
 <body>
+  <!-- Cabeçalho -->
   <header class="main-header">
     <section class="header-elements">
       <button class="mobile-menu-btn">
@@ -29,13 +30,15 @@
       </nav>
     </section>
   </header>
-
+  <!-- Main -->
   <main>
+    <!-- Textos de apresentação -->
     <section class="presentation-text">
       <h1>Bom dia, Gabriel!</h1>
       <p>Vamos manter o foco hoje?</p>
     </section>
 
+    <!-- Section de apresentação, com visão geral -->
     <section class="website-presentation">
 
       <div class="dashboard-card training-history">
@@ -84,6 +87,7 @@
       </div>
     </section>
 
+    <!-- Treinos criados pelo usuário -->
     <section class="workouts-section">
       <h2>Meus Treinos</h2>
       <div class="workouts-grid" id="workouts-grid">
@@ -94,8 +98,60 @@
 
       </div>
     </section>
-     
 
+    <!-- Aba que abre ao clicar no treino -->
+    <section class="active-workout-section hidden">
+
+      <div class="active-header">
+        <button class="back-arrow-btn" aria-label="Voltar para treinos">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button class="edit-workout-btn" aria-label="Editar treino">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+      </div>
+
+      <div class="active-title-area">
+        <h2 class="active-title">Treino de Peito e Tríceps</h2>
+        <p class="active-subtitle">Foco em Hipertrofia • 45 min</p>
+      </div>
+
+      <div class="active-exercises-list">
+
+        <div class="exercise-item">
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=200&auto=format&fit=crop"
+            alt="Supino" class="exercise-img">
+          <div class="exercise-info">
+            <h4>Supino Reto com Barra</h4>
+            <p>4 Séries x 10 Repetições</p>
+          </div>
+          <button class="check-exercise-btn" aria-label="Marcar como feito">
+            <i class="fa-solid fa-check"></i>
+          </button>
+        </div>
+
+        <div class="exercise-item">
+          <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=200&auto=format&fit=crop"
+            alt="Crucifixo" class="exercise-img">
+          <div class="exercise-info">
+            <h4>Crucifixo com Halteres</h4>
+            <p>3 Séries x 12 Repetições</p>
+          </div>
+          <button class="check-exercise-btn" aria-label="Marcar como feito">
+            <i class="fa-solid fa-check"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="active-footer-actions">
+        <button class="finish-workout-btn">Terminar Treino</button>
+        <button class="delete-workout-btn"><i class="fa-solid fa-trash"></i> Excluir Treino</button>
+      </div>
+
+    </section>
+
+    <!-- Formulário para criação de um novo treino -->
     <section id="training-modal" class="modal-container">
       <div class="form-card">
         <div class="modal-header">
@@ -190,6 +246,7 @@
 
   </main>
 
+  <!-- Rodapé -->
   <footer class="footer-container">
     <div class="footer-content">
       <div class="footer-section about">
@@ -212,6 +269,7 @@
     </div>
   </footer>
 
+  <!-- Páginas do JavaScript -->
   <script type="module" src="/src/js/api.js"></script>
   <script type="module" src="/src/js/ui.js"></script>
   <script type="module" src="/src/js/main.js"></script>

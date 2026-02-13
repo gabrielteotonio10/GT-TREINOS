@@ -131,6 +131,30 @@ const uiTraining = {
     }
   },
 
+  abrirTreino(training) {
+    const trainingPage = document.querySelector(".active-workout-section");
+    const workoutsSection = document.querySelector(".workouts-section");
+    // Preenche os textos da página de detalhes
+    trainingPage.querySelector(".active-title").textContent = training.name;
+    trainingPage.querySelector(".active-subtitle").textContent =
+      training.subtitle;
+
+    // Configura o botão de editar da tela de detalhes
+    document.querySelector(".edit-workout-btn").onclick = () => {
+      uiTraining.fillForm(training.id);
+      document.querySelector(".modal-container").classList.add("active");
+    };
+
+    // Configura o botão de excluir da tela de detalhes
+    document.querySelector(".delete-workout-btn").onclick = () => {
+      uiTraining.confirmarExclusao(training);
+    };
+
+    // Troca as telas
+    workoutsSection.classList.add("hidden");
+    trainingPage.classList.remove("hidden");
+  },
+
   // Adiciona um treino a lista de vizualisação
   addTrainingToList(training) {
     const trainingsGrid = document.getElementById("workouts-grid");
@@ -192,6 +216,37 @@ const uiTraining = {
     workoutCard.appendChild(subtitle);
     // Adicionando o card pronto a Grid
     trainingsGrid.appendChild(workoutCard);
+
+    // Configura a tela de detalhes para o treino clicado, possibilitando editar e excluir
+    workoutCard.onclick = () => uiTraining.abrirTreino(training);
+  },
+
+  // Função de exclusão
+  confirmarExclusao(training) {
+    const modalOverlay = document.createElement("div");
+    modalOverlay.className = "confirm-modal-overlay";
+    modalOverlay.innerHTML = `
+      <div class="confirm-modal-card">
+        <h3>Excluir ${training.name}?</h3>
+        <p>Esta ação não pode ser desfeita.</p>
+        <div class="confirm-actions">
+          <button id="cancel-delete">Cancelar</button>
+          <button id="confirm-delete" class="confirm-delete-btn">Excluir</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalOverlay);
+
+    modalOverlay.querySelector("#cancel-delete").onclick = () =>
+      modalOverlay.remove();
+
+    modalOverlay.querySelector("#confirm-delete").onclick = async () => {
+      await trainingApi.deleteTraining(training.id);
+      modalOverlay.remove();
+      document.querySelector(".active-workout-section").classList.add("hidden");
+      document.querySelector(".workouts-section").classList.remove("hidden");
+      uiTraining.renderTrainings();
+    };
   },
 };
 
