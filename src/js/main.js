@@ -1,14 +1,14 @@
-import uiTraining from "./ui.js";
-import trainingApi from "./api.js";
+import uiTraining from "./Training/uiTraining.js";
+import trainingApi from "./Training/apiTraining.js";
 
 // ---------- FUNÇÕES GERAIS (GENERAL FUNCTIONS) ----------
-const modalContainer = document.querySelector(".modal-container");
+const modalContainer = document.querySelector("#training-modal");
 // Fechar o modal
 const closeModal = () => {
   modalContainer.classList.remove("active");
 };
 
-// ---------- TREINOS (WORKOUTS) ----------
+// ---------- TREINOS ----------
 
 // Inicialização do DOM
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trainingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     // Obtém dados do UI
-    const { id, name, subtitle, icon } = uiTraining.getFormData();
+    const { id, name, subtitle, icon } = uiTraining.getFormDataTraining();
     try {
       // Se tem ID edita (Update), senão salva (Create)
       if (id) {
@@ -28,13 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
         await trainingApi.createTraining({ name, subtitle, icon });
       }
       // Limpeza e Feedback
-      uiTraining.clearForm();
+      uiTraining.clearFormTraining();
       closeModal();
       // Mensagem sucesso
       const successMessage = id
         ? "Treino atualizado com sucesso!"
         : "Treino criado com sucesso!";
-      uiTraining.showToast(successMessage);
+      uiTraining.showToastTraining(successMessage);
       // Renderizar treinos
       uiTraining.renderTrainings();
       event.preventDefault();

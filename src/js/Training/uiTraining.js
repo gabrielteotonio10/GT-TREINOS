@@ -1,9 +1,6 @@
-import trainingApi from "./api.js";
-
-// ---------- TREINO ----------
+import trainingApi from "./apiTraining.js";
 
 let convertedPhoto = "";
-
 const uiTraining = {
   // Converte uma foto enviada, caso tenha, para ser armazenada, diminuiTrainingndo seu tamanho
   convertPhoto(file) {
@@ -33,7 +30,7 @@ const uiTraining = {
   },
 
   // Captura as informações de um formulário
-  getFormData() {
+  getFormDataTraining() {
     const id = document.querySelector("#training-id").value;
     // Seleciona o ícone marcado
     const iconInput = document.querySelector(
@@ -47,7 +44,7 @@ const uiTraining = {
   },
 
   // Limpa o formulário totalmente
-  clearForm() {
+  clearFormTraining() {
     document.querySelector("#training-form").reset();
     document.querySelector("#training-id").value = "";
     convertedPhoto = "";
@@ -58,7 +55,7 @@ const uiTraining = {
   },
 
   // Preenche o formulário (Para edição)
-  async fillForm(trainingId) {
+  async fillFormTraining(trainingId) {
     try {
       const training = await trainingApi.getTrainingById(trainingId);
       document.querySelector("#training-id").value = training.id;
@@ -80,7 +77,7 @@ const uiTraining = {
   },
 
   // Mostra um aviso quando treino é criado ou editado
-  showToast(message) {
+  showToastTraining(message) {
     const toast = document.createElement("div");
     toast.textContent = message;
     toast.classList.add("toast-notification");
@@ -131,7 +128,8 @@ const uiTraining = {
     }
   },
 
-  abrirTreino(training) {
+  // Abri o treino
+  openTraining(training) {
     const trainingPage = document.querySelector(".active-workout-section");
     const workoutsSection = document.querySelector(".workouts-section");
     // Preenche os textos da página de detalhes
@@ -141,13 +139,13 @@ const uiTraining = {
 
     // Configura o botão de editar da tela de detalhes
     document.querySelector(".edit-workout-btn").onclick = () => {
-      uiTraining.fillForm(training.id);
-      document.querySelector(".modal-container").classList.add("active");
+      uiTraining.fillFormTraining(training.id);
+      document.querySelector("#training-modal").classList.add("active");
     };
 
     // Configura o botão de excluir da tela de detalhes
     document.querySelector(".delete-workout-btn").onclick = () => {
-      uiTraining.confirmarExclusao(training);
+      uiTraining.confirmExclusionTraining(training);
     };
 
     // Troca as telas
@@ -169,8 +167,8 @@ const uiTraining = {
     editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
     editBtn.onclick = (event) => {
       event.stopPropagation();
-      uiTraining.fillForm(training.id);
-      document.querySelector(".modal-container").classList.add("active");
+      uiTraining.fillFormTraining(training.id);
+      document.querySelector("#training-modal").classList.add("active");
     };
     // Container da Imagem/Ícone
     const iconContainer = document.createElement("div");
@@ -218,11 +216,11 @@ const uiTraining = {
     trainingsGrid.appendChild(workoutCard);
 
     // Configura a tela de detalhes para o treino clicado, possibilitando editar e excluir
-    workoutCard.onclick = () => uiTraining.abrirTreino(training);
+    workoutCard.onclick = () => uiTraining.openTraining(training);
   },
 
   // Função de exclusão
-  confirmarExclusao(training) {
+  confirmExclusionTraining(training) {
     const modalOverlay = document.createElement("div");
     modalOverlay.className = "confirm-modal-overlay";
     modalOverlay.innerHTML = `

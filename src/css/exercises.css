@@ -1,0 +1,342 @@
+/* --- SEÇÃO BIBLIOTECA DE EXERCÍCIOS --- */
+.exercises-library-section {
+  padding: 12px 26px; 
+}
+
+/* Grid Inteligente Compacto */
+.exercises-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+  gap: 15px;
+  width: 100%;
+}
+
+/* O Card Miniatura */
+.exercise-mini-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.exercise-mini-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-color: var(--secondary-color);
+}
+
+/* Área da Imagem */
+.mini-card-image {
+  height: 100px;
+  width: 100%;
+  position: relative;
+}
+.mini-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+/* Badge de Categoria */
+.category-badge {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Informações do Texto */
+.mini-card-info {
+  padding: 10px;
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.mini-card-info h4 {
+  font-size: 0.95rem;
+  color: var(--text-primary-color);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+/* Stats (Séries, Reps, Carga) */
+.exercise-stats {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 6px;
+}
+.exercise-stats span {
+  font-size: 0.7rem;
+  color: #7f8c8d;
+  background-color: #f8f9fa;
+  padding: 2px 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.exercise-stats i {
+  font-size: 0.6rem;
+  color: var(--primary-color);
+}
+
+/* Botão de Opções (3 pontinhos) */
+.mini-card-options {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  color: #666;
+  opacity: 0.8;
+}
+.mini-card-options:hover {
+  background-color: var(--primary-color);
+  color: white;
+  opacity: 1;
+}
+
+/* Estilo do Botão "Adicionar Novo" */
+.add-new-exercise-btn {
+  border: 2px dashed #ccc;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  min-height: 160px; /* Mesma altura média dos outros cards */
+}
+.add-new-exercise-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: rgba(var(--primary-rgb), 0.05);
+}
+.add-new-exercise-btn i {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+
+/* --- SEÇÃO FORMULÁRIO DE EXERCÍCIOS --- */
+
+
+/* Linhas do Formulário */
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.flex-grow {
+  flex: 1; 
+}
+
+/* Colunas para métricas (Séries, Reps, Carga) */
+.three-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+/* Wrapper para Inputs Numéricos com Ícone */
+.number-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.number-input-wrapper i {
+  position: absolute;
+  left: 12px;
+  color: var(--primary-color);
+  opacity: 0.7;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+.number-input-wrapper input {
+  padding-left: 35px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: 45px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+.number-input-wrapper input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+/* Ajuste para o Textarea */
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical; 
+  min-height: 80px;
+}
+textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+/* Label de Seção (pequeno título dentro do form) */
+.section-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 500px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .three-cols {
+    grid-template-columns: 1fr; 
+    gap: 0;
+  }
+}
+
+
+/* --- ESTILO DETALHES DO EXERCÍCIO --- */
+
+.active-exercise-details-section {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease;
+}
+
+/* Capa do Exercício */
+.exercise-hero-image {
+  width: 100%;
+  height: 250px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.exercise-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Subtítulo com Ícone */
+.active-exercise-subtitle {
+  color: var(--secondary-color);
+  font-weight: 600;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Grade de Informações Técnicas */
+.exercise-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.info-box {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #eee;
+}
+
+.info-box i {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.info-box .label {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.info-box strong {
+  font-size: 1.1rem;
+  color: var(--text-primary-color);
+}
+
+/* Itens de Detalhe */
+.exercise-description-area {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid #eee;
+}
+
+.detail-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.detail-item i {
+  color: var(--primary-color);
+  margin-top: 4px;
+}
+
+.description-text p {
+  margin-top: 5px;
+  color: #666;
+}
+
+/* Estilo do Botão Excluir */
+.delete-exercise-library-btn {
+  width: 100%;
+  background: transparent;
+  color: #e74c3c;
+  border: 2px solid #e74c3c;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete-exercise-library-btn:hover {
+  background: #e74c3c;
+  color: white;
+}

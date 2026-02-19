@@ -39,13 +39,11 @@
   margin: 20px 0;
   transition: all 0.3s ease;
 }
-
 .empty-state-container .add-new-workout-btn:hover {
   background-color: rgba(22, 78, 128, 0.05);
   border-color: var(--primary-color);
   color: var(--primary-color);
 }
-
 .empty-icon {
   font-size: 4.5rem; 
   color: var(--secondary-color); 
@@ -60,14 +58,12 @@
   50% { transform: translateY(-10px); }
   100% { transform: translateY(0px); }
 }
-
 .empty-state-container h3 {
   color: var(--text-primary-color);
   font-size: 1.6rem; 
   font-weight: 700;
   margin: 0;
 }
-
 .empty-state-container p {
   color: #7f8c8d;
   font-size: 1.05rem;
@@ -93,7 +89,6 @@
   cursor: pointer;
   transition: 0.3s;
 }
-
 .secondary-empty-btn:hover {
   background-color: var(--secondary-color) !important;
   color: white !important;
@@ -141,7 +136,7 @@
 
 /* Estilo do Botão */
 .suggested-btn, .add-new-workout-btn{
-  background-color: var(--secondary-color); /* Certifique-se que --secondary-color existe */
+  background-color: var(--secondary-color); 
   color: white;
   border: none;
   padding: 14px 28px;
@@ -150,12 +145,11 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 15px rgba(22, 78, 128, 0.2); /* Sombra suave com a cor do tema */
+  box-shadow: 0 4px 15px rgba(22, 78, 128, 0.2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-
 .suggested-btn:hover, .add-new-workout-btn:hover {
   background-color: var(--primary-color);
   transform: translateY(-3px);

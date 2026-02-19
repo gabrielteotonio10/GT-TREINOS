@@ -99,6 +99,44 @@
       </div>
     </section>
 
+    <!-- Exercícios criados pelo usuário -->
+    <section class="exercises-library-section">
+
+      <h2 class="section-title">Meus Exercícios</h2>
+
+      <div class="exercises-grid" id="exercises-list">
+
+        <div class="exercise-mini-card">
+          <div class="mini-card-image">
+            <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=200&auto=format&fit=crop"
+              alt="Supino">
+            <span class="category-badge">Peito</span>
+          </div>
+
+          <div class="mini-card-info">
+            <h4>Supino Reto</h4>
+
+            <div class="exercise-stats">
+              <span><i class="fa-solid fa-layer-group"></i> 4 Séries</span>
+              <span><i class="fa-solid fa-rotate-right"></i> 12 Reps</span>
+              <span><i class="fa-solid fa-weight-hanging"></i> 20kg</span>
+            </div>
+          </div>
+
+          
+          <button class="mini-card-options"><i class="fa-solid fa-pen-to-square"></i></i></button>
+        </div>
+
+        <div class="exercise-mini-card add-new-exercise-btn">
+          <i class="fa-solid fa-plus"></i>
+          <p>Criar Exercício</p>
+        </div>
+
+      </div>
+    </section>
+
+
+    
     <!-- Aba que abre ao clicar no treino -->
     <section class="active-workout-section hidden">
 
@@ -149,6 +187,71 @@
         <button class="delete-workout-btn"><i class="fa-solid fa-trash"></i> Excluir Treino</button>
       </div>
 
+    </section>
+
+    <!-- Aba que abre ao clicar no exercício -->
+    <section class="active-exercise-details-section hidden">
+    
+      <div class="active-header">
+        <button class="back-arrow-exercise-btn" aria-label="Voltar para biblioteca">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button class="edit-exercise-btn" aria-label="Editar exercício">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+      </div>
+    
+      <div class="exercise-hero-image">
+        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop"
+          id="detail-exercise-img" alt="Demonstração do exercício">
+      </div>
+    
+      <div class="active-title-area">
+        <h2 class="active-exercise-title" id="detail-exercise-name">Supino Reto com Barra</h2>
+        <p class="active-exercise-subtitle" id="detail-exercise-muscle">
+          <i class="fa-solid fa-dna"></i> Músculo: Peitoral Maior
+        </p>
+      </div>
+    
+      <div class="exercise-info-grid">
+        <div class="info-box">
+          <i class="fa-solid fa-layer-group"></i>
+          <span class="label">Séries</span>
+          <strong id="detail-exercise-series">3</strong>
+        </div>
+        <div class="info-box">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span class="label">Reps</span>
+          <strong id="detail-exercise-reps">12</strong>
+        </div>
+        <div class="info-box">
+          <i class="fa-solid fa-weight-hanging"></i>
+          <span class="label">Carga</span>
+          <strong id="detail-exercise-load">40 kg</strong>
+        </div>
+      </div>
+    
+      <div class="exercise-description-area">
+        <div class="detail-item">
+          <i class="fa-solid fa-dumbbell"></i>
+          <p><strong>Equipamento:</strong> <span id="detail-exercise-equipment">Barra e Banco</span></p>
+        </div>
+    
+        <div class="detail-item description-text">
+          <i class="fa-solid fa-align-left"></i>
+          <div>
+            <strong>Instruções / Descrição:</strong>
+            <p id="detail-exercise-description">Mantenha a escápula retraída e controle a descida da barra até o peito.</p>
+          </div>
+        </div>
+      </div>
+    
+      <div class="active-footer-actions">
+        <button class="delete-exercise-library-btn">
+          <i class="fa-solid fa-trash"></i> Excluir da Biblioteca
+        </button>
+      </div>
+    
     </section>
 
     <!-- Formulário para criação de um novo treino -->
@@ -244,6 +347,109 @@
       </div>
     </section>
 
+    <!-- Formulário para criação de um novo exercício -->
+    <section id="exercise-modal" class="modal-container hidden">
+      <div class="form-card">
+    
+        <div class="modal-header">
+          <h2 id="exercise-modal-title">Novo Exercício</h2>
+          <button class="close-modal-btn" id="close-exercise-modal-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+    
+        <form id="exercise-form">
+          <input type="hidden" id="exercise-id" />
+    
+          <div class="form-group">
+            <label class="section-label">Ícone ou Imagem</label>
+            <div class="icon-selector-grid">
+    
+              <label class="icon-option">
+                <input type="radio" name="exercise-icon" value="dumbbell" checked>
+                <div class="icon-box"><i class="fa-solid fa-dumbbell"></i></div>
+              </label>
+    
+              <label class="icon-option">
+                <input type="radio" name="exercise-icon" value="running">
+                <div class="icon-box"><i class="fa-solid fa-person-running"></i></div>
+              </label>
+    
+              <label class="icon-option">
+                <input type="radio" name="exercise-icon" value="weight-hanging">
+                <div class="icon-box"><i class="fa-solid fa-weight-hanging"></i></div>
+              </label>
+    
+              <label class="icon-option">
+                <input type="radio" name="exercise-icon" value="bolt">
+                <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+              </label>
+    
+              <label class="icon-option upload-option">
+                <input type="file" id="exercise-photo-input" accept="image/*" style="display: none;">
+                <div class="icon-box upload"><i class="fa-solid fa-camera"></i></div>
+              </label>
+            </div>
+          </div>
+    
+          <div class="form-row">
+            <div class="form-group flex-grow">
+              <label for="exercise-name">Nome do Exercício *</label>
+              <input type="text" id="exercise-name" placeholder="Ex: Supino Reto" required>
+            </div>
+          </div>
+    
+          <div class="form-row">
+            <div class="form-group flex-grow">
+              <label for="exercise-muscle">Músculo Alvo *</label>
+              <input type="text" id="exercise-muscle" placeholder="Ex: Peitoral Maior" required>
+            </div>
+            <div class="form-group flex-grow">
+              <label for="exercise-equipment">Equipamento</label>
+              <input type="text" id="exercise-equipment" placeholder="Ex: Barra e Banco">
+            </div>
+          </div>
+    
+          <div class="form-row three-cols">
+            <div class="form-group">
+              <label for="exercise-series">Séries</label>
+              <div class="number-input-wrapper">
+                <i class="fa-solid fa-layer-group"></i>
+                <input type="number" id="exercise-series" placeholder="3" min="1">
+              </div>
+            </div>
+    
+            <div class="form-group">
+              <label for="exercise-repetitions">Repetições</label>
+              <div class="number-input-wrapper">
+                <i class="fa-solid fa-rotate-right"></i>
+                <input type="number" id="exercise-repetitions" placeholder="12" min="1">
+              </div>
+            </div>
+    
+            <div class="form-group">
+              <label for="exercise-load">Carga (kg)</label>
+              <div class="number-input-wrapper">
+                <i class="fa-solid fa-weight-hanging"></i>
+                <input type="number" id="exercise-load" placeholder="20" min="0">
+              </div>
+            </div>
+          </div>
+    
+          <div class="form-group">
+            <label for="exercise-description">Observações / Descrição</label>
+            <textarea id="exercise-description" rows="3" placeholder="Ex: Manter cotovelos fechados..."></textarea>
+          </div>
+    
+          <div class="form-buttons">
+            <button type="button" class="cancel-btn" id="cancel-exercise-btn">Cancelar</button>
+            <button type="submit" class="primary-btn">Salvar Exercício</button>
+          </div>
+    
+        </form>
+      </div>
+    </section>
+    
   </main>
 
   <!-- Rodapé -->
@@ -251,7 +457,7 @@
     <div class="footer-content">
       <div class="footer-section about">
         <img src="img/logoNome.PNG" alt="Logo GT TREINOS" class="footer-logo">
-        <p>Transformando sua rotina de treinos em Belo Horizonte e além.</p>
+        <p>Transformando sua rotina de treinos da melhor forma possível.</p>
       </div>
 
       <div class="footer-section social">
