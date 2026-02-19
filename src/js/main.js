@@ -1,17 +1,19 @@
+import apiTraining from "./Training/apiTraining.js";
 import uiTraining from "./Training/uiTraining.js";
-import trainingApi from "./Training/apiTraining.js";
+
+import apiExercises from "./Exercises/apiExercises.js";
+import uiExercises from "./Exercises/uiExercises.js";
 
 // ---------- FUNÇÕES GERAIS (GENERAL FUNCTIONS) ----------
-const modalContainer = document.querySelector("#training-modal");
 // Fechar o modal
-const closeModal = () => {
-  modalContainer.classList.remove("active");
+const closeAllModals = () => {
+  const modals = document.querySelectorAll(".modal-container");
+  modals.forEach((modal) => modal.classList.remove("active"));
 };
-
-// ---------- TREINOS ----------
 
 // Inicialização do DOM
 document.addEventListener("DOMContentLoaded", () => {
+  // ------ TREINOS ------
   uiTraining.renderTrainings();
   const trainingForm = document.querySelector("#training-form");
 
@@ -23,13 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       // Se tem ID edita (Update), senão salva (Create)
       if (id) {
-        await trainingApi.updateTraining({ id, name, subtitle, icon });
+        await apiTraining.updateTraining({ id, name, subtitle, icon });
       } else {
-        await trainingApi.createTraining({ name, subtitle, icon });
+        await apiTraining.createTraining({ name, subtitle, icon });
       }
       // Limpeza e Feedback
       uiTraining.clearFormTraining();
-      closeModal();
+      closeAllModals();
       // Mensagem sucesso
       const successMessage = id
         ? "Treino atualizado com sucesso!"
@@ -37,6 +39,65 @@ document.addEventListener("DOMContentLoaded", () => {
       uiTraining.showToastTraining(successMessage);
       // Renderizar treinos
       uiTraining.renderTrainings();
+      event.preventDefault();
+    } catch (error) {
+      console.error("Erro detalhado:", error);
+      alert("Não foi possível salvar: " + error.message);
+    }
+  });
+
+  // ------ EXERCÍCIOS ------
+  uiExercises.renderExercises();
+  const exerciseForm = document.querySelector("#exercise-form");
+
+  // Quando formulário for enviado
+  exerciseForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    // Obtém dados do UI
+    const {
+      id,
+      name,
+      iconmuscle,
+      equipment,
+      series,
+      repetitions,
+      load,
+      description,
+    } = uiExercises.getFormDataExercise();
+    try {
+      // Se tem ID edita, senão salva
+      if (id) {
+        await apiExercises.updateExercises({
+          id,
+          name,
+          iconmuscle,
+          equipment,
+          series,
+          repetitions,
+          load,
+          description,
+        });
+      } else {
+        await apiExercises.createExercises({
+          name,
+          iconmuscle,
+          equipment,
+          series,
+          repetitions,
+          load,
+          description,
+        });
+      }
+      // Limpeza e Feedback
+      uiExercises.clearFormExercise();
+      closeAllModals();
+      // Mensagem sucesso
+      const successMessage = id
+        ? "Exercício atualizado com sucesso!"
+        : "Exercício criado com sucesso!";
+      uiExercises.showToastExercise(successMessage);
+      // Renderizar exercícios
+      uiExercises.renderExercises();
       event.preventDefault();
     } catch (error) {
       console.error("Erro detalhado:", error);

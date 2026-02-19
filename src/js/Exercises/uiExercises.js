@@ -55,7 +55,7 @@ const uiExercise = {
       series,
       repetitions,
       load,
-      description,
+      description
     };
   },
 
@@ -73,7 +73,7 @@ const uiExercise = {
   // Preenche o formulário (Para edição)
   async fillFormExercise(exerciseId) {
     try {
-      const exercise = await exercisesApi.getExerciseById(exerciseId);
+      const exercise = await exercisesApi.getExercisesById(exerciseId);
       document.querySelector("#exercise-id").value = exercise.id;
       document.querySelector("#exercise-name").value = exercise.name;
       document.querySelector("#exercise-muscle").value = exercise.muscle;
@@ -112,51 +112,51 @@ const uiExercise = {
     }, 3000);
   },
 
-  // Renderiza a lista de exercícios na tela
+  // Renderiza os exercícios
   async renderExercises() {
     const sectionExercises = document.querySelector(
       ".exercises-library-section",
     );
+
     try {
       const exercises = await exercisesApi.getExercises();
       const presentationSection = document.querySelector(".presentation-text");
       const isExercisePage = presentationSection.classList.contains("hidden");
-      // OLHAR A ESTILIZAÇÃO CSS SE FOR DA PÁGINA
-      sectionExercises.innerHTML = `
-      <h2 class="section-title" ${isExercisePage ? "exercise-view" : ""}>Meus Exercícios</h2>
-      <div class="exercises-grid" id="exercises-list">
-        <div class="exercise-mini-card add-new-exercise-btn">
-          <i class="fa-solid fa-plus"></i>
-          <p>Criar Exercício</p>
-        </div>
-      </div>
-      `;
-      const exercisesGrid = document.getElementById("exercises-grid");
-      // Se a lista estiver vazia
-      // VVVVVVEEEEEEERRRRRRRRR
+      // Caso não tenha exercícios
       if (exercises.length === 0) {
-        const emptyState = document.createElement("div");
-        emptyState.className = "empty-state-container";
-        emptyState.innerHTML = `
-          <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
-          <h3>Você ainda não tem exercícios</h3>
-          <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
-          <div class="empty-actions">
-              <button class="suggested-btn">Ver Sugestões</button>
-              <button class="add-new-workout-btn secondary-empty-btn">Criar novo</button>
+        sectionExercises.innerHTML = `
+          <h2 class="section-title ${isExercisePage ? "exercise-view" : ""}">Meus Exercícios</h2>
+          <div class="exercises-grid" id="exercises-list">
+            <div class="empty-state-container">
+              <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+              <h3>Você ainda não tem exercícios</h3>
+              <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
+              <div class="empty-actions">
+                <button class="suggested-btn">Ver Sugestões</button>
+                <button class="add-new-exercise-btn secondary-empty-btn">Criar novo</button>
+              </div>
+            </div>
           </div>
         `;
-        exercisesGrid.prepend(emptyState);
-        return;
+        return; // Encerra
       }
-      exercises.forEach((exercises) => uiExercise.addExerciseToList(exercises));
+      //Se tem exercícios
+      sectionExercises.innerHTML = `
+        <h2 class="section-title ${isExercisePage ? "exercise-view" : ""}">Meus Exercícios</h2>
+        <div class="exercises-grid" id="exercises-list">
+          <div class="exercise-mini-card add-new-exercise-btn">
+            <i class="fa-solid fa-plus"></i>
+            <p>Criar Exercício</p>
+          </div>
+        </div>
+      `;
+      exercises.forEach((exercise) => this.addExerciseToList(exercise));
     } catch (error) {
       console.error("Render error:", error);
       alert("Erro ao renderizar exercícios");
     }
   },
 
-  // NAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOO
   openExercise(exercise) {
     const exercisePage = document.querySelector(
       ".active-exercise-details-section",
@@ -164,27 +164,77 @@ const uiExercise = {
     const exercisesSection = document.querySelector(
       ".exercises-library-section",
     );
-    // Preenche os textos da página de detalhes
-    exercisePage.querySelector(".active-title").textContent = exercise.name;
-    exercisePage.querySelector(".active-subtitle").textContent =
-      exercise.subtitle;
-    // Configura o botão de editar da tela de detalhes
-    document.querySelector(".edit-workout-btn").onclick = () => {
-      uiExercise.fillForm(exercise.id);
-      document.querySelector("#exercise-modal").classList.add("active");
+    const workoutsSection = document.querySelector(".workouts-section");
+    const presentationText = document.querySelector(".presentation-text");
+    const websitePresentation = document.querySelector(".website-presentation");
+    [
+      exercisesSection,
+      workoutsSection,
+      presentationText,
+      websitePresentation,
+    ].forEach((section) => {
+      if (section) section.classList.add("hidden");
+    });
+
+    // Preenche os textos usando os IDs do HTML
+    document.querySelector("#detail-exercise-name").textContent = exercise.name;
+
+    document.querySelector("#detail-exercise-muscle").innerHTML =
+      `<i class="fa-solid fa-dna"></i> Músculo: ${exercise.muscle}`;
+    // Estatísticas
+    document.querySelector("#detail-exercise-series").textContent =
+      exercise.series || "-";
+    document.querySelector("#detail-exercise-reps").textContent =
+      exercise.repetitions || "-";
+    document.querySelector("#detail-exercise-load").textContent = exercise.load
+      ? `${exercise.load} kg`
+      : "-";
+    // Descrições
+    document.querySelector("#detail-exercise-equipment").textContent =
+      exercise.equipment || "Nenhum";
+    document.querySelector("#detail-exercise-description").textContent =
+      exercise.description || "Sem descrição.";
+
+    // Atualiza a foto principal do exercício
+    const heroContainer = document.querySelector(".exercise-hero-image");
+    heroContainer.innerHTML = ""; 
+    if (
+      exercise.icon &&
+      (exercise.icon.startsWith("data:image") ||
+        exercise.icon.startsWith("http"))
+    ) {
+      // O usuário subiu uma FOTO
+      const img = document.createElement("img");
+      img.src = exercise.icon;
+      img.alt = `Foto de ${exercise.name}`;
+      heroContainer.appendChild(img);
+    } else {
+      // O usuário escolheu um ÍCONE
+      const iconContainer = document.createElement("div");
+      iconContainer.classList.add("hero-icon-wrapper");
+      // Mapeamento para garantir que pegamos o ícone certo
+      const iconMap = {
+        dumbbell: "dumbbell",
+        running: "person-running",
+        "weight-hanging": "weight-hanging",
+        bolt: "bolt",
+      };
+      const iconName = iconMap[exercise.icon] || "dumbbell";
+      iconContainer.innerHTML = `<i class="fa-solid fa-${iconName}"></i>`;
+      heroContainer.appendChild(iconContainer);
+    }
+
+    // Botão excluir
+    document.querySelector(".delete-exercise-library-btn").onclick = () => {
+      this.confirmDeletionExercise(exercise);
     };
-    // Configura o botão de excluir da tela de detalhes
-    document.querySelector(".delete-workout-btn").onclick = () => {
-      uiExercise.confirmDeletionExercise(exercise);
-    };
-    // Troca as telas
-    exercisesSection.classList.add("hidden");
+
     exercisePage.classList.remove("hidden");
   },
 
   // Adiciona um exercício a lista de vizualisação
   addExerciseToList(exercise) {
-    const exercisesGrid = document.getElementById("exercises-grid");
+    const exercisesGrid = document.querySelector("#exercises-list");
 
     // Criando a Div principal do Card
     const exerciseCard = document.createElement("div");
@@ -206,6 +256,7 @@ const uiExercise = {
       img.alt = `Foto de ${exercise.name}`;
       visualElement = img;
     } else {
+      imageMuscle.classList.add("is-icon");
       const i = document.createElement("i");
       const iconMap = {
         dumbbell: "dumbbell",
@@ -229,7 +280,7 @@ const uiExercise = {
     // --- Div 2 interna ---
     const miniCardInfo = document.createElement("div");
     miniCardInfo.classList.add("mini-card-info");
-    // Título 
+    // Título
     const title = document.createElement("h4");
     title.textContent = exercise.name;
     // Stats
@@ -241,7 +292,7 @@ const uiExercise = {
       span.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${text}`;
       return span;
     };
-    // Adicionando os 3 ícones 
+    // Adicionando os 3 ícones
     statsContainer.appendChild(
       createStat("fa-layer-group", `${exercise.series} Séries`),
     );
@@ -255,18 +306,31 @@ const uiExercise = {
     miniCardInfo.appendChild(title);
     miniCardInfo.appendChild(statsContainer);
     // ----
-    // Botão de Opções 
+    // Botão de editar
     const optionsBtn = document.createElement("button");
     optionsBtn.classList.add("mini-card-options");
     optionsBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    // Botão editar ação
+    const optionsBtn2 = document.querySelector(".edit-exercise-btn");
+    const handleEditClick = (event) => {
+      event.stopPropagation();
+      this.fillFormExercise(exercise.id);
+      const modal = document.querySelector("#exercise-modal");
+      modal.classList.add("active");
+      modal.classList.remove("hidden");
+      document.querySelector("#exercise-modal-title").textContent =
+        "Editar Exercício";
+    };
+    optionsBtn.onclick = handleEditClick;
+    optionsBtn2.onclick = handleEditClick;
     // ---
-    // Montagem Final 
+    // Montagem Final
     exerciseCard.appendChild(miniCardInfo);
     exerciseCard.appendChild(optionsBtn);
     exercisesGrid.appendChild(exerciseCard);
     // ---
     // Configura a tela de detalhes para o exercício clicado, possibilitando editar e excluir
-    exerciseCard.onclick = () => uiExercise.openexercise(exercise);
+    exerciseCard.onclick = () => this.openExercise(exercise);
   },
 
   // Função de exclusão
@@ -291,9 +355,13 @@ const uiExercise = {
     modalOverlay.querySelector("#confirm-delete").onclick = async () => {
       await exercisesApi.deleteExercises(exercise.id);
       modalOverlay.remove();
-      document.querySelector(".active-workout-section").classList.add("hidden");
-      document.querySelector(".workouts-section").classList.remove("hidden");
-      uiExercise.renderexercises();
+      document
+        .querySelector(".active-exercise-details-section")
+        .classList.add("hidden");
+      document
+        .querySelector(".exercises-library-section")
+        .classList.remove("hidden");
+      uiExercise.renderExercises();
     };
   },
 };

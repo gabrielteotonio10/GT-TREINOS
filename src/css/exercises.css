@@ -340,3 +340,86 @@ textarea:focus {
   background: #e74c3c;
   color: white;
 }
+
+
+/* --- TÍTULO PRINCIPAL DOS EXERCÍCIOS --- */
+
+/* Remova a necessidade de estar dentro da section para testar */
+.section-title.exercise-view {
+  position: relative; /* Importante para a barrinha ::after aparecer */
+  margin-top: 30px;
+  font-size: 2.4rem;            
+  color: var(--primary-color);  
+  font-weight: 800;
+  margin-bottom: 45px;
+  letter-spacing: -1px;
+  display: inline-block; /* Garante que a barrinha acompanhe o texto */
+}
+
+.section-title.exercise-view::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 60px;
+  height: 6px;
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  animation: growWidth 0.5s ease-out;
+}
+
+
+/* --- ÍCONE E IMAGEM --- */
+
+/* Container que segura o ícone quando não há foto */
+.hero-icon-wrapper {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* O ícone em si dentro da área de destaque */
+.hero-icon-wrapper i {
+    font-size: 5rem; /* Deixa o ícone bem grande e imponente */
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+}
+
+/* Regra para quando for um ícone */
+.mini-card-image.is-icon i {
+    font-size: 4rem; /* Ajuste para o tamanho que desejar */
+    color: var(--primary-color);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- ÍCONE DE SAIR E EDITAR --- */
+
+/* Unificando o estilo dos botões de voltar e fechar */
+.active-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: center;
+}
+
+/* Isso garante que qualquer botão de voltar dentro de qualquer header ativo fique igual */
+.active-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-color); /* Ou a cor que você definiu para os treinos */
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.active-header button:hover {
+    transform: scale(1.1);
+    color: var(--primary-color);
+}

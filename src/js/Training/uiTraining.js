@@ -95,32 +95,35 @@ const uiTraining = {
       const trainings = await trainingApi.getTrainings();
       const presentationSection = document.querySelector(".presentation-text");
       const isTrainingPage = presentationSection.classList.contains("hidden");
-      sectionTrainings.innerHTML = `
-        <h2 class="section-title ${isTrainingPage ? "training-view" : ""}">Meus Treinos</h2>
-        <div class="workouts-grid" id="workouts-grid">
-          <div class="workout-card add-new-workout add-new-workout-btn">
-            <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
-            <h3>Novo Treino</h3>
-          </div>
-        </div>
-      `;
-      const trainingsGrid = document.getElementById("workouts-grid");
-      // Se a lista estiver vazia
+      // Se não tem treinos cadastrados
       if (trainings.length === 0) {
-        const emptyState = document.createElement("div");
-        emptyState.className = "empty-state-container";
-        emptyState.innerHTML = `
-          <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
-          <h3>Você ainda não tem treinos</h3>
-          <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
-          <div class="empty-actions">
-              <button class="suggested-btn">Ver Sugestões</button>
-              <button class="add-new-workout-btn secondary-empty-btn">Criar novo</button>
-          </div>
-        `;
-        trainingsGrid.prepend(emptyState);
-        return;
+        sectionTrainings.innerHTML = `
+                <h2 class="section-title ${isTrainingPage ? "training-view" : ""}">Meus Treinos</h2>
+                <div class="workouts-grid" id="workouts-grid">
+                    <div class="empty-state-container">
+                        <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+                        <h3>Você ainda não tem treinos</h3>
+                        <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
+                        <div class="empty-actions">
+                            <button class="suggested-btn">Ver Sugestões</button>
+                            <button class="add-new-workout-btn secondary-empty-btn">Criar novo</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        return; // Encerra
       }
+      // Se houver treinos
+      sectionTrainings.innerHTML = `
+            <h2 class="section-title ${isTrainingPage ? "training-view" : ""}">Meus Treinos</h2>
+            <div class="workouts-grid" id="workouts-grid">
+                <div class="workout-card add-new-workout add-new-workout-btn">
+                    <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
+                    <h3>Novo Treino</h3>
+                </div>
+            </div>
+        `;
+      // Adiciona os cards dos treinos existentes
       trainings.forEach((training) => uiTraining.addTrainingToList(training));
     } catch (error) {
       console.error("Render error:", error);
@@ -128,14 +131,28 @@ const uiTraining = {
     }
   },
 
-  // Abri o treino
+  // Abre o treino
   openTraining(training) {
+    // Arruma a vizualização
     const trainingPage = document.querySelector(".active-workout-section");
     const workoutsSection = document.querySelector(".workouts-section");
+    const exerciseSection = document.querySelector(
+      ".exercises-library-section",
+    );
+    const presentationText = document.querySelector(".presentation-text");
+    const websitePresentation = document.querySelector(".website-presentation");
+    [
+      workoutsSection,
+      exerciseSection,
+      presentationText,
+      websitePresentation,
+    ].forEach((section) => {
+      if (section) section.classList.add("hidden");
+    });
+
     // Preenche os textos da página de detalhes
     trainingPage.querySelector(".active-title").textContent = training.name;
-    trainingPage.querySelector(".active-subtitle").textContent =
-      training.subtitle;
+    trainingPage.querySelector(".active-subtitle").textContent = training.subtitle;
 
     // Configura o botão de editar da tela de detalhes
     document.querySelector(".edit-workout-btn").onclick = () => {

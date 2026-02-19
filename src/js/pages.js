@@ -1,106 +1,91 @@
-import uiTraining from "./Training/uiTraining";
+import uiTraining from "./Training/uiTraining.js";
+import uiExercises from "./Exercises/uiExercises.js";
 
-// Botões de mudança de página
-const mainLogo = document.querySelector(".main-logo");
-const addTraining = document.querySelector(".primary-btn");
-const pageTrainingAll = document.querySelector(".training-btn");
-const pageTraining = document.querySelector(".active-workout-section");
-// Seções
+// ---------- SELEÇÃO DE SEÇÕES GERAIS ----------
 const presentationTextSection = document.querySelector(".presentation-text");
 const websitePresentationSection = document.querySelector(
   ".website-presentation",
 );
 const workoutsSection = document.querySelector(".workouts-section");
+const exerciseSection = document.querySelector(".exercises-library-section");
+const pageTraining = document.querySelector(".active-workout-section");
+const pageExerciseDetails = document.querySelector(
+  ".active-exercise-details-section",
+);
 
-// Evento: Clicar na Logo
-mainLogo.addEventListener("click", () => {
+// ---------- FUNÇÕES DE NAVEGAÇÃO ----------
+
+function showHome() {
   presentationTextSection.classList.remove("hidden");
   websitePresentationSection.classList.remove("hidden");
-  workoutsSection.classList.remove("hidden");
+  workoutsSection.classList.remove("hidden"); // Deixe visível para aparecer na home
+  exerciseSection.classList.add("hidden");
   pageTraining.classList.add("hidden");
+  pageExerciseDetails.classList.add("hidden");
   uiTraining.renderTrainings();
-});
+}
 
-// Evento: Clicar em "Treinos"
 function changeForTraining() {
   presentationTextSection.classList.add("hidden");
   websitePresentationSection.classList.add("hidden");
   workoutsSection.classList.remove("hidden");
+  exerciseSection.classList.remove("hidden");
   pageTraining.classList.add("hidden");
+  pageExerciseDetails.classList.add("hidden");
+
   uiTraining.renderTrainings();
+  uiExercises.renderExercises();
 }
 
-// Evento: Clicar em um treino
+// ---------- DELEGAÇÃO DE EVENTOS (O SEGREDO) ----------
+
 document.addEventListener("click", (event) => {
-  const card = event.target.closest(".workout-card:not(.add-new-workout)");
+  const target = event.target;
 
-  if (card) {
-    const trainingPage = document.querySelector(".active-workout-section");
-    const workoutsSection = document.querySelector(".workouts-section");
+  // 1. Clicar na Logo
+  if (target.closest(".main-logo")) {
+    showHome();
+  }
 
-    workoutsSection.classList.add("hidden");
-    document.querySelector(".presentation-text")?.classList.add("hidden");
-    document.querySelector(".website-presentation")?.classList.add("hidden");
-    document.querySelector(".exercises-library-section")?.classList.add("hidden");
-    trainingPage.classList.remove("hidden");
+  // 2. Abrir Modal de Treino
+  if (target.closest(".add-new-workout-btn")) {
+    const modal = document.querySelector("#training-modal");
+    modal.classList.add("active");
+    modal.classList.remove("hidden");
+    uiTraining.clearFormTraining();
+  }
+
+  // 3. Abrir Modal de Exercício
+  if (target.closest(".add-new-exercise-btn")) {
+    const modal = document.querySelector("#exercise-modal");
+    modal.classList.add("active");
+    modal.classList.remove("hidden");
+    uiExercises.clearFormExercise();
+  }
+
+  // 4. Fechar Modais (Botão X ou Cancelar)
+  if (target.closest("#close-x-btn, #cancel-btn")) {
+    document.querySelector("#training-modal").classList.remove("active");
+  }
+  if (target.closest("#close-exercise-modal-btn, #cancel-exercise-btn")) {
+    document.querySelector("#exercise-modal").classList.remove("active");
+  }
+
+  // 5. Voltar dos Detalhes (Setinhas)
+  if (target.closest(".back-arrow-btn, .back-arrow-exercise-btn")) {
+    changeForTraining();
   }
 });
-// Voltar do treino
-const backArrow = document.querySelector(".back-arrow-btn");
-backArrow.addEventListener("click", changeForTraining);
 
-// Evento: Abrir o formulário de criar treinos
-const modalContainerTraining = document.querySelector("#training-modal");
-const addNewWorkoutCardTraining = document.querySelector(".add-new-workout");
-const closeXBtnTraining = document.querySelector("#close-x-btn");
-const cancelBtnTraining = document.querySelector("#cancel-btn");
-// Abrir o modal
-addNewWorkoutCardTraining.addEventListener("click", () => {
-  modalContainerTraining.classList.add("active");
-});
-// Abrir o modal se não existir treino
-document.addEventListener("click", (event) => {
-  const btn = event.target.closest(".add-new-workout-btn");
-  if (btn) {
-    const modalContainerTraining = document.querySelector("#training-modal");
-    if (modalContainerTraining) {
-      modalContainerTraining.classList.add("active");
-    }
-  }
-});
-// Fechar o modal
-const closeModalTraining = () => {
-  modalContainerTraining.classList.remove("active");
-};
-closeXBtnTraining.addEventListener("click", closeModalTraining);
-cancelBtnTraining.addEventListener("click", closeModalTraining);
+// ---------- EVENTOS FIXOS (BOTÕES QUE NÃO SOMEM) ----------
 
-// Evento: Abrir o formulário de criar exercicios
-const modalContainerExercise = document.querySelector("#exercise-modal");
-const addNewWorkoutCardExercise = document.querySelector(".add-new-exercise-btn");
-const closeXBtnExercise = document.querySelector("#close-exercise-modal-btn");
-const cancelBtnExercise = document.querySelector("#cancel-exercise-btn");
-// Abrir o modal
-addNewWorkoutCardExercise.addEventListener("click", () => {
-  modalContainerExercise.classList.add("active");
-});
-// Abrir o modal se não existir treino
-document.addEventListener("click", (event) => {
-  const btn = event.target.closest(".add-new-workout-btn");
-  if (btn) {
-    const modalContainerExercise = document.querySelector("#training-modal");
-    if (modalContainerExercise) {
-      modalContainerExercise.classList.add("active");
-    }
-  }
-});
-// Fechar o modal
-const closeModalExercise = () => {
-  modalContainerExercise.classList.remove("active");
-};
-closeXBtnExercise.addEventListener("click", closeModalExercise);
-cancelBtnExercise.addEventListener("click", closeModalExercise);
+const btnTreinosNav = document.querySelector(".training-btn");
+const btnComecarHome = document.querySelector(".primary-btn");
 
-// Evento: Mudar para "Treinos"
-addTraining.addEventListener("click", changeForTraining);
-pageTrainingAll.addEventListener("click", changeForTraining);
+if (btnTreinosNav) btnTreinosNav.addEventListener("click", changeForTraining);
+if (btnComecarHome) btnComecarHome.addEventListener("click", changeForTraining);
+
+// Inicialização
+document.addEventListener("DOMContentLoaded", () => {
+  uiTraining.renderTrainings();
+});
