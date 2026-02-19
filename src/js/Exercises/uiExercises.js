@@ -132,7 +132,6 @@ const uiExercise = {
               <h3>Você ainda não tem exercícios</h3>
               <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
               <div class="empty-actions">
-                <button class="suggested-btn">Ver Sugestões</button>
                 <button class="add-new-exercise-btn secondary-empty-btn">Criar novo</button>
               </div>
             </div>

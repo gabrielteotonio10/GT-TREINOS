@@ -46,9 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+
+
   // ------ EXERCÍCIOS ------
   uiExercises.renderExercises();
-  const exerciseForm = document.querySelector("#exercise-form");
+  const exerciseForm = document.querySelector("#exercise-form"); 
 
   // Quando formulário for enviado
   exerciseForm.addEventListener("submit", async (event) => {

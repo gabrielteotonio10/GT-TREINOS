@@ -42,12 +42,12 @@ function changeForTraining() {
 document.addEventListener("click", (event) => {
   const target = event.target;
 
-  // 1. Clicar na Logo
+  // Clicar na Logo
   if (target.closest(".main-logo")) {
     showHome();
   }
 
-  // 2. Abrir Modal de Treino
+  // Abrir Modal de Treino
   if (target.closest(".add-new-workout-btn")) {
     const modal = document.querySelector("#training-modal");
     modal.classList.add("active");
@@ -55,7 +55,7 @@ document.addEventListener("click", (event) => {
     uiTraining.clearFormTraining();
   }
 
-  // 3. Abrir Modal de Exercício
+  // Abrir Modal de Exercício
   if (target.closest(".add-new-exercise-btn")) {
     const modal = document.querySelector("#exercise-modal");
     modal.classList.add("active");
@@ -63,7 +63,20 @@ document.addEventListener("click", (event) => {
     uiExercises.clearFormExercise();
   }
 
-  // 4. Fechar Modais (Botão X ou Cancelar)
+  // Abrir Modal de Exercício dentro do treino
+  if (target.closest(".create-exercise-btn")) {
+    const modal = document.querySelector("#exercise-modal");
+
+    modal.classList.add("active");
+    modal.classList.remove("hidden");
+
+    const modalTitle = document.querySelector("#exercise-modal-title");
+    if (modalTitle) modalTitle.textContent = "Novo Exercício";
+
+    uiExercises.clearFormExercise();
+  }
+
+  // Fechar Modais (Botão X ou Cancelar)
   if (target.closest("#close-x-btn, #cancel-btn")) {
     document.querySelector("#training-modal").classList.remove("active");
   }
@@ -71,7 +84,7 @@ document.addEventListener("click", (event) => {
     document.querySelector("#exercise-modal").classList.remove("active");
   }
 
-  // 5. Voltar dos Detalhes (Setinhas)
+  // Voltar dos Detalhes (Setinhas)
   if (target.closest(".back-arrow-btn, .back-arrow-exercise-btn")) {
     changeForTraining();
   }

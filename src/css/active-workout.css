@@ -1,12 +1,14 @@
-/* --- SEÇÃO DE TREINO ATIVO --- */
+/* ==========================================================================
+   PÁGINA DE TREINO ATIVO (EXECUÇÃO)
+   ========================================================================== */
 .active-workout-section {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  animation: fadeIn 0.4s ease; /* Animação suave ao abrir */
+  animation: fadeIn 0.4s ease;
 }
 
-/* Cabeçalho */
+/* --- Cabeçalho de Navegação --- */
 .active-header {
   display: flex;
   justify-content: space-between;
@@ -22,6 +24,9 @@
   color: var(--text-secondary-color);
   cursor: pointer;
   transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .back-arrow-btn:hover,
@@ -30,7 +35,7 @@
   transform: scale(1.1);
 }
 
-/* Títulos */
+/* --- Área de Títulos --- */
 .active-title-area {
   margin-bottom: 40px;
 }
@@ -51,7 +56,9 @@
   letter-spacing: 1px;
 }
 
-/* Lista de Exercícios */
+/* ==========================================================================
+   LISTA DE EXERCÍCIOS DO TREINO
+   ========================================================================== */
 .active-exercises-list {
   display: flex;
   flex-direction: column;
@@ -76,7 +83,6 @@
   transform: translateX(5px);
 }
 
-/* Imagem Quadrada do Exercício */
 .exercise-img {
   width: 75px;
   height: 75px;
@@ -84,11 +90,11 @@
   object-fit: cover;
   margin-right: 20px;
   border: 2px solid #f0f0f0;
+  background-color: #f9f9f9;
 }
 
-/* Info do Exercício (Meio) */
 .exercise-info {
-  flex: 1; /* Faz essa parte ocupar todo o espaço restante do meio */
+  flex: 1;
 }
 
 .exercise-info h4 {
@@ -103,34 +109,37 @@
   font-weight: 500;
 }
 
-/* Botão de Check */
+/* --- Botão Interativo de Check --- */
 .check-exercise-btn {
   width: 45px;
   height: 45px;
   border-radius: 50%;
   border: 2px solid #ccc;
   background-color: transparent;
-  color: transparent; /* Esconde o ícone inicialmente */
+  color: transparent;
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Estilo para quando o exercício for marcado como feito (adicionaremos a classe via JS depois) */
 .check-exercise-btn.done {
-  background-color: #27ae60; /* Verde de sucesso */
+  background-color: #27ae60;
   border-color: #27ae60;
   color: white;
+  transform: scale(1.1);
 }
 
 .check-exercise-btn:hover {
   border-color: #27ae60;
+  background-color: rgba(39, 174, 96, 0.05);
 }
 
-/* Botões do Rodapé */
+/* ==========================================================================
+   RODAPÉ DE AÇÕES (FINALIZAÇÃO)
+   ========================================================================== */
 .active-footer-actions {
   display: flex;
   flex-direction: column;
@@ -155,11 +164,12 @@
 .finish-workout-btn:hover {
   background-color: var(--secondary-color);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(22, 78, 128, 0.3);
 }
 
 .delete-workout-btn {
   background-color: transparent;
-  color: #e74c3c; /* Vermelho perigo */
+  color: #e74c3c;
   border: 2px solid transparent;
   padding: 15px;
   border-radius: 14px;
@@ -178,52 +188,22 @@
   border-color: #e74c3c;
 }
 
-/* Animação para a seção inteira */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsividade Básica */
-@media (max-width: 600px) {
-  .exercise-item {
-    padding: 12px;
-  }
-  .exercise-img {
-    width: 60px;
-    height: 60px;
-    margin-right: 15px;
-  }
-  .active-title {
-    font-size: 1.8rem;
-  }
-}
-
-
-/* ----- Confirmação da exclusão -----*/
-/* Fundo do Modal (Overlay) */
+/* ==========================================================================
+   MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
+   ========================================================================== */
 .confirm-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px); /* Efeito de vidro desfocado */
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000; /* Por cima de tudo */
+  z-index: 10000;
   transition: opacity 0.3s ease;
 }
 
-/* Card do Modal */
 .confirm-modal-card {
   background-color: white;
   padding: 30px;
@@ -253,7 +233,6 @@
   margin-bottom: 25px;
 }
 
-/* Botões de Ação */
 .confirm-actions {
   display: flex;
   gap: 12px;
@@ -269,15 +248,6 @@
   border: none;
 }
 
-.cancel-btn {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.cancel-btn:hover {
-  background-color: #e0e0e0;
-}
-
 .confirm-delete-btn {
   background-color: #e74c3c;
   color: white;
@@ -288,7 +258,22 @@
   transform: translateY(-2px);
 }
 
+/* ==========================================================================
+   ANIMAÇÕES E MEDIA QUERIES
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes modalScale {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .exercise-item { padding: 12px; }
+  .exercise-img { width: 60px; height: 60px; margin-right: 15px; }
+  .active-title { font-size: 1.8rem; }
+  .confirm-modal-card { width: 95%; padding: 20px; }
 }
