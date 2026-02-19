@@ -24,6 +24,10 @@
   display: flex;
   flex-direction: column;
 }
+.exercise-mini-card p{
+  text-align: center;
+  margin-top: 10px;
+}
 .exercise-mini-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -422,4 +426,14 @@ textarea:focus {
 .active-header button:hover {
     transform: scale(1.1);
     color: var(--primary-color);
+}
+
+/* Modal de Seleção (Fica embaixo) */
+#select-exercise-modal {
+    z-index: 2000 !important;
+}
+
+/* Modal de Criação (Fica por cima de tudo) */
+#exercise-modal {
+    z-index: 3000 !important;
 }

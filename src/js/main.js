@@ -46,11 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-
-
   // ------ EXERCÍCIOS ------
   uiExercises.renderExercises();
-  const exerciseForm = document.querySelector("#exercise-form"); 
+  const exerciseForm = document.querySelector("#exercise-form");
 
   // Quando formulário for enviado
   exerciseForm.addEventListener("submit", async (event) => {
@@ -59,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const {
       id,
       name,
-      iconmuscle,
+      icon,
+      muscle,
       equipment,
       series,
       repetitions,
@@ -72,7 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
         await apiExercises.updateExercises({
           id,
           name,
-          iconmuscle,
+          icon,
+          muscle,
           equipment,
           series,
           repetitions,
@@ -82,7 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         await apiExercises.createExercises({
           name,
-          iconmuscle,
+          icon,
+          muscle,
           equipment,
           series,
           repetitions,
@@ -106,13 +107,23 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Não foi possível salvar: " + error.message);
     }
   });
-});
 
-// Captura a imagem selecionada
-const trainingPhotoInput = document.querySelector("#training-photo-input");
-trainingPhotoInput.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    uiTraining.convertPhoto(file);
+  // Captura a imagem selecionada (EXERCÍCIOS)
+  const exercisePhotoInput = document.querySelector("#exercise-photo-input");
+  if (exercisePhotoInput) {
+    console.log("testeeee");
+    exercisePhotoInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) uiExercises.convertPhotoExercises(file); 
+    });
   }
+
+  // Captura a imagem selecionada (TREINOS)
+  const trainingPhotoInput = document.querySelector("#training-photo-input");
+  trainingPhotoInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      uiTraining.convertPhoto(file);
+    }
+  });
 });

@@ -368,8 +368,8 @@
                 <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
               </label>
     
-              <label class="icon-option upload-option">
-                <input type="file" id="exercise-photo-input" accept="image/*" style="display: none;">
+              <label class="icon-option upload-option" for="exercise-photo-input"> <input type="file" id="exercise-photo-input"
+                  accept="image/*" style="display: none;">
                 <div class="icon-box upload"><i class="fa-solid fa-camera"></i></div>
               </label>
             </div>
@@ -432,6 +432,38 @@
         </form>
       </div>
     </section>
+
+    <!-- Adicionar um exercício dentro do treino -->
+    <div class="modal-container" id="select-exercise-modal">
+      <div class="form-card">
+    
+        <div class="modal-header">
+          <h2 id="select-exercise-modal-title">Adicionar ao Treino</h2>
+          <button class="close-modal-btn" id="close-select-exercise-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+    
+        <div class="search-bar-container" style="margin-bottom: 20px;">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="search-exercise-input" placeholder="Pesquisar meus exercícios...">
+        </div>
+    
+        <div class="available-exercises-list" id="available-exercises-list">
+          <div class="empty-state" style="text-align: center; padding: 20px;">
+            <p>Carregando seus exercícios...</p>
+          </div>
+        </div>
+    
+        <div class="form-buttons"
+          style="justify-content: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+          <button class="secondary-empty-btn create-new-exercise-from-modal-btn" style="width: 100%;">
+            <i class="fa-solid fa-plus"></i> Criar Novo Exercício
+          </button>
+        </div>
+    
+      </div>
+    </div>
     
   </main>
 

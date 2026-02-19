@@ -535,3 +535,79 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   LISTA DE SELEÇÃO DENTRO DO MODAL
+   ========================================================================== */
+.available-exercises-list {
+  max-height: 350px;
+  overflow-y: auto; /* Cria a barra de rolagem se tiver muitos exercícios */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 5px; 
+}
+
+/* Estilo do scrollbar (barra de rolagem) para ficar elegante */
+.available-exercises-list::-webkit-scrollbar {
+  width: 6px;
+}
+.available-exercises-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.available-exercises-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.available-exercises-list::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Item individual da lista de seleção */
+.selectable-exercise-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #e1e8ed;
+  border-radius: 12px;
+  transition: 0.2s ease;
+}
+
+.selectable-exercise-item:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(22, 78, 128, 0.05);
+}
+
+.selectable-exercise-info h4 {
+  font-size: 1rem;
+  color: var(--text-primary-color);
+  margin-bottom: 4px;
+}
+
+.selectable-exercise-info p {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.selectable-exercise-add-btn {
+  background: transparent;
+  color: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.selectable-exercise-add-btn:hover {
+  background: var(--secondary-color);
+  color: white;
+  transform: scale(1.1);
+}

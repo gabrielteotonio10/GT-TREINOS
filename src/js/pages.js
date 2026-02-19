@@ -41,12 +41,12 @@ function changeForTraining() {
 
 document.addEventListener("click", (event) => {
   const target = event.target;
-
+  // ----
   // Clicar na Logo
   if (target.closest(".main-logo")) {
     showHome();
   }
-
+  // ----
   // Abrir Modal de Treino
   if (target.closest(".add-new-workout-btn")) {
     const modal = document.querySelector("#training-modal");
@@ -54,7 +54,7 @@ document.addEventListener("click", (event) => {
     modal.classList.remove("hidden");
     uiTraining.clearFormTraining();
   }
-
+  // ----
   // Abrir Modal de Exercício
   if (target.closest(".add-new-exercise-btn")) {
     const modal = document.querySelector("#exercise-modal");
@@ -62,7 +62,7 @@ document.addEventListener("click", (event) => {
     modal.classList.remove("hidden");
     uiExercises.clearFormExercise();
   }
-
+  // ---- create-new-exercise-from-modal-btn
   // Abrir Modal de Exercício dentro do treino
   if (target.closest(".create-exercise-btn")) {
     const modal = document.querySelector("#exercise-modal");
@@ -75,7 +75,7 @@ document.addEventListener("click", (event) => {
 
     uiExercises.clearFormExercise();
   }
-
+  // ----
   // Fechar Modais (Botão X ou Cancelar)
   if (target.closest("#close-x-btn, #cancel-btn")) {
     document.querySelector("#training-modal").classList.remove("active");
@@ -83,10 +83,39 @@ document.addEventListener("click", (event) => {
   if (target.closest("#close-exercise-modal-btn, #cancel-exercise-btn")) {
     document.querySelector("#exercise-modal").classList.remove("active");
   }
-
+  // ----
   // Voltar dos Detalhes (Setinhas)
   if (target.closest(".back-arrow-btn, .back-arrow-exercise-btn")) {
     changeForTraining();
+  }
+  // ----
+  // Adicionar um exercício dentro do treino
+  if (target.closest(".add-exercise-to-workout-btn")) {
+    const modalSelect = document.querySelector("#select-exercise-modal");
+    if (modalSelect) {
+      modalSelect.classList.add("active");
+
+      // DICA: Aqui no futuro você vai chamar a função que renderiza
+      // a lista dos seus exercícios do banco de dados para dentro do modal.
+      // Ex: uiExercises.renderExercisesForSelection();
+    }
+  }
+  // Fechar o modal de Seleção
+  if (target.closest("#close-select-exercise-btn")) {
+    const modalSelect = document.querySelector("#select-exercise-modal");
+    if (modalSelect) modalSelect.classList.remove("active");
+  }
+  // Clicar em criar exercício
+  if (target.closest(".create-new-exercise-from-modal-btn")) {
+    const modal = document.querySelector("#exercise-modal");
+
+    modal.classList.add("active");
+    modal.classList.remove("hidden");
+
+    const modalTitle = document.querySelector("#exercise-modal-title");
+    if (modalTitle) modalTitle.textContent = "Novo Exercício";
+
+    uiExercises.clearFormExercise();
   }
 });
 

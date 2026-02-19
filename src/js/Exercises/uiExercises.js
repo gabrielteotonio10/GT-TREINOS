@@ -1,9 +1,9 @@
 import exercisesApi from "./apiExercises.js";
 
-let convertedPhoto = "";
-const uiExercise = {
+let convertedPhotoExercise = "";
+const uiExercises = {
   // Converte uma foto enviada, caso tenha, para ser armazenada, diminuindo seu tamanho
-  convertPhoto(file) {
+  convertPhotoExercises(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
@@ -18,12 +18,14 @@ const uiExercise = {
         canvas.height = img.height * scaleSize;
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        convertedPhoto = canvas.toDataURL("image/jpeg", 0.7);
+        convertedPhotoExercise = canvas.toDataURL("image/jpeg", 0.7);
 
         console.log("Foto redimensionada e pronta!");
 
         // Atualiza a cor do ícone no HTML refatorado
-        const uploadIcon = document.querySelector(".upload-option .icon-box i");
+        const uploadIcon = document.querySelector(
+          "#exercise-modal .upload-option .icon-box i",
+        );
         if (uploadIcon) uploadIcon.style.color = "#4CAF50";
       };
     };
@@ -38,7 +40,7 @@ const uiExercise = {
       'input[name="exercise-icon"]:checked',
     );
     let icon = iconInput ? iconInput.value : "dumbbell";
-    if (convertedPhoto !== "") icon = convertedPhoto;
+    if (convertedPhotoExercise !== "") icon = convertedPhotoExercise;
     const name = document.querySelector("#exercise-name").value;
     const muscle = document.querySelector("#exercise-muscle").value;
     const equipment = document.querySelector("#exercise-equipment").value;
@@ -55,7 +57,7 @@ const uiExercise = {
       series,
       repetitions,
       load,
-      description
+      description,
     };
   },
 
@@ -63,9 +65,11 @@ const uiExercise = {
   clearFormExercise() {
     document.querySelector("#exercise-form").reset();
     document.querySelector("#exercise-id").value = "";
-    convertedPhoto = "";
+    convertedPhotoExercise = "";
     // Reseta a cor do ícone
-    const uploadIcon = document.querySelector(".upload-option .icon-box i");
+    const uploadIcon = document.querySelector(
+      "#exercise-modal .upload-option .icon-box i",
+    );
     if (uploadIcon) uploadIcon.style.color = "";
     console.log("Formulário de exercício limpo!");
   },
@@ -196,7 +200,7 @@ const uiExercise = {
 
     // Atualiza a foto principal do exercício
     const heroContainer = document.querySelector(".exercise-hero-image");
-    heroContainer.innerHTML = ""; 
+    heroContainer.innerHTML = "";
     if (
       exercise.icon &&
       (exercise.icon.startsWith("data:image") ||
@@ -360,9 +364,10 @@ const uiExercise = {
       document
         .querySelector(".exercises-library-section")
         .classList.remove("hidden");
-      uiExercise.renderExercises();
+      document.querySelector(".workouts-section").classList.remove("hidden");
+      uiExercises.renderExercises();
     };
   },
 };
 
-export default uiExercise;
+export default uiExercises;
