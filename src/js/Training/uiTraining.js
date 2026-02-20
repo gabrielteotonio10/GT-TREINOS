@@ -194,6 +194,14 @@ const uiTraining = {
     // Reseta a cor do ícone
     const uploadIcon = document.querySelector(".upload-option .icon-box i");
     if (uploadIcon) uploadIcon.style.color = "";
+    // Remove os badges e reseta botões de qualquer lista aberta
+    document.querySelectorAll(".added-label").forEach(badge => badge.remove());
+    document.querySelectorAll(".selectable-exercise-add-btn").forEach(btn => {
+      btn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+      btn.style.color = "";
+      btn.style.borderColor = "";
+    });
+    console.log("Estado de criação de treino limpo!");
   },
 
   // Preenche o formulário (Para edição)
