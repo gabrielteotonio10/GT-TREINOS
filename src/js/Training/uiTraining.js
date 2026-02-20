@@ -151,7 +151,8 @@ const uiTraining = {
 
     // Preenche os textos da página de detalhes
     trainingPage.querySelector(".active-title").textContent = training.name;
-    trainingPage.querySelector(".active-subtitle").textContent = training.subtitle;
+    trainingPage.querySelector(".active-subtitle").textContent =
+      training.subtitle;
 
     // Configura o botão de editar da tela de detalhes
     document.querySelector(".edit-workout-btn").onclick = () => {
@@ -167,6 +168,12 @@ const uiTraining = {
     // Troca as telas
     workoutsSection.classList.add("hidden");
     trainingPage.classList.remove("hidden");
+
+    // Início da tela
+    window.scrollTo({
+      top: 150,
+      behavior: "smooth",
+    });
   },
 
   // Adiciona um treino a lista de vizualisação

@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("testeeee");
     exercisePhotoInput.addEventListener("change", (event) => {
       const file = event.target.files[0];
-      if (file) uiExercises.convertPhotoExercises(file); 
+      if (file) uiExercises.convertPhotoExercises(file);
     });
   }
 
@@ -126,4 +126,75 @@ document.addEventListener("DOMContentLoaded", () => {
       uiTraining.convertPhoto(file);
     }
   });
+
+   // --------------------------- PESQUISA TREINOS ---------------------------
+
+  // --- BARRA DE PESQUISA DA BIBLIOTECA DE EXERCÍCIOS ---
+  const librarySearchInput = document.querySelector("#library-search-input");
+
+  if (librarySearchInput) {
+    librarySearchInput.addEventListener("input", (event) => {
+      // Chama a função passando o que o usuário digitou
+      uiExercises.renderExercises(event.target.value);
+    });
+  }
+
+  // --- BARRA DE PESQUISA DA CRIAÇÃO E EDIÇÃO ---
+  // Mostra todos os exercícios na pesquisa
+  const seeAllInSearch = (selector, targetContainer) => {
+    // Penduramos o evento no 'document', que nunca é destruído
+    document.addEventListener("click", async (event) => {
+      // Verificamos se o clique bate com a string do seletor que você passou
+      if (event.target.closest(selector)) {
+        try {
+          const allExercises = await apiExercises.getExercises();
+          uiExercises.renderExercisesForSelection(
+            allExercises,
+            targetContainer,
+          );
+        } catch (error) {
+          console.error("Erro ao carregar lista de exercícios:", error);
+        }
+      }
+    });
+  };
+
+  // Mostra as pesquisas
+  const setupSearchExercise = (inputElement, inputElement2) => {
+    if (!inputElement) {
+      console.error("Não achei o container:", inputElement2);
+      return;
+    }
+    inputElement.addEventListener("input", async (event) => {
+      // 'input' é melhor que 'keyup'
+      const term = event.target.value.toLowerCase();
+      try {
+        const allExercises = await apiExercises.getExercises();
+
+        const filteredExercises = allExercises.filter((exercise) =>
+          exercise.name.toLowerCase().includes(term),
+        );
+        uiExercises.renderExercisesForSelection(
+          filteredExercises,
+          inputElement2,
+        );
+      } catch (error) {
+        console.error("Erro ao filtrar exercícios:", error);
+      }
+    });
+  };
+  // Variáveis para mostrar available-exercises-list
+  // Para setupSearchExercise
+  const searchInput = document.querySelector("#search-exercise-input");
+  const searchInputForm = document.querySelector("#exercise-search");
+
+  const listId = "#available-exercises-list";
+  const listIdForm = "#selected-exercises-list-form";
+
+  setupSearchExercise(searchInput, listId);
+  setupSearchExercise(searchInputForm, listIdForm);
+
+  // Para seeAllInSearch
+  seeAllInSearch(".add-exercise-to-workout-btn", listId);
+  seeAllInSearch(".add-new-workout", listIdForm);
 });

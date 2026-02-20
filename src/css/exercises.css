@@ -437,3 +437,167 @@ textarea:focus {
 #exercise-modal {
     z-index: 3000 !important;
 }
+
+/* ==========================================================================
+   LISTAS DE EXERCÍCIOS 
+   ========================================================================== */
+
+/* O Container das Listas  */
+.available-exercises-list,
+.selected-exercises-list {
+  display: flex;
+  flex-direction: column; 
+  gap: 12px; 
+  width: 100%;
+  max-height: 350px; 
+  overflow-y: auto; 
+  padding: 8px;
+  margin-top: 15px;
+}
+
+/* O Item Individual do Exercício */
+.selectable-exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  width: 100%; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02); 
+  transition: all 0.2s ease;
+}
+
+/* Efeito ao passar o mouse */
+.selectable-exercise-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
+}
+
+.selectable-content-left {
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+}
+
+.selectable-exercise-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary-color);
+}
+
+.selectable-exercise-info p {
+  margin: 4px 0 0 0;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.mini-selection-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.mini-selection-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  color: var(--primary-color);
+}
+
+/* Estilo do Botão de Adicionar (+) */
+.selectable-exercise-add-btn {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.selectable-exercise-add-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   CABEÇALHO DA BIBLIOTECA (Título + Barra de Pesquisa)
+   ========================================================================== */
+
+.library-header {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start !important;
+  gap: 30px !important;
+  margin-bottom: 35px;
+  width: 100%;
+}
+.library-header .section-title {
+  margin: 0;
+}
+/* --- Container da Barra de Pesquisa --- */
+.search-bar-container {
+  position: relative;
+  width: 100%;
+}
+/* Classe específica para a barra da biblioteca não bugar a do formulário */
+.library-search {
+  max-width: 500px;
+  width: 100%;
+}
+/* --- O Ícone da Lupa --- */
+.search-bar-container .search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aab5;
+  font-size: 1.1rem;
+  pointer-events: none; 
+}
+/* --- O Input de Digitação --- */
+.search-bar-container input {
+  width: 100%;
+  height: 48px;
+  padding: 10px 15px 10px 48px; 
+  border: 1px solid #e1e5ea;
+  border-radius: 25px;
+  background-color: #f8f9fa;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text-primary-color, #333);
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+/* --- Efeito Foco  --- */
+.search-bar-container input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15); 
+}
+
+/* --- Responsividade (Celulares) --- */
+@media (max-width: 650px) {
+  .library-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .library-search {
+    max-width: 100%; 
+  }
+}

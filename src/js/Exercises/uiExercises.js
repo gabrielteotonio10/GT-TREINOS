@@ -117,49 +117,125 @@ const uiExercises = {
   },
 
   // Renderiza os exercícios
-  async renderExercises() {
-    const sectionExercises = document.querySelector(
-      ".exercises-library-section",
-    );
+  async renderExercises(searchTerm = "") {
+    const listContainer = document.querySelector("#exercises-list");
+    if (!listContainer) return;
 
     try {
-      const exercises = await exercisesApi.getExercises();
+      const allExercises = await exercisesApi.getExercises();
+
+      // Lógica para alterar a classe do título (se precisar)
       const presentationSection = document.querySelector(".presentation-text");
-      const isExercisePage = presentationSection.classList.contains("hidden");
-      // Caso não tenha exercícios
-      if (exercises.length === 0) {
-        sectionExercises.innerHTML = `
-          <h2 class="section-title ${isExercisePage ? "exercise-view" : ""}">Meus Exercícios</h2>
-          <div class="exercises-grid" id="exercises-list">
-            <div class="empty-state-container">
-              <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
-              <h3>Você ainda não tem exercícios</h3>
-              <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
-              <div class="empty-actions">
-                <button class="add-new-exercise-btn secondary-empty-btn">Criar novo</button>
-              </div>
+      const titleElement = document.querySelector("#library-section-title");
+      if (titleElement && presentationSection) {
+        if (presentationSection.classList.contains("hidden")) {
+          titleElement.classList.add("exercise-view");
+        } else {
+          titleElement.classList.remove("exercise-view");
+        }
+      }
+
+      // Limpa a grade atual
+      listContainer.innerHTML = "";
+
+      // Caso o banco de dados esteja totalmente vazio
+      if (allExercises.length === 0) {
+        listContainer.innerHTML = `
+          <div class="empty-state-container" style="grid-column: 1 / -1;">
+            <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+            <h3>Você ainda não tem exercícios</h3>
+            <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
+            <div class="empty-actions">
+              <button class="add-new-exercise-btn secondary-empty-btn">Criar novo</button>
             </div>
           </div>
         `;
-        return; // Encerra
+        return;
       }
-      //Se tem exercícios
-      sectionExercises.innerHTML = `
-        <h2 class="section-title ${isExercisePage ? "exercise-view" : ""}">Meus Exercícios</h2>
-        <div class="exercises-grid" id="exercises-list">
-          <div class="exercise-mini-card add-new-exercise-btn">
-            <i class="fa-solid fa-plus"></i>
-            <p>Criar Exercício</p>
-          </div>
+
+      // Filtra os exercícios com base no que foi digitado
+      const term = searchTerm.toLowerCase();
+      const filteredExercises = allExercises.filter((exercise) =>
+        exercise.name.toLowerCase().includes(term),
+      );
+
+      // Sempre desenha o botão de "Criar Exercício" primeiro
+      listContainer.innerHTML = `
+        <div class="exercise-mini-card add-new-exercise-btn">
+          <i class="fa-solid fa-plus"></i>
+          <p>Criar Exercício</p>
         </div>
       `;
-      exercises.forEach((exercise) => this.addExerciseToList(exercise));
+
+      // Se o usuário pesquisou algo que não existe
+      if (filteredExercises.length === 0) {
+        listContainer.innerHTML += `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #666;">
+            <p>Nenhum exercício "${searchTerm}" encontrado.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Se passou no filtro, desenha os cards
+      filteredExercises.forEach((exercise) => this.addExerciseToList(exercise));
     } catch (error) {
       console.error("Render error:", error);
       alert("Erro ao renderizar exercícios");
     }
   },
 
+  // Renderiza a lista de exercícios da barra de pesquisa
+  renderExercisesForSelection(exercisesList, input) {
+    const listContainer = document.querySelector(`${input}`);
+    listContainer.innerHTML = "";
+
+    if (exercisesList.length === 0) {
+      listContainer.innerHTML =
+        '<p class="empty-state">Nenhum exercício encontrado.</p>';
+      return;
+    }
+
+    exercisesList.forEach((exercise) => {
+      const item = document.createElement("div");
+      item.className = "selectable-exercise-item";
+
+      // Foto/Ícone
+      let visualMedia;
+      if (
+        exercise.icon &&
+        (exercise.icon.startsWith("data:image") ||
+          exercise.icon.startsWith("http"))
+      ) {
+        visualMedia = `<img src="${exercise.icon}" alt="${exercise.name}" class="mini-selection-img">`;
+      } else {
+        const iconMap = {
+          dumbbell: "dumbbell",
+          running: "person-running",
+          "weight-hanging": "weight-hanging",
+          bolt: "bolt",
+        };
+        const iconName = iconMap[exercise.icon] || "dumbbell";
+        visualMedia = `<div class="mini-selection-icon"><i class="fa-solid fa-${iconName}"></i></div>`;
+      }
+      // Mostrando
+      item.innerHTML = `
+        <div class="selectable-content-left">
+            ${visualMedia}
+            <div class="selectable-exercise-info">
+                <h4>${exercise.name}</h4>
+                <p>${exercise.muscle}</p>
+            </div>
+        </div>
+        <button class="selectable-exercise-add-btn" data-id="${exercise.id}">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    `;
+      listContainer.appendChild(item);
+    });
+  },
+
+  // Open exercise
   openExercise(exercise) {
     const exercisePage = document.querySelector(
       ".active-exercise-details-section",
@@ -233,6 +309,12 @@ const uiExercises = {
     };
 
     exercisePage.classList.remove("hidden");
+
+    // Início da tela
+    window.scrollTo({
+      top: 150,
+      behavior: "smooth",
+    });
   },
 
   // Adiciona um exercício a lista de vizualisação

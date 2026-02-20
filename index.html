@@ -102,16 +102,19 @@
     <!-- Exercícios criados pelo usuário -->
     <section class="exercises-library-section hidden">
 
-      <h2 class="section-title">Meus Exercícios</h2>
+      <div class="library-header"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+        <h2 class="section-title" id="library-section-title" style="margin: 0;">Meus Exercícios</h2>
+
+        <div class="search-bar-container" style="max-width: 350px; flex-grow: 1; margin: 0;">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="library-search-input" placeholder="Pesquisar na biblioteca...">
+        </div>
+      </div>
 
       <div class="exercises-grid" id="exercises-list">
-
-        <div class="exercise-mini-card add-new-exercise-btn">
-          <i class="fa-solid fa-plus"></i>
-          <p>Criar Exercício</p>
-        </div>
-
       </div>
+
     </section>
 
 
@@ -174,7 +177,7 @@
 
     <!-- Aba que abre ao clicar no exercício -->
     <section class="active-exercise-details-section hidden">
-    
+
       <div class="active-header">
         <button class="back-arrow-exercise-btn" aria-label="Voltar para biblioteca">
           <i class="fa-solid fa-arrow-left"></i>
@@ -183,19 +186,19 @@
           <i class="fa-solid fa-pen"></i>
         </button>
       </div>
-    
+
       <div class="exercise-hero-image">
         <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop"
           id="detail-exercise-img" alt="Demonstração do exercício">
       </div>
-    
+
       <div class="active-title-area">
         <h2 class="active-exercise-title" id="detail-exercise-name">Supino Reto com Barra</h2>
         <p class="active-exercise-subtitle" id="detail-exercise-muscle">
           <i class="fa-solid fa-dna"></i> Músculo: Peitoral Maior
         </p>
       </div>
-    
+
       <div class="exercise-info-grid">
         <div class="info-box">
           <i class="fa-solid fa-layer-group"></i>
@@ -213,28 +216,29 @@
           <strong id="detail-exercise-load">40 kg</strong>
         </div>
       </div>
-    
+
       <div class="exercise-description-area">
         <div class="detail-item">
           <i class="fa-solid fa-dumbbell"></i>
           <p><strong>Equipamento:</strong> <span id="detail-exercise-equipment">Barra e Banco</span></p>
         </div>
-    
+
         <div class="detail-item description-text">
           <i class="fa-solid fa-align-left"></i>
           <div>
             <strong>Instruções / Descrição:</strong>
-            <p id="detail-exercise-description">Mantenha a escápula retraída e controle a descida da barra até o peito.</p>
+            <p id="detail-exercise-description">Mantenha a escápula retraída e controle a descida da barra até o peito.
+            </p>
           </div>
         </div>
       </div>
-    
+
       <div class="active-footer-actions">
         <button class="delete-exercise-library-btn">
           <i class="fa-solid fa-trash"></i> Excluir da Biblioteca
         </button>
       </div>
-    
+
     </section>
 
     <!-- Formulário para criação de um novo treino -->
@@ -315,9 +319,9 @@
               </button>
             </div>
 
-            <div class="selected-exercises-list">
+            <div class="selected-exercises-list" id="selected-exercises-list-form">
               <div class="empty-state">
-                <p>Nenhum exercício adicionado ainda.</p>
+                <p>Carregando seus treinos...</p>
               </div>
             </div>
           </div>
@@ -333,55 +337,55 @@
     <!-- Formulário para criação de um novo exercício -->
     <section id="exercise-modal" class="modal-container hidden">
       <div class="form-card">
-    
+
         <div class="modal-header">
           <h2 id="exercise-modal-title">Novo Exercício</h2>
           <button class="close-modal-btn" id="close-exercise-modal-btn">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-    
+
         <form id="exercise-form">
           <input type="hidden" id="exercise-id" />
-    
+
           <div class="form-group">
             <label class="section-label">Ícone ou Imagem</label>
             <div class="icon-selector-grid">
-    
+
               <label class="icon-option">
                 <input type="radio" name="exercise-icon" value="dumbbell" checked>
                 <div class="icon-box"><i class="fa-solid fa-dumbbell"></i></div>
               </label>
-    
+
               <label class="icon-option">
                 <input type="radio" name="exercise-icon" value="running">
                 <div class="icon-box"><i class="fa-solid fa-person-running"></i></div>
               </label>
-    
+
               <label class="icon-option">
                 <input type="radio" name="exercise-icon" value="weight-hanging">
                 <div class="icon-box"><i class="fa-solid fa-weight-hanging"></i></div>
               </label>
-    
+
               <label class="icon-option">
                 <input type="radio" name="exercise-icon" value="bolt">
                 <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
               </label>
-    
-              <label class="icon-option upload-option" for="exercise-photo-input"> <input type="file" id="exercise-photo-input"
-                  accept="image/*" style="display: none;">
+
+              <label class="icon-option upload-option" for="exercise-photo-input"> <input type="file"
+                  id="exercise-photo-input" accept="image/*" style="display: none;">
                 <div class="icon-box upload"><i class="fa-solid fa-camera"></i></div>
               </label>
             </div>
           </div>
-    
+
           <div class="form-row">
             <div class="form-group flex-grow">
               <label for="exercise-name">Nome do Exercício *</label>
               <input type="text" id="exercise-name" placeholder="Ex: Supino Reto" required>
             </div>
           </div>
-    
+
           <div class="form-row">
             <div class="form-group flex-grow">
               <label for="exercise-muscle">Músculo Alvo *</label>
@@ -392,7 +396,7 @@
               <input type="text" id="exercise-equipment" placeholder="Ex: Barra e Banco">
             </div>
           </div>
-    
+
           <div class="form-row three-cols">
             <div class="form-group">
               <label for="exercise-series">Séries</label>
@@ -401,7 +405,7 @@
                 <input type="number" id="exercise-series" placeholder="3" min="1">
               </div>
             </div>
-    
+
             <div class="form-group">
               <label for="exercise-repetitions">Repetições</label>
               <div class="number-input-wrapper">
@@ -409,7 +413,7 @@
                 <input type="number" id="exercise-repetitions" placeholder="12" min="1">
               </div>
             </div>
-    
+
             <div class="form-group">
               <label for="exercise-load">Carga (kg)</label>
               <div class="number-input-wrapper">
@@ -418,17 +422,17 @@
               </div>
             </div>
           </div>
-    
+
           <div class="form-group">
             <label for="exercise-description">Observações / Descrição</label>
             <textarea id="exercise-description" rows="3" placeholder="Ex: Manter cotovelos fechados..."></textarea>
           </div>
-    
+
           <div class="form-buttons">
             <button type="button" class="cancel-btn" id="cancel-exercise-btn">Cancelar</button>
             <button type="submit" class="primary-btn">Salvar Exercício</button>
           </div>
-    
+
         </form>
       </div>
     </section>
@@ -436,35 +440,35 @@
     <!-- Adicionar um exercício dentro do treino -->
     <div class="modal-container" id="select-exercise-modal">
       <div class="form-card">
-    
+
         <div class="modal-header">
           <h2 id="select-exercise-modal-title">Adicionar ao Treino</h2>
           <button class="close-modal-btn" id="close-select-exercise-btn">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-    
+
         <div class="search-bar-container" style="margin-bottom: 20px;">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
           <input type="text" id="search-exercise-input" placeholder="Pesquisar meus exercícios...">
         </div>
-    
+
         <div class="available-exercises-list" id="available-exercises-list">
           <div class="empty-state" style="text-align: center; padding: 20px;">
             <p>Carregando seus exercícios...</p>
           </div>
         </div>
-    
+
         <div class="form-buttons"
           style="justify-content: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
           <button class="secondary-empty-btn create-new-exercise-from-modal-btn" style="width: 100%;">
             <i class="fa-solid fa-plus"></i> Criar Novo Exercício
           </button>
         </div>
-    
+
       </div>
     </div>
-    
+
   </main>
 
   <!-- Rodapé -->
