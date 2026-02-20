@@ -21,13 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
   trainingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     // Obtém dados do UI
-    const { id, name, subtitle, icon } = uiTraining.getFormDataTraining();
+    const { id, name, subtitle, icon, exercises } = uiTraining.getFormDataTraining();
     try {
       // Se tem ID edita (Update), senão salva (Create)
       if (id) {
-        await apiTraining.updateTraining({ id, name, subtitle, icon });
+        await apiTraining.updateTraining({id, name, subtitle, icon, exercises});
       } else {
-        await apiTraining.createTraining({ name, subtitle, icon });
+        await apiTraining.createTraining({ name, subtitle, icon, exercises });
       }
       // Limpeza e Feedback
       uiTraining.clearFormTraining();
@@ -127,18 +127,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-   // --------------------------- PESQUISA TREINOS ---------------------------
-
-  // --- BARRA DE PESQUISA DA BIBLIOTECA DE EXERCÍCIOS ---
-  const librarySearchInput = document.querySelector("#library-search-input");
-
-  if (librarySearchInput) {
-    librarySearchInput.addEventListener("input", (event) => {
-      // Chama a função passando o que o usuário digitou
-      uiExercises.renderExercises(event.target.value);
+  // --------------------------- PESQUISA NA BIBLIOTECA DE TREINOS ---------------------------
+  const trainingsSearchInput = document.querySelector(
+    "#trainings-search-input",
+  );
+  if (trainingsSearchInput) {
+    trainingsSearchInput.addEventListener("input", (event) => {
+      uiTraining.renderTrainings(event.target.value);
     });
   }
 
+  // --------------------------- PESQUISA EXERCÍCIOS ---------------------------
+
+  // --- BARRA DE PESQUISA DA BIBLIOTECA DE EXERCÍCIOS ---
+  const exercisesSearchInput = document.querySelector(
+    "#exercises-search-input",
+  );
+  if (exercisesSearchInput) {
+    exercisesSearchInput.addEventListener("input", (event) => {
+      uiExercises.renderExercises(event.target.value);
+    });
+  }
   // --- BARRA DE PESQUISA DA CRIAÇÃO E EDIÇÃO ---
   // Mostra todos os exercícios na pesquisa
   const seeAllInSearch = (selector, targetContainer) => {
@@ -197,4 +206,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Para seeAllInSearch
   seeAllInSearch(".add-exercise-to-workout-btn", listId);
   seeAllInSearch(".add-new-workout", listIdForm);
+  seeAllInSearch(".add-new-workout-btn, .add-new-workout, .edit-icon, .edit-workout-btn, #exercise-search", listIdForm );
+});
+
+  // --------------------------- CAPTURANDO EXERCÍCIOS ---------------------------
+
+document.addEventListener("click", (event) => {
+  const target = event.target.closest(".selectable-exercise-add-btn");
+  if (target) {
+    event.preventDefault();
+    const exerciseId = target.dataset.id;
+    const isFromSelectModal = target.closest("#select-exercise-modal");
+    // Se for o botão dentro do treino
+    if (isFromSelectModal) {
+      uiTraining.addExerciseToExistingTraining(exerciseId);
+    } else { // Senão é o botão de criar
+      uiTraining.addExerciseToSelection(exerciseId);
+    }
+  }
 });

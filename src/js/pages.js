@@ -54,16 +54,19 @@ document.addEventListener("click", (event) => {
   // Clicar na Logo
   if (target.closest(".main-logo")) {
     showHome();
-    startPage();
   }
   // ----
   // Abrir Modal de Treino
-  if (target.closest(".add-new-workout-btn")) {
+  const modalTitleTreino = document.querySelector("#training-modal-title");
+  if (modalTitleTreino) modalTitleTreino.textContent = "Novo Treino";
+  if (
+    target.closest(".add-new-workout-btn") ||
+    target.closest(".add-new-workout")
+  ) {
     const modal = document.querySelector("#training-modal");
     modal.classList.add("active");
     modal.classList.remove("hidden");
     uiTraining.clearFormTraining();
-    startPage();
   }
   // ----
   // Abrir Modal de Exercício
@@ -72,7 +75,6 @@ document.addEventListener("click", (event) => {
     modal.classList.add("active");
     modal.classList.remove("hidden");
     uiExercises.clearFormExercise();
-    startPage();
   }
   // ---- create-new-exercise-from-modal-btn
   // Abrir Modal de Exercício dentro do treino
@@ -85,30 +87,25 @@ document.addEventListener("click", (event) => {
     const modalTitle = document.querySelector("#exercise-modal-title");
     if (modalTitle) modalTitle.textContent = "Novo Exercício";
 
-    startPage();
     uiExercises.clearFormExercise();
   }
   // ----
   // Fechar Modais (Botão X ou Cancelar)
   if (target.closest("#close-x-btn, #cancel-btn")) {
     document.querySelector("#training-modal").classList.remove("active");
-    startPage();
   }
   if (target.closest("#close-exercise-modal-btn, #cancel-exercise-btn")) {
     document.querySelector("#exercise-modal").classList.remove("active");
-    startPage();
   }
   // ----
   // Voltar dos Detalhes (Setinhas)
   if (target.closest(".back-arrow-btn, .back-arrow-exercise-btn")) {
     changeForTraining();
-    startPage();
   }
   // ----
   // Adicionar um exercício dentro do treino
   if (target.closest(".add-exercise-to-workout-btn")) {
     const modalSelect = document.querySelector("#select-exercise-modal");
-    startPage();
     if (modalSelect) {
       modalSelect.classList.add("active");
 
@@ -121,7 +118,6 @@ document.addEventListener("click", (event) => {
   if (target.closest("#close-select-exercise-btn")) {
     const modalSelect = document.querySelector("#select-exercise-modal");
     if (modalSelect) modalSelect.classList.remove("active");
-    startPage();
   }
   // Clicar em criar exercício
   if (target.closest(".create-new-exercise-from-modal-btn")) {
@@ -132,8 +128,6 @@ document.addEventListener("click", (event) => {
 
     const modalTitle = document.querySelector("#exercise-modal-title");
     if (modalTitle) modalTitle.textContent = "Novo Exercício";
-
-    startPage();
     uiExercises.clearFormExercise();
   }
 });

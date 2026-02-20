@@ -76,6 +76,7 @@ const uiExercises = {
 
   // Preenche o formulário (Para edição)
   async fillFormExercise(exerciseId) {
+    document.querySelector("#exercise-modal-title").textContent = "Editar Exercício";
     try {
       const exercise = await exercisesApi.getExercisesById(exerciseId);
       document.querySelector("#exercise-id").value = exercise.id;
@@ -126,7 +127,7 @@ const uiExercises = {
 
       // Lógica para alterar a classe do título (se precisar)
       const presentationSection = document.querySelector(".presentation-text");
-      const titleElement = document.querySelector("#library-section-title");
+      const titleElement = document.querySelector("#exercises-section-title");
       if (titleElement && presentationSection) {
         if (presentationSection.classList.contains("hidden")) {
           titleElement.classList.add("exercise-view");
@@ -170,9 +171,9 @@ const uiExercises = {
       // Se o usuário pesquisou algo que não existe
       if (filteredExercises.length === 0) {
         listContainer.innerHTML += `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #666;">
-            <p>Nenhum exercício "${searchTerm}" encontrado.</p>
-          </div>
+          <div style="grid-column: 1fr; text-align: left; padding: 20px 0; color: #666; width: 100%;">
+            <p>Nenhum exercício <strong>"${searchTerm}"</strong> encontrado.</p>
+           </div>
         `;
         return;
       }
@@ -220,6 +221,7 @@ const uiExercises = {
       }
       // Mostrando
       item.innerHTML = `
+        <div class = "idExerciseList hidden">${exercise.id}</div>
         <div class="selectable-content-left">
             ${visualMedia}
             <div class="selectable-exercise-info">
@@ -227,7 +229,7 @@ const uiExercises = {
                 <p>${exercise.muscle}</p>
             </div>
         </div>
-        <button class="selectable-exercise-add-btn" data-id="${exercise.id}">
+        <button type="button" class="selectable-exercise-add-btn" data-id="${exercise.id}">
             <i class="fa-solid fa-plus"></i>
         </button>
     `;
@@ -409,9 +411,13 @@ const uiExercises = {
     optionsBtn.onclick = handleEditClick;
     optionsBtn2.onclick = handleEditClick;
     // ---
+    const idExercise = document.createElement("div");
+    idExercise.innerHTML = `${exercise.id}`;
+    idExercise.classList.add("idExerciseGeral", "hidden");
     // Montagem Final
     exerciseCard.appendChild(miniCardInfo);
     exerciseCard.appendChild(optionsBtn);
+    exerciseCard.appendChild(idExercise);
     exercisesGrid.appendChild(exerciseCard);
     // ---
     // Configura a tela de detalhes para o exercício clicado, possibilitando editar e excluir

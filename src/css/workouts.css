@@ -22,6 +22,15 @@
   font-weight: bold;
 }
 
+.toast-notification.error {
+    background-color: #e74c3c !important; /* Vermelho vibrante */
+}
+
+.toast-notification.warning {
+    background-color: #f1c40f !important; 
+    color: #333; 
+}
+
 .toast-notification.fade-out {
   opacity: 0;
 }
@@ -36,12 +45,11 @@
   margin-bottom: 20px;
   display: inline-block;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Visualização Interna de Treinos */
 .workouts-section .section-title.training-view {
-  margin-top: 30px;
+  margin-top: 30px !important;
   font-size: 2.4rem;            
   color: var(--primary-color);  
   font-weight: 800;
@@ -225,15 +233,15 @@
 
 .workouts-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  gap: 20px;
 }
 
 .workout-card {
   background-color: white;
   border: 2px solid var(--background-secondary-color);
-  border-radius: 18px; 
-  padding: 40px 30px; 
+  border-radius: 16px; 
+  padding: 25px 15px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -241,7 +249,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px; 
   position: relative; 
 }
 
@@ -530,12 +538,56 @@
 /* ==========================================================================
    9. RESPONSIVIDADE
    ========================================================================== */
+/* ==========================================================================
+   9. RESPONSIVIDADE (Celulares e Tablets)
+   ========================================================================== */
 @media (max-width: 768px) {
   .workouts-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+  }
+
+  /* Deixa o card mais "magrinho" por dentro */
+  .workout-card {
+    padding: 15px 10px; 
+    border-radius: 12px;
+  }
+
+  /* Reduz drasticamente o tamanho das fotos e ícones no celular */
+  .workout-card .icon-container {
+    width: 55px;  
+    height: 55px;
+    font-size: 2.2rem; 
+    margin-bottom: 5px;
+  }
+
+  .workout-image {
+    width: 55px;
+    height: 55px;
+  }
+
+  /* Ícone do botão de "Criar Novo" no celular */
+  .workout-card.add-new-workout .icon-container {
+    font-size: 2rem; 
+  }
+
+  /* Textos proporcionais ao card pequeno */
+  .workout-card h3 {
+    font-size: 1.05rem; 
+    margin-bottom: 2px;
+  }
+
+  .workout-card p {
+    font-size: 0.75rem; 
+  }
+
+  /* Ajusta a engrenagem */
+  .edit-icon {
+    top: 10px;
+    right: 10px;
+    font-size: 1rem;
   }
 }
-
 /* ==========================================================================
    LISTA DE SELEÇÃO DENTRO DO MODAL
    ========================================================================== */

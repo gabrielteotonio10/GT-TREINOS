@@ -1,6 +1,12 @@
 import trainingApi from "./apiTraining.js";
 
+//Foto
 let convertedPhoto = "";
+// Exercícios adicionados
+let selectedExercisesIds = [];
+// Treino aberto
+let currentActiveTraining = null;
+
 const uiTraining = {
   // Converte uma foto enviada, caso tenha, para ser armazenada, diminuiTrainingndo seu tamanho
   convertPhoto(file) {
@@ -29,6 +35,18 @@ const uiTraining = {
     reader.readAsDataURL(file);
   },
 
+  // Captura exercicios para adicionar ao treino
+  addExerciseToSelection(exerciseId) {
+    if (!selectedExercisesIds.includes(exerciseId)) {
+      this.showToastTraining("Exercício adicionado à ficha!");
+      selectedExercisesIds.push(exerciseId);
+      console.log("Lista atual de IDs:", selectedExercisesIds);
+      // DICA: Aqui você pode chamar uma função para mostrar o exercício no form
+    } else {
+      this.showToastTraining("Este exercício já está no treino!", "warning");
+    }
+  },
+
   // Captura as informações de um formulário
   getFormDataTraining() {
     const id = document.querySelector("#training-id").value;
@@ -40,7 +58,36 @@ const uiTraining = {
     if (convertedPhoto !== "") icon = convertedPhoto;
     const name = document.querySelector("#training-name").value;
     const subtitle = document.querySelector("#training-subtitle").value;
-    return { id, name, subtitle, icon };
+
+    const exercises = selectedExercisesIds;
+
+    return { id, name, subtitle, icon, exercises };
+  },
+
+  // Salva um Exercício dentro do treino
+  async addExerciseToExistingTraining(exerciseId) {
+    if (!currentActiveTraining) return; // Se não tem treino aberto, não faz nada
+    // Garante que o array de exercícios existe no treino
+    if (!currentActiveTraining.exercises) {
+      currentActiveTraining.exercises = [];
+    }
+    // Se o exercício não está lá, adiciona e manda para o banco de dados
+    if (!currentActiveTraining.exercises.includes(exerciseId)) {
+      currentActiveTraining.exercises.push(exerciseId);
+      try {
+        await trainingApi.updateTraining(currentActiveTraining);
+        console.log(
+          "Atualizado direto no banco:",
+          currentActiveTraining.exercises,
+        );
+        // Dá o aviso na tela
+        this.showToastTraining("Exercício adicionado à ficha!");
+      } catch (error) {
+        console.error("Erro ao atualizar treino:", error);
+      }
+    } else {
+      this.showToastTraining("Este exercício já está no treino!", "warning");
+    }
   },
 
   // Limpa o formulário totalmente
@@ -49,6 +96,7 @@ const uiTraining = {
     document.querySelector("#training-id").value = "";
     convertedPhoto = "";
     document.querySelector("#training-subtitle").value = "";
+    selectedExercisesIds = [];
     // Reseta a cor do ícone
     const uploadIcon = document.querySelector(".upload-option .icon-box i");
     if (uploadIcon) uploadIcon.style.color = "";
@@ -56,12 +104,14 @@ const uiTraining = {
 
   // Preenche o formulário (Para edição)
   async fillFormTraining(trainingId) {
+    document.querySelector("#training-modal-title").textContent = "Editar Treino";
     try {
       const training = await trainingApi.getTrainingById(trainingId);
       document.querySelector("#training-id").value = training.id;
       document.querySelector("#training-name").value = training.name;
       document.querySelector("#training-subtitle").value =
         training.subtitle || "";
+      selectedExercisesIds = training.exercises ? [...training.exercises] : [];
       const iconToSelect = document.querySelector(
         `input[name="training-icon"][value="${training.icon}"]`,
       );
@@ -77,11 +127,20 @@ const uiTraining = {
   },
 
   // Mostra um aviso quando treino é criado ou editado
-  showToastTraining(message) {
+  showToastTraining(message, type = "success") {
     const toast = document.createElement("div");
     toast.textContent = message;
     toast.classList.add("toast-notification");
+
+    // Se o tipo for 'error', adiciona a classe .error
+    if (type === "error") {
+      toast.classList.add("error");
+    } else if (type === "warning") {
+      toast.classList.add("warning");
+    }
+
     document.body.appendChild(toast);
+
     setTimeout(() => {
       toast.classList.add("fade-out");
       toast.addEventListener("transitionend", () => toast.remove());
@@ -89,41 +148,68 @@ const uiTraining = {
   },
 
   // Renderiza a lista de treinos na tela
-  async renderTrainings() {
-    const sectionTrainings = document.querySelector(".workouts-section");
+  async renderTrainings(searchTerm = "") {
+    const listContainer = document.querySelector("#workouts-grid");
+    if (!listContainer) return;
+
     try {
-      const trainings = await trainingApi.getTrainings();
+      const allTrainings = await trainingApi.getTrainings();
+
       const presentationSection = document.querySelector(".presentation-text");
-      const isTrainingPage = presentationSection.classList.contains("hidden");
-      // Se não tem treinos cadastrados
-      if (trainings.length === 0) {
-        sectionTrainings.innerHTML = `
-                <h2 class="section-title ${isTrainingPage ? "training-view" : ""}">Meus Treinos</h2>
-                <div class="workouts-grid" id="workouts-grid">
-                    <div class="empty-state-container">
-                        <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
-                        <h3>Você ainda não tem treinos</h3>
-                        <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
-                        <div class="empty-actions">
-                            <button class="add-new-workout-btn secondary-empty-btn">Criar novo</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        return; // Encerra
+      const titleElement = document.querySelector("#trainings-section-title");
+      if (titleElement && presentationSection) {
+        if (presentationSection.classList.contains("hidden")) {
+          titleElement.classList.add("training-view");
+        } else {
+          titleElement.classList.remove("training-view");
+        }
       }
-      // Se houver treinos
-      sectionTrainings.innerHTML = `
-            <h2 class="section-title ${isTrainingPage ? "training-view" : ""}">Meus Treinos</h2>
-            <div class="workouts-grid" id="workouts-grid">
-                <div class="workout-card add-new-workout add-new-workout-btn">
-                    <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
-                    <h3>Novo Treino</h3>
-                </div>
+
+      // Limpa a grade atual
+      listContainer.innerHTML = "";
+
+      // Caso o banco de dados esteja totalmente vazio
+      if (allTrainings.length === 0) {
+        // Injeta APENAS o estado vazio, sem tentar recriar o <h2> ou o container inteiro
+        listContainer.innerHTML = `
+          <div class="empty-state-container" style="grid-column: 1 / -1;">
+            <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+            <h3>Você ainda não tem treinos</h3>
+            <p>Que tal começar com uma de nossas recomendações ou criar um novo agora mesmo?</p>
+            <div class="empty-actions">
+              <button class="add-new-workout-btn secondary-empty-btn">Criar novo</button>
             </div>
+          </div>
         `;
-      // Adiciona os cards dos treinos existentes
-      trainings.forEach((training) => uiTraining.addTrainingToList(training));
+        return;
+      }
+
+      // Se passou da verificação de vazio, SEMPRE desenha o botão de Criar Novo
+      listContainer.innerHTML = `
+        <div class="workout-card add-new-workout">
+          <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
+          <h3>Novo Treino</h3>
+        </div>
+      `;
+
+      // Filtra os treinos com base no que foi digitado
+      const term = searchTerm.toLowerCase();
+      const filteredTrainings = allTrainings.filter((training) =>
+        training.name.toLowerCase().includes(term),
+      );
+
+      // Se o usuário pesquisou algo que não existe
+      if (filteredTrainings.length === 0) {
+        listContainer.innerHTML += `
+          <div style="grid-column: 1 / -1; text-align: left; padding: 20px 0; color: #666; width: 100%;">
+            <p>Nenhum treino <strong>"${searchTerm}"</strong> encontrado.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Se passou no filtro, desenha os cards dos treinos
+      filteredTrainings.forEach((training) => this.addTrainingToList(training));
     } catch (error) {
       console.error("Render error:", error);
       alert("Erro ao renderizar treinos");
@@ -132,17 +218,19 @@ const uiTraining = {
 
   // Abre o treino
   openTraining(training) {
+    // Guarda o treino na memória
+    currentActiveTraining = training;
     // Arruma a vizualização
     const trainingPage = document.querySelector(".active-workout-section");
     const workoutsSection = document.querySelector(".workouts-section");
-    const exerciseSection = document.querySelector(
-      ".exercises-library-section",
+    const trainingSection = document.querySelector(
+      ".trainings-library-section",
     );
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
     [
       workoutsSection,
-      exerciseSection,
+      trainingSection,
       presentationText,
       websitePresentation,
     ].forEach((section) => {
@@ -168,6 +256,14 @@ const uiTraining = {
     // Troca as telas
     workoutsSection.classList.add("hidden");
     trainingPage.classList.remove("hidden");
+
+    // Dentro da sua função que abre o treino:
+    const exercisesSection = document.querySelector(
+      ".exercises-library-section",
+    );
+    if (exercisesSection) {
+      exercisesSection.classList.add("hidden");
+    }
 
     // Início da tela
     window.scrollTo({
