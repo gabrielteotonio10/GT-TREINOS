@@ -625,6 +625,8 @@ textarea:focus {
   }
 }
 
+/* --TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE-- */
+
 
 /* Reduz o tamanho do botão apenas quando ele está dentro do estado vazio */
 .empty-actions .secondary-empty-btn {
@@ -632,4 +634,24 @@ textarea:focus {
     font-size: 0.85rem !important;  
     min-height: auto !important;    
     height: 50px !important;       
+}
+
+/* --TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE-- */
+
+/* Etiqueta sutil de "Adicionado" */
+.added-label {
+    font-size: 0.65rem;
+    background-color: #e8f5e9; 
+    color: #2e7d32; 
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: fadeInBadge 0.3s ease;
+}
+
+@keyframes fadeInBadge {
+    from { opacity: 0; transform: translateX(-5px); }
+    to { opacity: 1; transform: translateX(0); }
 }

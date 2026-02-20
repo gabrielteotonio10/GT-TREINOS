@@ -1,4 +1,6 @@
 import trainingApi from "./apiTraining.js";
+import apiExercises from "../Exercises/apiExercises.js";
+import uiExercises from "../Exercises/uiExercises.js";
 
 //Foto
 let convertedPhoto = "";
@@ -36,14 +38,56 @@ const uiTraining = {
   },
 
   // Captura exercicios para adicionar ao treino
-  addExerciseToSelection(exerciseId) {
+  addExerciseToSelection(exerciseId, btnElement) {
+    const exerciseItem = btnElement.closest(".selectable-exercise-item");
+    const infoContainer = exerciseItem.querySelector(
+      ".selectable-exercise-info div",
+    );
     if (!selectedExercisesIds.includes(exerciseId)) {
-      this.showToastTraining("Exercício adicionado à ficha!");
+      // adiciona
       selectedExercisesIds.push(exerciseId);
       console.log("Lista atual de IDs:", selectedExercisesIds);
-      // DICA: Aqui você pode chamar uma função para mostrar o exercício no form
+      this.showToastTraining("Exercício adicionado à ficha!");
+      // Muda o botão para Menos (Vermelho)
+      if (btnElement) {
+        btnElement.innerHTML = `<i class="fa-solid fa-minus"></i>`;
+        btnElement.style.color = "#e74c3c";
+        btnElement.style.borderColor = "#e74c3c";
+      }
+      // Faz o exercício adicionado aparecer uma mensagem
+      if (infoContainer && !infoContainer.querySelector(".added-label")) {
+        const badge = document.createElement("span");
+        badge.className = "added-label";
+        badge.textContent = "Adicionado";
+        infoContainer.appendChild(badge);
+      }
+      // Faz o exercício adicionado ir ao topo da lista
+      if (exerciseItem) {
+        const listContainer = exerciseItem.parentElement;
+        listContainer.prepend(exerciseItem);
+      }
     } else {
-      this.showToastTraining("Este exercício já está no treino!", "warning");
+      // remove
+      selectedExercisesIds = selectedExercisesIds.filter(
+        (id) => id !== exerciseId,
+      );
+      this.showToastTraining("Exercício removido!", "error");
+      // Modifica o botão ao remover
+      if (btnElement) {
+        btnElement.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+        btnElement.style.color = "";
+        btnElement.style.borderColor = "";
+      }
+      // Faz o exercício removido sumir com a mensagem
+      const badge = infoContainer.querySelector(".added-label");
+      if (badge) {
+        badge.remove();
+      }
+      // Faz o exercício removido sair do topo da lista
+      if (exerciseItem) {
+        const listContainer = exerciseItem.parentElement;
+        listContainer.appendChild(exerciseItem);
+      }
     }
   },
 
@@ -65,14 +109,21 @@ const uiTraining = {
   },
 
   // Salva um Exercício dentro do treino
-  async addExerciseToExistingTraining(exerciseId) {
-    if (!currentActiveTraining) return; // Se não tem treino aberto, não faz nada
-    // Garante que o array de exercícios existe no treino
+  async addExerciseToExistingTraining(exerciseId, btnElement) {
+    if (!currentActiveTraining) return;
     if (!currentActiveTraining.exercises) {
       currentActiveTraining.exercises = [];
     }
-    // Se o exercício não está lá, adiciona e manda para o banco de dados
+
+    const exerciseItem = btnElement
+      ? btnElement.closest(".selectable-exercise-item")
+      : null;
+    const infoContainer = exerciseItem
+      ? exerciseItem.querySelector(".selectable-exercise-info div")
+      : null;
+
     if (!currentActiveTraining.exercises.includes(exerciseId)) {
+      // ADICIONA NO BANCO
       currentActiveTraining.exercises.push(exerciseId);
       try {
         await trainingApi.updateTraining(currentActiveTraining);
@@ -80,13 +131,56 @@ const uiTraining = {
           "Atualizado direto no banco:",
           currentActiveTraining.exercises,
         );
-        // Dá o aviso na tela
         this.showToastTraining("Exercício adicionado à ficha!");
+        // Muda o botão para Menos (Vermelho)
+        if (btnElement) {
+          btnElement.innerHTML = `<i class="fa-solid fa-minus"></i>`;
+          btnElement.style.color = "#e74c3c";
+          btnElement.style.borderColor = "#e74c3c";
+        }
+        // Adiciona o texto na hora
+        if (infoContainer && !infoContainer.querySelector(".added-label")) {
+          const badge = document.createElement("span");
+          badge.className = "added-label";
+          badge.textContent = "Adicionado";
+          infoContainer.appendChild(badge);
+        }
+        // Faz o exercício adicionado ir ao topo da lista
+        if (exerciseItem) {
+          const listContainer = exerciseItem.parentElement;
+          listContainer.prepend(exerciseItem);
+        }
       } catch (error) {
         console.error("Erro ao atualizar treino:", error);
       }
     } else {
-      this.showToastTraining("Este exercício já está no treino!", "warning");
+      // remove do banco
+      currentActiveTraining.exercises = currentActiveTraining.exercises.filter(
+        (id) => id !== exerciseId,
+      );
+      try {
+        await trainingApi.updateTraining(currentActiveTraining);
+        this.showToastTraining("Exercício removido do treino!", "error");
+
+        // Volta o botão para Mais (Padrão)
+        if (btnElement) {
+          btnElement.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+          btnElement.style.color = "";
+          btnElement.style.borderColor = "";
+        }
+        // Remove o texto na hora
+        if (infoContainer) {
+          const badge = infoContainer.querySelector(".added-label");
+          if (badge) badge.remove();
+        }
+        // Faz o exercício removido sair do topo da lista
+        if (exerciseItem) {
+          const listContainer = exerciseItem.parentElement;
+          listContainer.appendChild(exerciseItem);
+        }
+      } catch (error) {
+        console.error("Erro ao remover exercício do treino:", error);
+      }
     }
   },
 
@@ -104,7 +198,8 @@ const uiTraining = {
 
   // Preenche o formulário (Para edição)
   async fillFormTraining(trainingId) {
-    document.querySelector("#training-modal-title").textContent = "Editar Treino";
+    document.querySelector("#training-modal-title").textContent =
+      "Editar Treino";
     try {
       const training = await trainingApi.getTrainingById(trainingId);
       document.querySelector("#training-id").value = training.id;
@@ -217,7 +312,7 @@ const uiTraining = {
   },
 
   // Abre o treino
-  openTraining(training) {
+  async openTraining(training) {
     // Guarda o treino na memória
     currentActiveTraining = training;
     // Arruma a vizualização
@@ -270,6 +365,54 @@ const uiTraining = {
       top: 150,
       behavior: "smooth",
     });
+
+    // Pegando exercícios para mostrar na tela
+    try {
+      // Pega o array de exercícios e filtra para os que tem
+      const allExercises = await apiExercises.getExercises();
+      const fullExercises = allExercises.filter((exercise) => {
+        return training.exercises.includes(exercise.id);
+      });
+
+      const trainingPart = document.querySelector(".active-exercises-list");
+      trainingPart.innerHTML = "";
+      let htmlContent = "";
+      fullExercises.forEach((exercise) => {
+        htmlContent += `
+        <div class="exercise-item" data-id="${exercise.id}"> 
+          <img src="${exercise.icon}" alt="${exercise.name}" class="exercise-img">
+          <div class="exercise-info">
+            <h4>${exercise.name}</h4>
+            <p style="margin-bottom: 5px;" >${exercise.muscle}</p>
+            <p>${exercise.series} Séries x ${exercise.repetitions} Repetições</p>
+          </div>
+          <button class="check-exercise-btn" aria-label="Marcar como feito">
+            <i class="fa-solid fa-check"></i>
+          </button>
+        </div>
+      `;
+      });
+      // Colocando no trainingPart
+      trainingPart.innerHTML = htmlContent;
+
+      trainingPart.querySelectorAll(".exercise-item").forEach((card) => {
+        card.onclick = () => {
+          const exerciseId = card.dataset.id;
+          const exerciseData = fullExercises.find((ex) => ex.id === exerciseId);
+          // Esconde a página do treino para não ficar uma embaixo da outra
+          document.querySelector(".active-workout-section").classList.add("hidden");
+          
+          // Coloca memória na setinha para ela saber de onde veio
+          const backArrow = document.querySelector(".back-arrow-exercise-btn");
+          if (backArrow) {
+             backArrow.setAttribute("data-from", "training");
+          }
+          uiExercises.openExercise(exerciseData);
+        };
+      });
+    } catch (error) {
+      console.error("Erro ao carregar exercícios:", error);
+    }
   },
 
   // Adiciona um treino a lista de vizualisação
@@ -284,10 +427,32 @@ const uiTraining = {
     const editBtn = document.createElement("button");
     editBtn.classList.add("edit-icon");
     editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
-    editBtn.onclick = (event) => {
+    editBtn.onclick = async (event) => {
+      // Transformamos em async
       event.stopPropagation();
-      uiTraining.fillFormTraining(training.id);
+      // Preenche os dados básicos
+      await uiTraining.fillFormTraining(training.id);
+      // Abre o Modal
       document.querySelector("#training-modal").classList.add("active");
+      // Busca os exercícios
+      try {
+        const allExercises = await apiExercises.getExercises();
+        const selectedIds = training.exercises || [];
+        // Ordena para os selecionados ficarem no topo
+        allExercises.sort((a, b) => {
+          const aSel = selectedIds.includes(a.id);
+          const bSel = selectedIds.includes(b.id);
+          return aSel === bSel ? 0 : aSel ? -1 : 1;
+        });
+        // Renderiza direto no container do formulário
+        uiExercises.renderExercisesForSelection(
+          allExercises,
+          "#selected-exercises-list-form",
+          selectedIds,
+        );
+      } catch (error) {
+        console.error("Erro ao carregar exercícios no editar:", error);
+      }
     };
     // Container da Imagem/Ícone
     const iconContainer = document.createElement("div");
@@ -364,6 +529,16 @@ const uiTraining = {
       document.querySelector(".workouts-section").classList.remove("hidden");
       uiTraining.renderTrainings();
     };
+  },
+
+  // Pega os ids dos exercícios de cada treino
+  getCurrentSelectedIds() {
+    // Se tiver um treino aberto na tela, retorna os exercícios dele
+    if (currentActiveTraining) {
+      return currentActiveTraining.exercises || [];
+    }
+    // Senão, retorna os exercícios do formulário de criação/edição
+    return selectedExercisesIds || [];
   },
 };
 

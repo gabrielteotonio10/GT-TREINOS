@@ -76,7 +76,8 @@ const uiExercises = {
 
   // Preenche o formulário (Para edição)
   async fillFormExercise(exerciseId) {
-    document.querySelector("#exercise-modal-title").textContent = "Editar Exercício";
+    document.querySelector("#exercise-modal-title").textContent =
+      "Editar Exercício";
     try {
       const exercise = await exercisesApi.getExercisesById(exerciseId);
       document.querySelector("#exercise-id").value = exercise.id;
@@ -187,7 +188,7 @@ const uiExercises = {
   },
 
   // Renderiza a lista de exercícios da barra de pesquisa
-  renderExercisesForSelection(exercisesList, input) {
+  renderExercisesForSelection(exercisesList, input, selectedIds = []) {
     const listContainer = document.querySelector(`${input}`);
     listContainer.innerHTML = "";
 
@@ -219,18 +220,31 @@ const uiExercises = {
         const iconName = iconMap[exercise.icon] || "dumbbell";
         visualMedia = `<div class="mini-selection-icon"><i class="fa-solid fa-${iconName}"></i></div>`;
       }
+      // Lógica dos botões
+      const isSelected = selectedIds.includes(exercise.id);
+      const btnIcon = isSelected
+        ? '<i class="fa-solid fa-minus"></i>'
+        : '<i class="fa-solid fa-plus"></i>';
+      const btnStyle = isSelected
+        ? 'style="color: #e74c3c; border-color: #e74c3c;"'
+        : "";
+      // Ícone se já foi adicionado
+      const addedBadge = isSelected ? '<span class="added-label">Adicionado</span>' : '';
       // Mostrando
       item.innerHTML = `
         <div class = "idExerciseList hidden">${exercise.id}</div>
         <div class="selectable-content-left">
             ${visualMedia}
             <div class="selectable-exercise-info">
+              <div style="display: flex; align-items: center; gap: 8px;">
                 <h4>${exercise.name}</h4>
-                <p>${exercise.muscle}</p>
+                ${addedBadge}
+              </div>
+              <p>${exercise.muscle}</p>
             </div>
         </div>
-        <button type="button" class="selectable-exercise-add-btn" data-id="${exercise.id}">
-            <i class="fa-solid fa-plus"></i>
+        <button type="button" class="selectable-exercise-add-btn" data-id="${exercise.id}" ${btnStyle}>
+            ${btnIcon}
         </button>
     `;
       listContainer.appendChild(item);

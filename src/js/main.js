@@ -151,16 +151,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- BARRA DE PESQUISA DA CRIAÇÃO E EDIÇÃO ---
   // Mostra todos os exercícios na pesquisa
   const seeAllInSearch = (selector, targetContainer) => {
-    // Penduramos o evento no 'document', que nunca é destruído
     document.addEventListener("click", async (event) => {
-      // Verificamos se o clique bate com a string do seletor que você passou
       if (event.target.closest(selector)) {
         try {
           const allExercises = await apiExercises.getExercises();
-          uiExercises.renderExercisesForSelection(
-            allExercises,
-            targetContainer,
-          );
+          const selectedIds = uiTraining.getCurrentSelectedIds(); // Pega os IDs
+          // Selecionados sobem para o topo
+          allExercises.sort((a, b) => {
+            const aSelecionado = selectedIds.includes(a.id);
+            const bSelecionado = selectedIds.includes(b.id);
+            if (aSelecionado && !bSelecionado) return -1;
+            if (!aSelecionado && bSelecionado) return 1;
+            return 0;
+          });
+          // Passa os 3 parâmetros agora
+          uiExercises.renderExercisesForSelection(allExercises, targetContainer, selectedIds);
         } catch (error) {
           console.error("Erro ao carregar lista de exercícios:", error);
         }
@@ -170,23 +175,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mostra as pesquisas
   const setupSearchExercise = (inputElement, inputElement2) => {
-    if (!inputElement) {
-      console.error("Não achei o container:", inputElement2);
-      return;
-    }
+    if (!inputElement) return;
+    
     inputElement.addEventListener("input", async (event) => {
-      // 'input' é melhor que 'keyup'
       const term = event.target.value.toLowerCase();
       try {
         const allExercises = await apiExercises.getExercises();
+        const selectedIds = uiTraining.getCurrentSelectedIds(); // Pega os IDs
 
         const filteredExercises = allExercises.filter((exercise) =>
           exercise.name.toLowerCase().includes(term),
         );
-        uiExercises.renderExercisesForSelection(
-          filteredExercises,
-          inputElement2,
-        );
+
+        // Ordena e sobe todos ao topo
+        filteredExercises.sort((a, b) => {
+          const aSelecionado = selectedIds.includes(a.id);
+          const bSelecionado = selectedIds.includes(b.id);
+          if (aSelecionado && !bSelecionado) return -1;
+          if (!aSelecionado && bSelecionado) return 1;
+          return 0;
+        });
+
+        // Passa os 3 parâmetros agora
+        uiExercises.renderExercisesForSelection(filteredExercises, inputElement2, selectedIds);
       } catch (error) {
         console.error("Erro ao filtrar exercícios:", error);
       }
@@ -203,25 +214,35 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSearchExercise(searchInput, listId);
   setupSearchExercise(searchInputForm, listIdForm);
 
-  // Para seeAllInSearch
+  // Para seeAllInSearch 
   seeAllInSearch(".add-exercise-to-workout-btn", listId);
-  seeAllInSearch(".add-new-workout", listIdForm);
-  seeAllInSearch(".add-new-workout-btn, .add-new-workout, .edit-icon, .edit-workout-btn, #exercise-search", listIdForm );
+  seeAllInSearch(".add-new-workout-btn, .add-new-workout, .edit-icon, .edit-workout-btn, #exercise-search", listIdForm);
 });
 
   // --------------------------- CAPTURANDO EXERCÍCIOS ---------------------------
 
-document.addEventListener("click", (event) => {
+document.addEventListener("click", async (event) => {
   const target = event.target.closest(".selectable-exercise-add-btn");
   if (target) {
     event.preventDefault();
     const exerciseId = target.dataset.id;
     const isFromSelectModal = target.closest("#select-exercise-modal");
-    // Se for o botão dentro do treino
+
     if (isFromSelectModal) {
-      uiTraining.addExerciseToExistingTraining(exerciseId);
-    } else { // Senão é o botão de criar
-      uiTraining.addExerciseToSelection(exerciseId);
+      uiTraining.addExerciseToExistingTraining(exerciseId, target);
+    } else {
+      uiTraining.addExerciseToSelection(exerciseId, target);
     }
+
+    const allExercises = await apiExercises.getExercises(); 
+    const selectedIds = uiTraining.getCurrentSelectedIds();
+    // Re-ordena para manter os selecionados no topo
+    allExercises.sort((a, b) => {
+      const aSel = selectedIds.includes(a.id);
+      const bSel = selectedIds.includes(b.id);
+      return (aSel === bSel) ? 0 : aSel ? -1 : 1;
+    });
+    // Chama o render novamente, fazendo a palavra "Adicionado sumir"
+    uiExercises.renderExercisesForSelection(allExercises, "#select-exercise-list", selectedIds);
   }
 });

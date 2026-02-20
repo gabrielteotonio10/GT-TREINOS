@@ -29,6 +29,10 @@ function showHome() {
   exerciseSection.classList.add("hidden");
   pageTraining.classList.add("hidden");
   pageExerciseDetails.classList.add("hidden");
+
+  const trainingLibrary = document.querySelector(".trainings-library-section");
+  if (trainingLibrary) trainingLibrary.classList.remove("hidden");
+
   uiTraining.renderTrainings();
   startPage();
 }
@@ -40,6 +44,9 @@ function changeForTraining() {
   exerciseSection.classList.remove("hidden");
   pageTraining.classList.add("hidden");
   pageExerciseDetails.classList.add("hidden");
+
+  const trainingLibrary = document.querySelector(".trainings-library-section");
+  if (trainingLibrary) trainingLibrary.classList.remove("hidden");
 
   uiTraining.renderTrainings();
   uiExercises.renderExercises();
@@ -99,8 +106,25 @@ document.addEventListener("click", (event) => {
   }
   // ----
   // Voltar dos Detalhes (Setinhas)
-  if (target.closest(".back-arrow-btn, .back-arrow-exercise-btn")) {
-    changeForTraining();
+  // Do treino:
+  if (target.closest(".back-arrow-btn")) {
+    changeForTraining(); 
+  }
+  // Do exercício:
+  const backExerciseBtn = target.closest(".back-arrow-exercise-btn");
+  if (backExerciseBtn) {
+    if (backExerciseBtn.getAttribute("data-from") === "training") {
+      // Veio de treino, então esconde o exercício e mostra o treino novamente
+      document.querySelector(".active-exercise-details-section").classList.add("hidden");
+      document.querySelector(".active-workout-section").classList.remove("hidden");
+      // Limpa a memória para não interferir em acessos futuros
+      backExerciseBtn.removeAttribute("data-from");
+      // Sobe a tela para o topo do treino
+      window.scrollTo({ top: 150, behavior: "smooth" });
+    } else {
+      // Se não tem a etiqueta, significa que veio da biblioteca geral. Reseta normal!
+      changeForTraining();
+    }
   }
   // ----
   // Adicionar um exercício dentro do treino
@@ -108,10 +132,6 @@ document.addEventListener("click", (event) => {
     const modalSelect = document.querySelector("#select-exercise-modal");
     if (modalSelect) {
       modalSelect.classList.add("active");
-
-      // DICA: Aqui no futuro você vai chamar a função que renderiza
-      // a lista dos seus exercícios do banco de dados para dentro do modal.
-      // Ex: uiExercises.renderExercisesForSelection();
     }
   }
   // Fechar o modal de Seleção

@@ -55,3 +55,35 @@ main {
   margin: auto;
 }
 
+/* ==========================================================================
+   ANIMAÇÃO CONTÍNUA PARA TODOS OS TÍTULOS
+   ========================================================================== */
+
+.library-header .section-title,
+.active-title,
+.active-exercise-title {
+  /* 1. Gradiente usando com variáveis de cor */
+  background: linear-gradient(
+    to right, 
+    var(--primary-color) 20%, 
+    var(--secondary-color) 50%, 
+    var(--primary-color) 80%
+  );
+  
+  /* Fundo com o dobro do tamanho */
+  background-size: 200% auto;
+  
+  /* Corta o fundo e aparece apenas dentro das letras */
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  
+  animation: premiumTextShine 3s linear infinite;
+}
+
+@keyframes premiumTextShine {
+  to {
+    background-position: 200% center;
+  }
+}
