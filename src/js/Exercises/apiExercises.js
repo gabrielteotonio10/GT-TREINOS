@@ -6,7 +6,18 @@ const exercisesApi = {
     try {
       const response = await fetch(`${BASE_URL}/exercises`);
       if (!response.ok) throw new Error("Erro ao buscar os exercícios");
-      return await response.json();
+      const allExercises = await response.json();
+
+      // Vê quem está logado
+      const userString = localStorage.getItem("currentUser");
+      const loggedEmail = userString ? JSON.parse(userString).email : null;
+      if (!loggedEmail) return [];
+      // Só devolve os exercícios que pertencem a quem está logado
+      const myExercises = allExercises.filter(
+        (exercise) => exercise.userEmail === loggedEmail,
+      );
+
+      return myExercises;
     } catch (error) {
       alert("Erro ao buscar os exercícios");
       throw error;
@@ -17,6 +28,7 @@ const exercisesApi = {
   async getExercisesById(id) {
     try {
       const response = await fetch(`${BASE_URL}/exercises/${id}`);
+      if (!response.ok) throw new Error("Exercício não encontrado no servidor");
       return await response.json();
     } catch (error) {
       alert("Erro ao buscar exercício por ID");
@@ -24,7 +36,7 @@ const exercisesApi = {
     }
   },
 
-  // Salva um exercício 
+  // Salva um exercício
   async createExercises(exercises) {
     const response = await fetch(`${BASE_URL}/exercises`, {
       method: "POST",
@@ -39,7 +51,7 @@ const exercisesApi = {
     return await response.json();
   },
 
-  // Edita um exercício 
+  // Edita um exercício
   async updateExercises(exercises) {
     try {
       const response = await fetch(`${BASE_URL}/exercises/${exercises.id}`, {

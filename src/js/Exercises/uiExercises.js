@@ -48,8 +48,10 @@ const uiExercises = {
     const repetitions = document.querySelector("#exercise-repetitions").value;
     const load = document.querySelector("#exercise-load").value;
     const description = document.querySelector("#exercise-description").value;
-    return {
-      id,
+    const userString = localStorage.getItem("currentUser");
+    const userEmail = userString ? JSON.parse(userString).email : null;
+
+    const data = {
       name,
       icon,
       muscle,
@@ -58,7 +60,14 @@ const uiExercises = {
       repetitions,
       load,
       description,
+      userEmail,
     };
+    // Só adicion o ID no pacote se ele realmente existir (Edição)
+    if (id) {
+      data.id = id;
+    }
+
+    return data;
   },
 
   // Limpa o formulário totalmente
@@ -229,7 +238,9 @@ const uiExercises = {
         ? 'style="color: #e74c3c; border-color: #e74c3c;"'
         : "";
       // Ícone se já foi adicionado
-      const addedBadge = isSelected ? '<span class="added-label">Adicionado</span>' : '';
+      const addedBadge = isSelected
+        ? '<span class="added-label">Adicionado</span>'
+        : "";
       // Mostrando
       item.innerHTML = `
         <div class = "idExerciseList hidden">${exercise.id}</div>
@@ -252,6 +263,7 @@ const uiExercises = {
   },
 
   // Open exercise
+  // Open exercise
   openExercise(exercise) {
     const exercisePage = document.querySelector(
       ".active-exercise-details-section",
@@ -262,6 +274,8 @@ const uiExercises = {
     const workoutsSection = document.querySelector(".workouts-section");
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
+
+    // Esconde as outras seções para focar nos detalhes do exercício
     [
       exercisesSection,
       workoutsSection,
@@ -271,9 +285,8 @@ const uiExercises = {
       if (section) section.classList.add("hidden");
     });
 
-    // Preenche os textos usando os IDs do HTML
+    // Preenche os textos usando os IDs do HTML com os dados do exercício clicado
     document.querySelector("#detail-exercise-name").textContent = exercise.name;
-
     document.querySelector("#detail-exercise-muscle").innerHTML =
       `<i class="fa-solid fa-dna"></i> Músculo: ${exercise.muscle}`;
     // Estatísticas
@@ -304,7 +317,7 @@ const uiExercises = {
       img.alt = `Foto de ${exercise.name}`;
       heroContainer.appendChild(img);
     } else {
-      // O usuário escolheu um ÍCONE
+      // O usuário escolheu um ícone
       const iconContainer = document.createElement("div");
       iconContainer.classList.add("hero-icon-wrapper");
       // Mapeamento para garantir que pegamos o ícone certo
@@ -319,11 +332,30 @@ const uiExercises = {
       heroContainer.appendChild(iconContainer);
     }
 
+    // Botão editar
+    const btnEdit = document.querySelector(".edit-exercise-btn");
+    const btnEditClone = btnEdit.cloneNode(true);
+    btnEdit.parentNode.replaceChild(btnEditClone, btnEdit);
+
+    // Ação do Botão Editar atualizado
+    btnEditClone.onclick = async () => {
+      // Espera preencher os dados do banco antes de abrir o modal
+      await this.fillFormExercise(exercise.id);
+      const modal = document.querySelector("#exercise-modal");
+      modal.classList.add("active");
+      modal.classList.remove("hidden");
+    };
+
     // Botão excluir
-    document.querySelector(".delete-exercise-library-btn").onclick = () => {
+    const btnDelete = document.querySelector(".delete-exercise-library-btn");
+    const btnDeleteClone = btnDelete.cloneNode(true);
+    btnDelete.parentNode.replaceChild(btnDeleteClone, btnDelete);
+
+    btnDeleteClone.onclick = () => {
       this.confirmDeletionExercise(exercise);
     };
 
+    // Mostra a página do exercício finalmente
     exercisePage.classList.remove("hidden");
 
     // Início da tela
@@ -407,23 +439,23 @@ const uiExercises = {
     miniCardInfo.appendChild(title);
     miniCardInfo.appendChild(statsContainer);
     // ----
-    // Botão de editar
+    // Botão de editar (que fica no próprio Card de Exercício)
     const optionsBtn = document.createElement("button");
     optionsBtn.classList.add("mini-card-options");
     optionsBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
     // Botão editar ação
-    const optionsBtn2 = document.querySelector(".edit-exercise-btn");
-    const handleEditClick = (event) => {
+    optionsBtn.onclick = async (event) => {
+      // Impede que o card abra a página de detalhes junto com o Modal
       event.stopPropagation();
-      this.fillFormExercise(exercise.id);
+      // Aguarda o preenchimento total do formulário vindo da API
+      await this.fillFormExercise(exercise.id); 
+      // Abre o Modal
       const modal = document.querySelector("#exercise-modal");
       modal.classList.add("active");
       modal.classList.remove("hidden");
-      document.querySelector("#exercise-modal-title").textContent =
-        "Editar Exercício";
     };
-    optionsBtn.onclick = handleEditClick;
-    optionsBtn2.onclick = handleEditClick;
+
+    exerciseCard.onclick = () => this.openExercise(exercise);
     // ---
     const idExercise = document.createElement("div");
     idExercise.innerHTML = `${exercise.id}`;

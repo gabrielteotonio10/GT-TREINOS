@@ -105,7 +105,16 @@ const uiTraining = {
 
     const exercises = selectedExercisesIds;
 
-    return { id, name, subtitle, icon, exercises };
+    // Lógica do usuário
+    const userString = localStorage.getItem("currentUser");
+    const userEmail = userString ? JSON.parse(userString).email : null;
+
+   const data = { name, subtitle, icon, exercises, userEmail };
+   // Só adiciona o ID no pacote se ele realmente existir
+   if (id) {
+     data.id = id;
+   }
+   return data;
   },
 
   // Salva um Exercício dentro do treino
@@ -123,7 +132,7 @@ const uiTraining = {
       : null;
 
     if (!currentActiveTraining.exercises.includes(exerciseId)) {
-      // ADICIONA NO BANCO
+      // Adiciona ao banco
       currentActiveTraining.exercises.push(exerciseId);
       try {
         await trainingApi.updateTraining(currentActiveTraining);
@@ -195,8 +204,10 @@ const uiTraining = {
     const uploadIcon = document.querySelector(".upload-option .icon-box i");
     if (uploadIcon) uploadIcon.style.color = "";
     // Remove os badges e reseta botões de qualquer lista aberta
-    document.querySelectorAll(".added-label").forEach(badge => badge.remove());
-    document.querySelectorAll(".selectable-exercise-add-btn").forEach(btn => {
+    document
+      .querySelectorAll(".added-label")
+      .forEach((badge) => badge.remove());
+    document.querySelectorAll(".selectable-exercise-add-btn").forEach((btn) => {
       btn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
       btn.style.color = "";
       btn.style.borderColor = "";
@@ -208,21 +219,36 @@ const uiTraining = {
   async fillFormTraining(trainingId) {
     document.querySelector("#training-modal-title").textContent =
       "Editar Treino";
+
     try {
       const training = await trainingApi.getTrainingById(trainingId);
+
+      // Preenchimento básico
       document.querySelector("#training-id").value = training.id;
       document.querySelector("#training-name").value = training.name;
       document.querySelector("#training-subtitle").value =
         training.subtitle || "";
       selectedExercisesIds = training.exercises ? [...training.exercises] : [];
-      const iconToSelect = document.querySelector(
-        `input[name="training-icon"][value="${training.icon}"]`,
-      );
-      if (iconToSelect) {
-        iconToSelect.checked = true;
-      } else if (training.icon && training.icon.startsWith("data:image")) {
-        const uploadIcon = document.querySelector(".upload-option .icon-box i");
+
+      // --- LÓGICA DO ÍCONE ---
+      const uploadIcon = document.querySelector(".upload-option .icon-box i");
+      if (uploadIcon) uploadIcon.style.color = "";
+
+      // Desmarca todos os rádios primeiro para garantir um estado limpo
+      document
+        .querySelectorAll('input[name="training-icon"]')
+        .forEach((input) => (input.checked = false));
+
+      // Verifica se o ícone é uma imagem ou um nome de ícone
+      if (training.icon && training.icon.startsWith("data:image")) {
+        // É uma foto: destaca o ícone da câmera
         if (uploadIcon) uploadIcon.style.color = "#4CAF50";
+      } else {
+        // É um ícone: tenta marcar o rádio correspondente
+        const iconToSelect = document.querySelector(
+          `input[name="training-icon"][value="${training.icon}"]`,
+        );
+        if (iconToSelect) iconToSelect.checked = true;
       }
     } catch (error) {
       console.error("Erro ao preencher formulário:", error);
@@ -323,7 +349,8 @@ const uiTraining = {
   async openTraining(training) {
     // Guarda o treino na memória
     currentActiveTraining = training;
-    // Arruma a vizualização
+
+    // Arruma a vizualização (Seleciona as telas que vão sumir)
     const trainingPage = document.querySelector(".active-workout-section");
     const workoutsSection = document.querySelector(".workouts-section");
     const trainingSection = document.querySelector(
@@ -331,6 +358,7 @@ const uiTraining = {
     );
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
+
     [
       workoutsSection,
       trainingSection,
@@ -340,19 +368,29 @@ const uiTraining = {
       if (section) section.classList.add("hidden");
     });
 
-    // Preenche os textos da página de detalhes
+    // Preenche os textos da página de detalhes com o nome do Treino
     trainingPage.querySelector(".active-title").textContent = training.name;
     trainingPage.querySelector(".active-subtitle").textContent =
       training.subtitle;
 
     // Configura o botão de editar da tela de detalhes
-    document.querySelector(".edit-workout-btn").onclick = () => {
-      uiTraining.fillFormTraining(training.id);
+    // Usamos cloneNode para resetar o botão e não editar o treino errado
+    const btnEdit = document.querySelector(".edit-workout-btn");
+    const btnEditClone = btnEdit.cloneNode(true);
+    btnEdit.parentNode.replaceChild(btnEditClone, btnEdit);
+
+    btnEditClone.onclick = async () => {
+      // Espera (await) preencher do banco antes de abrir
+      await uiTraining.fillFormTraining(training.id);
       document.querySelector("#training-modal").classList.add("active");
     };
 
     // Configura o botão de excluir da tela de detalhes
-    document.querySelector(".delete-workout-btn").onclick = () => {
+    const btnDelete = document.querySelector(".delete-workout-btn");
+    const btnDeleteClone = btnDelete.cloneNode(true);
+    btnDelete.parentNode.replaceChild(btnDeleteClone, btnDelete);
+
+    btnDeleteClone.onclick = () => {
       uiTraining.confirmExclusionTraining(training);
     };
 
@@ -360,7 +398,7 @@ const uiTraining = {
     workoutsSection.classList.add("hidden");
     trainingPage.classList.remove("hidden");
 
-    // Dentro da sua função que abre o treino:
+    // Esconde a biblioteca de exercícios, se estiver aberta
     const exercisesSection = document.querySelector(
       ".exercises-library-section",
     );
@@ -374,21 +412,48 @@ const uiTraining = {
       behavior: "smooth",
     });
 
-    // Pegando exercícios para mostrar na tela
+    // Pegando exercícios para mostrar na tela DENTRO DO TREINO
     try {
-      // Pega o array de exercícios e filtra para os que tem
+      // Pega o array com TODOS os exercícios do usuário
       const allExercises = await apiExercises.getExercises();
+
+      // Validação extra: Garante que training.exercises é um array (evita quebrar se vier null)
+      const trainingExIds = Array.isArray(training.exercises)
+        ? training.exercises
+        : [];
+
+      // Filtra para pegar apenas os que estão nesta ficha
       const fullExercises = allExercises.filter((exercise) => {
-        return training.exercises.includes(exercise.id);
+        // ATENÇÃO: Convertendo para String() para evitar que o PC ache que 1 é diferente de "1"
+        return trainingExIds.some((id) => String(id) === String(exercise.id));
       });
 
+      // Seção HTML onde a lista vai aparecer
       const trainingPart = document.querySelector(".active-exercises-list");
       trainingPart.innerHTML = "";
       let htmlContent = "";
+
+      // Criando o código visual de cada exercício
       fullExercises.forEach((exercise) => {
+        // Tratamento especial para o ícone na lista do treino (se for string ou foto)
+        let iconHtml;
+        if (exercise.icon && exercise.icon.startsWith("data:image")) {
+          iconHtml = `<img src="${exercise.icon}" alt="${exercise.name}" class="exercise-img">`;
+        } else {
+          const iconMap = {
+            dumbbell: "dumbbell",
+            running: "person-running",
+            "weight-hanging": "weight-hanging",
+            bolt: "bolt",
+          };
+          const iconName = iconMap[exercise.icon] || "dumbbell";
+          // Cria uma "caixinha" redonda com o ícone, imitando a foto
+          iconHtml = `<div class="exercise-img" style="display:flex; justify-content:center; align-items:center; background:#eee; font-size:20px; color:#555;"><i class="fa-solid fa-${iconName}"></i></div>`;
+        }
+
         htmlContent += `
         <div class="exercise-item" data-id="${exercise.id}"> 
-          <img src="${exercise.icon}" alt="${exercise.name}" class="exercise-img">
+          ${iconHtml}
           <div class="exercise-info">
             <h4>${exercise.name}</h4>
             <p style="margin-bottom: 5px;" >${exercise.muscle}</p>
@@ -400,22 +465,35 @@ const uiTraining = {
         </div>
       `;
       });
-      // Colocando no trainingPart
+      // Injeta na tela
       trainingPart.innerHTML = htmlContent;
 
+      // Evento de clique para abrir cada um dos exercícios dentro da ficha de treino
       trainingPart.querySelectorAll(".exercise-item").forEach((card) => {
         card.onclick = () => {
           const exerciseId = card.dataset.id;
-          const exerciseData = fullExercises.find((ex) => ex.id === exerciseId);
-          // Esconde a página do treino para não ficar uma embaixo da outra
-          document.querySelector(".active-workout-section").classList.add("hidden");
-          
-          // Coloca memória na setinha para ela saber de onde veio
-          const backArrow = document.querySelector(".back-arrow-exercise-btn");
-          if (backArrow) {
-             backArrow.setAttribute("data-from", "training");
+
+          // Procura o objeto exato no Array (Forçando String novamente)
+          const exerciseData = fullExercises.find(
+            (ex) => String(ex.id) === String(exerciseId),
+          );
+
+          if (exerciseData) {
+            // Esconde a página do treino para não ficar uma embaixo da outra
+            document
+              .querySelector(".active-workout-section")
+              .classList.add("hidden");
+
+            // Coloca memória na setinha para ela saber de onde veio (do treino)
+            const backArrow = document.querySelector(
+              ".back-arrow-exercise-btn",
+            );
+            if (backArrow) {
+              backArrow.setAttribute("data-from", "training");
+            }
+            // Abre a tela focada
+            uiExercises.openExercise(exerciseData);
           }
-          uiExercises.openExercise(exerciseData);
         };
       });
     } catch (error) {

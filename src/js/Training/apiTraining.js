@@ -6,7 +6,19 @@ const trainingApi = {
     try {
       const response = await fetch(`${BASE_URL}/training`);
       if (!response.ok) throw new Error("Erro ao buscar training");
-      return await response.json();
+
+      const allTrainings = await response.json();
+
+      // Vemos quem está logado
+      const userString = localStorage.getItem("currentUser");
+      const loggedEmail = userString ? JSON.parse(userString).email : null;
+      // Se não tiver ninguém logado, não retorna nada 
+      if (!loggedEmail) return [];
+      // Filtra
+      const myTrainings = allTrainings.filter(
+        (training) => training.userEmail === loggedEmail,
+      );
+      return myTrainings;
     } catch (error) {
       alert("Erro ao buscar os treinos");
       throw error;
@@ -24,7 +36,7 @@ const trainingApi = {
     }
   },
 
-  // Salva um treino 
+  // Salva um treino
   async createTraining(training) {
     const response = await fetch(`${BASE_URL}/training`, {
       method: "POST",
@@ -39,7 +51,7 @@ const trainingApi = {
     return await response.json();
   },
 
-  // Edita um treino 
+  // Edita um treino
   async updateTraining(training) {
     try {
       const response = await fetch(`${BASE_URL}/training/${training.id}`, {

@@ -32,6 +32,235 @@
   </header>
   <!-- Main -->
   <main>
+
+    <!-- Perfil do usuário -->
+    <section class="profile-section hidden" id="profile-section">
+
+      <div class="library-header">
+        <h2 class="section-title" id="profile-section-title" style="margin: 0;">Meu Perfil</h2>
+        <button class="logout-btn" id="logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Sair
+        </button>
+      </div>
+
+      <div class="profile-content">
+
+        <div class="profile-hero">
+          <label class="upload-profile-label" for="profile-photo-input">
+            <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
+            <div class="profile-avatar" id="profile-avatar-preview">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span class="upload-badge"><i class="fa-solid fa-camera"></i></span>
+          </label>
+          <div class="profile-hero-text">
+            <h2 id="hero-display-name">Carregando...</h2>
+            <p id="hero-display-email">...</p>
+          </div>
+        </div>
+
+        <hr class="profile-divider">
+
+        <form id="profile-form">
+          <div class="profile-form-grid">
+
+            <div class="profile-column">
+              <h3 class="profile-column-title"><i class="fa-solid fa-lock"></i> Dados de Acesso</h3>
+
+              <div class="form-group">
+                <label for="profile-name">Nome Completo</label>
+                <input type="text" id="profile-name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="profile-email">E-mail (Login)</label>
+                <input type="email" id="profile-email" disabled style="background-color: #f5f5f5; color: #888;">
+              </div>
+
+              <div class="form-group">
+                <label for="profile-password" style="color: #d9534f;">Alterar Senha</label>
+                <input type="password" id="profile-password" placeholder="Nova senha (opcional)">
+
+                <label for="profile-password" style="color: #d9534f; margin-top: 10px">Confirmar senha</label>
+                <input type="password" id="profile-password-confirm" placeholder="Nova senha (opcional)">
+              </div>
+            </div>
+
+            <div class="profile-column">
+              <h3 class="profile-column-title"><i class="fa-solid fa-dumbbell"></i> Medidas & Objetivos</h3>
+
+              <div class="form-group">
+                <label for="profile-goal">Objetivo Principal</label>
+                <select id="profile-goal" class="custom-select">
+                  <option value="">Selecione...</option>
+                  <option value="hipertrofia">Hipertrofia</option>
+                  <option value="emagrecimento">Emagrecimento</option>
+                  <option value="resistencia">Resistência</option>
+                  <option value="saude">Saúde Geral</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group flex-grow">
+                  <label for="profile-weight">Peso (kg)</label>
+                  <input type="number" id="profile-weight" step="0.1" placeholder="Ex: 75.5">
+                </div>
+                <div class="form-group flex-grow">
+                  <label for="profile-height">Altura (cm)</label>
+                  <input type="number" id="profile-height" placeholder="Ex: 175">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-buttons" style="margin-top: 30px;">
+            <button type="submit" class="primary-btn" style="width: 100%;">Salvar Alterações</button>
+          </div>
+        </form>
+
+      </div>
+    </section>
+
+    <!-- Página de login -->
+    <section id="login-section" class="auth-wrapper">
+      <div class="auth-container">
+        <div class="auth-visual">
+          <div class="auth-visual-content">
+            <h2>Bem-vindo de volta!</h2>
+            <p>Seu corpo, suas regras. Continue sua jornada com o GT Treinos.</p>
+          </div>
+        </div>
+
+        <div class="auth-form-area">
+          <div class="auth-form-content">
+            <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="auth-logo">
+            <h3>Acesse sua conta</h3>
+
+            <form id="login-form">
+              <div class="form-group">
+                <label for="login-email">E-mail</label>
+                <input type="email" id="login-email" placeholder="seu@email.com" required>
+              </div>
+              <div class="form-group">
+                <label for="login-password">Senha</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+                <div class="form-group">
+                  <label for="login-password">Senha</label>
+                  <input type="password" id="login-password" placeholder="••••••••" required>
+                  <div style="text-align: right; margin-top: 8px;">
+                    <a href="#" id="forgot-password-link"
+                      style="font-size: 0.85rem; color: #007bff; text-decoration: none; font-weight: 600;">Esqueci minha
+                      senha</a>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="primary-btn login-btn">Entrar na plataforma</button>
+            </form>
+
+            <p class="switch-auth">Primeira vez aqui? <a href="#" id="go-to-register">Crie sua conta</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Esqueci minha senha -->
+    <section id="forgot-password-modal" class="modal-container hidden">
+      <div class="form-card">
+        <div class="modal-header">
+          <h2>Recuperar Senha</h2>
+          <button class="close-modal-btn" id="close-forgot-password-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="forgot-password-form">
+          <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">
+            Digite seu e-mail cadastrado para redefinir sua senha.
+          </p>
+
+          <div class="form-group">
+            <label for="recovery-email">E-mail cadastrado</label>
+            <input type="email" id="recovery-email" placeholder="seu@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="recovery-new-password">Nova Senha</label>
+            <input type="password" id="recovery-new-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label for="recovery-confirm-password">Confirmar Nova Senha</label>
+            <input type="password" id="recovery-confirm-password" placeholder="Repita a nova senha" required
+              minlength="6">
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="cancel-btn" id="cancel-recovery-btn">Cancelar</button>
+            <button type="submit" class="primary-btn">Redefinir Senha</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Confirmação de sair da conta -->
+    <section id="logout-modal" class="modal-container hidden">
+      <div class="form-card" style="text-align: center; max-width: 350px;">
+    
+        <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
+          <h2 style="color: #dc3545; font-size: 1.5rem;">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair da conta
+          </h2>
+        </div>
+    
+        <p style="margin: 20px 0; color: #555; font-size: 1rem;">
+          Tem certeza que deseja sair do GT Treinos?
+        </p>
+    
+        <div class="form-buttons" style="justify-content: center; gap: 15px; border-top: none; padding-top: 0;">
+          <button type="button" class="cancel-btn" id="cancel-logout-btn">Cancelar</button>
+          <button type="button" class="primary-btn" id="confirm-logout-btn"
+            style="background-color: #dc3545; border-color: #dc3545;">Sair</button>
+        </div>
+    
+      </div>
+    </section>
+
+    <!-- Cadastro do usuário -->
+    <section id="register-section" class="auth-wrapper hidden">
+      <div class="auth-container">
+        <div class="auth-visual">
+          <div class="auth-visual-content">
+            <h2>Comece Agora!</h2>
+            <p>Transforme sua rotina e acompanhe sua evolução de forma inteligente.</p>
+          </div>
+        </div>
+
+        <div class="auth-form-area">
+          <div class="auth-form-content">
+            <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="auth-logo">
+            <h3>Criar nova conta</h3>
+
+            <form id="register-form">
+              <div class="form-group">
+                <label for="register-name">Nome Completo</label>
+                <input type="text" id="register-name" placeholder="Ex: Gabriel Teotônio" required>
+              </div>
+              <div class="form-group">
+                <label for="register-email">E-mail</label>
+                <input type="email" id="register-email" placeholder="seu@email.com" required>
+              </div>
+              <div class="form-group">
+                <label for="register-password">Senha</label>
+                <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+              </div>
+              <button type="submit" class="primary-btn login-btn">Cadastrar e Começar</button>
+            </form>
+
+            <p class="switch-auth">Já faz parte do time? <a href="#" id="go-to-login">Faça login</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Textos de apresentação -->
     <section class="presentation-text">
       <h1>Bom dia, Gabriel!</h1>
@@ -91,7 +320,7 @@
     <section class="workouts-section">
       <div class="library-header">
         <h2 class="section-title" id="trainings-section-title" style="margin: 0;">Meus Treinos</h2>
-    
+
         <div class="search-bar-container library-search" style="margin: 0;">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
           <input type="text" id="trainings-search-input" placeholder="Pesquisar treinos...">
@@ -104,7 +333,7 @@
     <section class="exercises-library-section hidden">
       <div class="library-header">
         <h2 class="section-title" id="exercises-section-title" style="margin: 0;">Meus Exercícios</h2>
-    
+
         <div class="search-bar-container library-search" style="margin: 0;">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
           <input type="text" id="exercises-search-input" placeholder="Pesquisar exercícios...">
@@ -112,7 +341,6 @@
       </div>
       <div class="exercises-grid" id="exercises-list"></div>
     </section>
-
 
     <!-- Aba que abre ao clicar no treino -->
     <section class="active-workout-section hidden">
@@ -498,6 +726,7 @@
   <script type="module" src="/src/js/main.js"></script>
   <script type="module" src="/src/js/others.js"></script>
   <script type="module" src="/src/js/pages.js"></script>
+  <script type="module" src="/src/js/auth.js"></script>
 </body>
 
 </html>
