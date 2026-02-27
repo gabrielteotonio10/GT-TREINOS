@@ -12,7 +12,7 @@ const trainingApi = {
       // Vemos quem está logado
       const userString = localStorage.getItem("currentUser");
       const loggedEmail = userString ? JSON.parse(userString).email : null;
-      // Se não tiver ninguém logado, não retorna nada 
+      // Se não tiver ninguém logado, não retorna nada
       if (!loggedEmail) return [];
       // Filtra
       const myTrainings = allTrainings.filter(
@@ -81,6 +81,21 @@ const trainingApi = {
     } catch (error) {
       alert("Erro ao excluir um treino");
       throw error;
+    }
+  },
+
+  // Salva o histórico do treino
+  async saveHistory(historyData) {
+    try {
+      const response = await fetch(`${BASE_URL}/history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(historyData),
+      });
+      if (!response.ok) throw new Error("Erro ao salvar histórico");
+      return await response.json();
+    } catch (error) {
+      console.error(error);
     }
   },
 };

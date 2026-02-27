@@ -2,15 +2,18 @@ import trainingApi from "./apiTraining.js";
 import apiExercises from "../Exercises/apiExercises.js";
 import uiExercises from "../Exercises/uiExercises.js";
 
-//Foto
-let convertedPhoto = "";
-// Exercícios adicionados
-let selectedExercisesIds = [];
-// Treino aberto
-let currentActiveTraining = null;
+// ==========================================================================
+// VARIÁVEIS GLOBAIS DE ESTADO DO TREINO
+// ==========================================================================
+let convertedPhoto = "";                
+let selectedExercisesIds = [];          
+let currentActiveTraining = null;       
 
 const uiTraining = {
-  // Converte uma foto enviada, caso tenha, para ser armazenada, diminuiTrainingndo seu tamanho
+
+  // ==========================================================================
+  // UPLOAD E CONVERSÃO DE IMAGEM
+  // ==========================================================================
   convertPhoto(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -27,9 +30,11 @@ const uiTraining = {
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         convertedPhoto = canvas.toDataURL("image/jpeg", 0.7);
-
         console.log("Foto redimensionada e pronta!");
-        // Atualiza a cor do ícone no HTML refatorado
+        
+        // Desmarca ícones
+        document.querySelectorAll('input[name="training-icon"]').forEach(r => r.checked = false);
+        
         const uploadIcon = document.querySelector(".upload-option .icon-box i");
         if (uploadIcon) uploadIcon.style.color = "#4CAF50";
       };
@@ -37,217 +42,62 @@ const uiTraining = {
     reader.readAsDataURL(file);
   },
 
-  // Captura exercicios para adicionar ao treino
-  addExerciseToSelection(exerciseId, btnElement) {
-    const exerciseItem = btnElement.closest(".selectable-exercise-item");
-    const infoContainer = exerciseItem.querySelector(
-      ".selectable-exercise-info div",
-    );
-    if (!selectedExercisesIds.includes(exerciseId)) {
-      // adiciona
-      selectedExercisesIds.push(exerciseId);
-      console.log("Lista atual de IDs:", selectedExercisesIds);
-      this.showToastTraining("Exercício adicionado à ficha!");
-      // Muda o botão para Menos (Vermelho)
-      if (btnElement) {
-        btnElement.innerHTML = `<i class="fa-solid fa-minus"></i>`;
-        btnElement.style.color = "#e74c3c";
-        btnElement.style.borderColor = "#e74c3c";
-      }
-      // Faz o exercício adicionado aparecer uma mensagem
-      if (infoContainer && !infoContainer.querySelector(".added-label")) {
-        const badge = document.createElement("span");
-        badge.className = "added-label";
-        badge.textContent = "Adicionado";
-        infoContainer.appendChild(badge);
-      }
-      // Faz o exercício adicionado ir ao topo da lista
-      if (exerciseItem) {
-        const listContainer = exerciseItem.parentElement;
-        listContainer.prepend(exerciseItem);
-      }
-    } else {
-      // remove
-      selectedExercisesIds = selectedExercisesIds.filter(
-        (id) => id !== exerciseId,
-      );
-      this.showToastTraining("Exercício removido!", "error");
-      // Modifica o botão ao remover
-      if (btnElement) {
-        btnElement.innerHTML = `<i class="fa-solid fa-plus"></i>`;
-        btnElement.style.color = "";
-        btnElement.style.borderColor = "";
-      }
-      // Faz o exercício removido sumir com a mensagem
-      const badge = infoContainer.querySelector(".added-label");
-      if (badge) {
-        badge.remove();
-      }
-      // Faz o exercício removido sair do topo da lista
-      if (exerciseItem) {
-        const listContainer = exerciseItem.parentElement;
-        listContainer.appendChild(exerciseItem);
-      }
-    }
-  },
-
-  // Captura as informações de um formulário
+  // ==========================================================================
+  // MANIPULAÇÃO DE DADOS E FORMULÁRIOS DE TREINO
+  // ==========================================================================
   getFormDataTraining() {
     const id = document.querySelector("#training-id").value;
-    // Seleciona o ícone marcado
-    const iconInput = document.querySelector(
-      'input[name="training-icon"]:checked',
-    );
-    let icon = iconInput ? iconInput.value : "dumbbell";
+    
+    const iconInput = document.querySelector('input[name="training-icon"]:checked');
+    let icon;
+
+    if (iconInput) {
+      icon = iconInput.value;
+    } else if (convertedPhoto !== "") {
+      icon = convertedPhoto;
+    } else {
+      icon = "dumbbell";
+    }
+    
     if (convertedPhoto !== "") icon = convertedPhoto;
+    
     const name = document.querySelector("#training-name").value;
     const subtitle = document.querySelector("#training-subtitle").value;
-
     const exercises = selectedExercisesIds;
 
-    // Lógica do usuário
     const userString = localStorage.getItem("currentUser");
     const userEmail = userString ? JSON.parse(userString).email : null;
 
-   const data = { name, subtitle, icon, exercises, userEmail };
-   // Só adiciona o ID no pacote se ele realmente existir
-   if (id) {
-     data.id = id;
-   }
-   return data;
-  },
-
-  // Salva um Exercício dentro do treino
-  async addExerciseToExistingTraining(exerciseId, btnElement) {
-    if (!currentActiveTraining) return;
-    if (!currentActiveTraining.exercises) {
-      currentActiveTraining.exercises = [];
+    const data = { name, subtitle, icon, exercises, userEmail };
+    
+    if (id) {
+      data.id = id;
     }
-
-    const exerciseItem = btnElement
-      ? btnElement.closest(".selectable-exercise-item")
-      : null;
-    const infoContainer = exerciseItem
-      ? exerciseItem.querySelector(".selectable-exercise-info div")
-      : null;
-
-    if (!currentActiveTraining.exercises.includes(exerciseId)) {
-      // Adiciona ao banco
-      currentActiveTraining.exercises.push(exerciseId);
-      try {
-        await trainingApi.updateTraining(currentActiveTraining);
-        console.log(
-          "Atualizado direto no banco:",
-          currentActiveTraining.exercises,
-        );
-        this.showToastTraining("Exercício adicionado à ficha!");
-        // Muda o botão para Menos (Vermelho)
-        if (btnElement) {
-          btnElement.innerHTML = `<i class="fa-solid fa-minus"></i>`;
-          btnElement.style.color = "#e74c3c";
-          btnElement.style.borderColor = "#e74c3c";
-        }
-        // Adiciona o texto na hora
-        if (infoContainer && !infoContainer.querySelector(".added-label")) {
-          const badge = document.createElement("span");
-          badge.className = "added-label";
-          badge.textContent = "Adicionado";
-          infoContainer.appendChild(badge);
-        }
-        // Faz o exercício adicionado ir ao topo da lista
-        if (exerciseItem) {
-          const listContainer = exerciseItem.parentElement;
-          listContainer.prepend(exerciseItem);
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar treino:", error);
-      }
-    } else {
-      // remove do banco
-      currentActiveTraining.exercises = currentActiveTraining.exercises.filter(
-        (id) => id !== exerciseId,
-      );
-      try {
-        await trainingApi.updateTraining(currentActiveTraining);
-        this.showToastTraining("Exercício removido do treino!", "error");
-
-        // Volta o botão para Mais (Padrão)
-        if (btnElement) {
-          btnElement.innerHTML = `<i class="fa-solid fa-plus"></i>`;
-          btnElement.style.color = "";
-          btnElement.style.borderColor = "";
-        }
-        // Remove o texto na hora
-        if (infoContainer) {
-          const badge = infoContainer.querySelector(".added-label");
-          if (badge) badge.remove();
-        }
-        // Faz o exercício removido sair do topo da lista
-        if (exerciseItem) {
-          const listContainer = exerciseItem.parentElement;
-          listContainer.appendChild(exerciseItem);
-        }
-      } catch (error) {
-        console.error("Erro ao remover exercício do treino:", error);
-      }
-    }
+    
+    return data;
   },
 
-  // Limpa o formulário totalmente
-  clearFormTraining() {
-    document.querySelector("#training-form").reset();
-    document.querySelector("#training-id").value = "";
-    convertedPhoto = "";
-    document.querySelector("#training-subtitle").value = "";
-    selectedExercisesIds = [];
-    // Reseta a cor do ícone
-    const uploadIcon = document.querySelector(".upload-option .icon-box i");
-    if (uploadIcon) uploadIcon.style.color = "";
-    // Remove os badges e reseta botões de qualquer lista aberta
-    document
-      .querySelectorAll(".added-label")
-      .forEach((badge) => badge.remove());
-    document.querySelectorAll(".selectable-exercise-add-btn").forEach((btn) => {
-      btn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
-      btn.style.color = "";
-      btn.style.borderColor = "";
-    });
-    console.log("Estado de criação de treino limpo!");
-  },
-
-  // Preenche o formulário (Para edição)
   async fillFormTraining(trainingId) {
-    document.querySelector("#training-modal-title").textContent =
-      "Editar Treino";
+    document.querySelector("#training-modal-title").textContent = "Editar Treino";
 
     try {
       const training = await trainingApi.getTrainingById(trainingId);
 
-      // Preenchimento básico
       document.querySelector("#training-id").value = training.id;
       document.querySelector("#training-name").value = training.name;
-      document.querySelector("#training-subtitle").value =
-        training.subtitle || "";
+      document.querySelector("#training-subtitle").value = training.subtitle || "";
       selectedExercisesIds = training.exercises ? [...training.exercises] : [];
 
-      // --- LÓGICA DO ÍCONE ---
       const uploadIcon = document.querySelector(".upload-option .icon-box i");
       if (uploadIcon) uploadIcon.style.color = "";
 
-      // Desmarca todos os rádios primeiro para garantir um estado limpo
-      document
-        .querySelectorAll('input[name="training-icon"]')
-        .forEach((input) => (input.checked = false));
+      document.querySelectorAll('input[name="training-icon"]').forEach((input) => (input.checked = false));
 
-      // Verifica se o ícone é uma imagem ou um nome de ícone
       if (training.icon && training.icon.startsWith("data:image")) {
-        // É uma foto: destaca o ícone da câmera
         if (uploadIcon) uploadIcon.style.color = "#4CAF50";
+        convertedPhoto = training.icon;
       } else {
-        // É um ícone: tenta marcar o rádio correspondente
-        const iconToSelect = document.querySelector(
-          `input[name="training-icon"][value="${training.icon}"]`,
-        );
+        const iconToSelect = document.querySelector(`input[name="training-icon"][value="${training.icon}"]`);
         if (iconToSelect) iconToSelect.checked = true;
       }
     } catch (error) {
@@ -255,13 +105,31 @@ const uiTraining = {
     }
   },
 
-  // Mostra um aviso quando treino é criado ou editado
+  clearFormTraining() {
+    document.querySelector("#training-form").reset();
+    document.querySelector("#training-id").value = "";
+    convertedPhoto = "";
+    document.querySelector("#training-subtitle").value = "";
+    selectedExercisesIds = [];
+    
+    const uploadIcon = document.querySelector(".upload-option .icon-box i");
+    if (uploadIcon) uploadIcon.style.color = "";
+    
+    document.querySelectorAll(".added-label").forEach((badge) => badge.remove());
+    document.querySelectorAll(".selectable-exercise-add-btn").forEach((btn) => {
+      btn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+      btn.style.color = "";
+      btn.style.borderColor = "";
+    });
+    
+    console.log("Estado de criação de treino limpo!");
+  },
+
   showToastTraining(message, type = "success") {
     const toast = document.createElement("div");
     toast.textContent = message;
     toast.classList.add("toast-notification");
 
-    // Se o tipo for 'error', adiciona a classe .error
     if (type === "error") {
       toast.classList.add("error");
     } else if (type === "warning") {
@@ -276,7 +144,155 @@ const uiTraining = {
     }, 3000);
   },
 
-  // Renderiza a lista de treinos na tela
+  // ==========================================================================
+  // FUNÇÃO MESTRA: ABRIR O MODAL DE EDIÇÃO SEM BUGS
+  // ==========================================================================
+  async openEditModal(trainingId) {
+    try {
+      // Preenche os dados básicos do formulário
+      await uiTraining.fillFormTraining(trainingId);
+      
+      // Abre o modal na tela
+      const modal = document.querySelector("#training-modal");
+      if (modal) {
+        modal.classList.add("active");
+        modal.classList.remove("hidden");
+      }
+
+      // Busca e renderiza a lista de exercícios com a seleção correta
+      const training = await trainingApi.getTrainingById(trainingId);
+      const allExercises = await apiExercises.getExercises();
+      const selectedIds = training.exercises || [];
+      
+      allExercises.sort((a, b) => {
+        const aSel = selectedIds.includes(a.id);
+        const bSel = selectedIds.includes(b.id);
+        return aSel === bSel ? 0 : aSel ? -1 : 1;
+      });
+      
+      uiExercises.renderExercisesForSelection(
+        allExercises,
+        "#selected-exercises-list-form",
+        selectedIds
+      );
+    } catch (error) {
+      console.error("Erro ao abrir modal de edição:", error);
+    }
+  },
+
+  // ==========================================================================
+  // GERENCIAMENTO DE EXERCÍCIOS DENTRO DO TREINO
+  // ==========================================================================
+  addExerciseToSelection(exerciseId, btnElement) {
+    const exerciseItem = btnElement.closest(".selectable-exercise-item");
+    const infoContainer = exerciseItem.querySelector(".selectable-exercise-info div");
+    
+    if (!selectedExercisesIds.includes(exerciseId)) {
+      selectedExercisesIds.push(exerciseId);
+      this.showToastTraining("Exercício adicionado à ficha!");
+      
+      if (btnElement) {
+        btnElement.innerHTML = `<i class="fa-solid fa-minus"></i>`;
+        btnElement.style.color = "#e74c3c";
+        btnElement.style.borderColor = "#e74c3c";
+      }
+      
+      if (infoContainer && !infoContainer.querySelector(".added-label")) {
+        const badge = document.createElement("span");
+        badge.className = "added-label";
+        badge.textContent = "Adicionado";
+        infoContainer.appendChild(badge);
+      }
+      
+      if (exerciseItem) {
+        const listContainer = exerciseItem.parentElement;
+        listContainer.prepend(exerciseItem);
+      }
+    } else {
+      selectedExercisesIds = selectedExercisesIds.filter((id) => id !== exerciseId);
+      this.showToastTraining("Exercício removido!", "error");
+      
+      if (btnElement) {
+        btnElement.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+        btnElement.style.color = "";
+        btnElement.style.borderColor = "";
+      }
+      
+      const badge = infoContainer.querySelector(".added-label");
+      if (badge) badge.remove();
+      
+      if (exerciseItem) {
+        const listContainer = exerciseItem.parentElement;
+        listContainer.appendChild(exerciseItem);
+      }
+    }
+  },
+
+  async addExerciseToExistingTraining(exerciseId, btnElement) {
+    if (!currentActiveTraining) return;
+    if (!currentActiveTraining.exercises) {
+      currentActiveTraining.exercises = [];
+    }
+
+    const exerciseItem = btnElement ? btnElement.closest(".selectable-exercise-item") : null;
+    const infoContainer = exerciseItem ? exerciseItem.querySelector(".selectable-exercise-info div") : null;
+
+    if (!currentActiveTraining.exercises.includes(exerciseId)) {
+      currentActiveTraining.exercises.push(exerciseId);
+      try {
+        await trainingApi.updateTraining(currentActiveTraining);
+        this.showToastTraining("Exercício adicionado à ficha!");
+        
+        if (btnElement) {
+          btnElement.innerHTML = `<i class="fa-solid fa-minus"></i>`;
+          btnElement.style.color = "#e74c3c";
+          btnElement.style.borderColor = "#e74c3c";
+        }
+        
+        if (infoContainer && !infoContainer.querySelector(".added-label")) {
+          const badge = document.createElement("span");
+          badge.className = "added-label";
+          badge.textContent = "Adicionado";
+          infoContainer.appendChild(badge);
+        }
+        
+        if (exerciseItem) {
+          const listContainer = exerciseItem.parentElement;
+          listContainer.prepend(exerciseItem);
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar treino:", error);
+      }
+    } else {
+      currentActiveTraining.exercises = currentActiveTraining.exercises.filter((id) => id !== exerciseId);
+      try {
+        await trainingApi.updateTraining(currentActiveTraining);
+        this.showToastTraining("Exercício removido do treino!", "error");
+
+        if (btnElement) {
+          btnElement.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+          btnElement.style.color = "";
+          btnElement.style.borderColor = "";
+        }
+        
+        if (infoContainer) {
+          const badge = infoContainer.querySelector(".added-label");
+          if (badge) badge.remove();
+        }
+        
+        if (exerciseItem) {
+          const listContainer = exerciseItem.parentElement;
+          listContainer.appendChild(exerciseItem);
+        }
+      } catch (error) {
+        console.error("Erro ao remover exercício do treino:", error);
+      }
+    }
+  },
+
+  // ==========================================================================
+  // RENDERIZAÇÃO DE INTERFACE (TREINOS)
+  // ==========================================================================
   async renderTrainings(searchTerm = "") {
     const listContainer = document.querySelector("#workouts-grid");
     if (!listContainer) return;
@@ -294,12 +310,9 @@ const uiTraining = {
         }
       }
 
-      // Limpa a grade atual
       listContainer.innerHTML = "";
 
-      // Caso o banco de dados esteja totalmente vazio
       if (allTrainings.length === 0) {
-        // Injeta APENAS o estado vazio, sem tentar recriar o <h2> ou o container inteiro
         listContainer.innerHTML = `
           <div class="empty-state-container" style="grid-column: 1 / -1;">
             <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
@@ -313,7 +326,6 @@ const uiTraining = {
         return;
       }
 
-      // Se passou da verificação de vazio, SEMPRE desenha o botão de Criar Novo
       listContainer.innerHTML = `
         <div class="workout-card add-new-workout">
           <div class="icon-container"><i class="fa-solid fa-plus"></i></div>
@@ -321,13 +333,11 @@ const uiTraining = {
         </div>
       `;
 
-      // Filtra os treinos com base no que foi digitado
       const term = searchTerm.toLowerCase();
       const filteredTrainings = allTrainings.filter((training) =>
-        training.name.toLowerCase().includes(term),
+        training.name.toLowerCase().includes(term)
       );
 
-      // Se o usuário pesquisou algo que não existe
       if (filteredTrainings.length === 0) {
         listContainer.innerHTML += `
           <div style="grid-column: 1 / -1; text-align: left; padding: 20px 0; color: #666; width: 100%;">
@@ -337,7 +347,6 @@ const uiTraining = {
         return;
       }
 
-      // Se passou no filtro, desenha os cards dos treinos
       filteredTrainings.forEach((training) => this.addTrainingToList(training));
     } catch (error) {
       console.error("Render error:", error);
@@ -345,109 +354,122 @@ const uiTraining = {
     }
   },
 
-  // Abre o treino
+  addTrainingToList(training) {
+    const trainingsGrid = document.getElementById("workouts-grid");
+
+    const workoutCard = document.createElement("div");
+    workoutCard.setAttribute("data-id", training.id);
+    workoutCard.classList.add("workout-card");
+    
+    if (window.runningWorkoutId === training.id) {
+      workoutCard.classList.add("running-border");
+    }
+
+    const editBtn = document.createElement("button");
+    editBtn.classList.add("edit-icon");
+    editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    editBtn.onclick = (event) => {
+      // Impede que a página do treino abra ao clicar na engrenagem
+      event.stopPropagation(); 
+      // Chama nossa nova função mestra!
+      uiTraining.openEditModal(training.id);
+    };
+
+    const iconContainer = document.createElement("div");
+    iconContainer.classList.add("icon-container");
+    
+    if (training.icon && (training.icon.startsWith("data:image") || training.icon.startsWith("http"))) {
+      const img = document.createElement("img");
+      img.src = training.icon;
+      img.alt = `Foto de ${training.name}`;
+      img.classList.add("workout-image");
+      iconContainer.appendChild(img);
+    } else {
+      const i = document.createElement("i");
+      const iconMap = {
+        "arm-muscle": "hand-fist", back: "child", legs: "shoe-prints", heart: "heart-pulse", 
+        running: "person-running", medal: "medal", fire: "fire", dumbbell: "dumbbell"
+      };
+      i.className = `fa-solid fa-${iconMap[training.icon] || training.icon || "dumbbell"}`;
+      iconContainer.appendChild(i);
+    }
+
+    const title = document.createElement("h3");
+    title.textContent = training.name;
+
+    const subtitle = document.createElement("p");
+    subtitle.textContent = training.subtitle;
+
+    workoutCard.appendChild(editBtn);
+    workoutCard.appendChild(iconContainer);
+    workoutCard.appendChild(title);
+    workoutCard.appendChild(subtitle);
+    
+    trainingsGrid.appendChild(workoutCard);
+
+    workoutCard.onclick = () => this.openTraining(training);
+  },
+
+  // ==========================================================================
+  // TELA DE DETALHES DO TREINO ATIVO
+  // ==========================================================================
   async openTraining(training) {
-    // Guarda o treino na memória
     currentActiveTraining = training;
 
-    // Arruma a vizualização (Seleciona as telas que vão sumir)
     const trainingPage = document.querySelector(".active-workout-section");
     const workoutsSection = document.querySelector(".workouts-section");
-    const trainingSection = document.querySelector(
-      ".trainings-library-section",
-    );
+    const trainingSection = document.querySelector(".trainings-library-section");
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
+    const exercisesSection = document.querySelector(".exercises-library-section");
 
-    [
-      workoutsSection,
-      trainingSection,
-      presentationText,
-      websitePresentation,
-    ].forEach((section) => {
+    [workoutsSection, trainingSection, presentationText, websitePresentation, exercisesSection].forEach((section) => {
       if (section) section.classList.add("hidden");
     });
 
-    // Preenche os textos da página de detalhes com o nome do Treino
     trainingPage.querySelector(".active-title").textContent = training.name;
-    trainingPage.querySelector(".active-subtitle").textContent =
-      training.subtitle;
+    trainingPage.querySelector(".active-subtitle").textContent = training.subtitle;
 
-    // Configura o botão de editar da tela de detalhes
-    // Usamos cloneNode para resetar o botão e não editar o treino errado
+    // Configura o Botão de Editar na tela de detalhes
     const btnEdit = document.querySelector(".edit-workout-btn");
     const btnEditClone = btnEdit.cloneNode(true);
     btnEdit.parentNode.replaceChild(btnEditClone, btnEdit);
 
-    btnEditClone.onclick = async () => {
-      // Espera (await) preencher do banco antes de abrir
-      await uiTraining.fillFormTraining(training.id);
-      document.querySelector("#training-modal").classList.add("active");
+    btnEditClone.onclick = () => {
+      // Chama nossa nova função mestra!
+      uiTraining.openEditModal(training.id);
     };
 
-    // Configura o botão de excluir da tela de detalhes
     const btnDelete = document.querySelector(".delete-workout-btn");
     const btnDeleteClone = btnDelete.cloneNode(true);
     btnDelete.parentNode.replaceChild(btnDeleteClone, btnDelete);
 
     btnDeleteClone.onclick = () => {
-      uiTraining.confirmExclusionTraining(training);
+      this.confirmExclusionTraining(training);
     };
 
-    // Troca as telas
-    workoutsSection.classList.add("hidden");
     trainingPage.classList.remove("hidden");
+    window.scrollTo({ top: 150, behavior: "smooth" });
 
-    // Esconde a biblioteca de exercícios, se estiver aberta
-    const exercisesSection = document.querySelector(
-      ".exercises-library-section",
-    );
-    if (exercisesSection) {
-      exercisesSection.classList.add("hidden");
-    }
-
-    // Início da tela
-    window.scrollTo({
-      top: 150,
-      behavior: "smooth",
-    });
-
-    // Pegando exercícios para mostrar na tela DENTRO DO TREINO
     try {
-      // Pega o array com TODOS os exercícios do usuário
       const allExercises = await apiExercises.getExercises();
+      const trainingExIds = Array.isArray(training.exercises) ? training.exercises : [];
 
-      // Validação extra: Garante que training.exercises é um array (evita quebrar se vier null)
-      const trainingExIds = Array.isArray(training.exercises)
-        ? training.exercises
-        : [];
-
-      // Filtra para pegar apenas os que estão nesta ficha
       const fullExercises = allExercises.filter((exercise) => {
-        // ATENÇÃO: Convertendo para String() para evitar que o PC ache que 1 é diferente de "1"
         return trainingExIds.some((id) => String(id) === String(exercise.id));
       });
 
-      // Seção HTML onde a lista vai aparecer
       const trainingPart = document.querySelector(".active-exercises-list");
       trainingPart.innerHTML = "";
       let htmlContent = "";
 
-      // Criando o código visual de cada exercício
       fullExercises.forEach((exercise) => {
-        // Tratamento especial para o ícone na lista do treino (se for string ou foto)
         let iconHtml;
         if (exercise.icon && exercise.icon.startsWith("data:image")) {
           iconHtml = `<img src="${exercise.icon}" alt="${exercise.name}" class="exercise-img">`;
         } else {
-          const iconMap = {
-            dumbbell: "dumbbell",
-            running: "person-running",
-            "weight-hanging": "weight-hanging",
-            bolt: "bolt",
-          };
+          const iconMap = { dumbbell: "dumbbell", running: "person-running", "weight-hanging": "weight-hanging", bolt: "bolt", fire: "fire", "heart-pulse": "heart-pulse", child: "child", "shoe-prints": "shoe-prints", bed: "bed" };
           const iconName = iconMap[exercise.icon] || "dumbbell";
-          // Cria uma "caixinha" redonda com o ícone, imitando a foto
           iconHtml = `<div class="exercise-img" style="display:flex; justify-content:center; align-items:center; background:#eee; font-size:20px; color:#555;"><i class="fa-solid fa-${iconName}"></i></div>`;
         }
 
@@ -465,131 +487,53 @@ const uiTraining = {
         </div>
       `;
       });
-      // Injeta na tela
+      
       trainingPart.innerHTML = htmlContent;
 
-      // Evento de clique para abrir cada um dos exercícios dentro da ficha de treino
       trainingPart.querySelectorAll(".exercise-item").forEach((card) => {
-        card.onclick = () => {
-          const exerciseId = card.dataset.id;
+        const checkBtn = card.querySelector(".check-exercise-btn");
+        if (checkBtn) {
+          checkBtn.addEventListener("click", (event) => {
+            event.stopPropagation(); 
+            event.preventDefault();
+            checkBtn.classList.toggle("completed");
+          });
+        }
 
-          // Procura o objeto exato no Array (Forçando String novamente)
-          const exerciseData = fullExercises.find(
-            (ex) => String(ex.id) === String(exerciseId),
-          );
+        card.addEventListener("click", () => {
+          const exerciseId = card.dataset.id;
+          const exerciseData = fullExercises.find((ex) => String(ex.id) === String(exerciseId));
 
           if (exerciseData) {
-            // Esconde a página do treino para não ficar uma embaixo da outra
-            document
-              .querySelector(".active-workout-section")
-              .classList.add("hidden");
-
-            // Coloca memória na setinha para ela saber de onde veio (do treino)
-            const backArrow = document.querySelector(
-              ".back-arrow-exercise-btn",
-            );
-            if (backArrow) {
-              backArrow.setAttribute("data-from", "training");
-            }
-            // Abre a tela focada
+            document.querySelector(".active-workout-section").classList.add("hidden");
+            const backArrow = document.querySelector(".back-arrow-exercise-btn");
+            if (backArrow) backArrow.setAttribute("data-from", "training");
             uiExercises.openExercise(exerciseData);
           }
-        };
+        });
       });
+
+      const btnStart = document.querySelector("#start-workout-action-btn");
+      const timersWrapper = document.querySelector("#dual-timers-wrapper");
+
+      if (window.runningWorkoutId === training.id) {
+        btnStart.classList.add("hidden");
+        timersWrapper.classList.remove("hidden");
+        timersWrapper.classList.remove("floating-mode");
+
+        const titleArea = document.querySelector(".active-title-area");
+        titleArea.insertAdjacentElement("afterend", timersWrapper);
+      } else {
+        btnStart.classList.remove("hidden");
+        if (!timersWrapper.classList.contains("floating-mode")) {
+          timersWrapper.classList.add("hidden");
+        }
+      }
     } catch (error) {
       console.error("Erro ao carregar exercícios:", error);
     }
   },
 
-  // Adiciona um treino a lista de vizualisação
-  addTrainingToList(training) {
-    const trainingsGrid = document.getElementById("workouts-grid");
-
-    // Criando a Div principal do Card
-    const workoutCard = document.createElement("div");
-    workoutCard.setAttribute("data-id", training.id);
-    workoutCard.classList.add("workout-card");
-    // Botão Editar
-    const editBtn = document.createElement("button");
-    editBtn.classList.add("edit-icon");
-    editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
-    editBtn.onclick = async (event) => {
-      // Transformamos em async
-      event.stopPropagation();
-      // Preenche os dados básicos
-      await uiTraining.fillFormTraining(training.id);
-      // Abre o Modal
-      document.querySelector("#training-modal").classList.add("active");
-      // Busca os exercícios
-      try {
-        const allExercises = await apiExercises.getExercises();
-        const selectedIds = training.exercises || [];
-        // Ordena para os selecionados ficarem no topo
-        allExercises.sort((a, b) => {
-          const aSel = selectedIds.includes(a.id);
-          const bSel = selectedIds.includes(b.id);
-          return aSel === bSel ? 0 : aSel ? -1 : 1;
-        });
-        // Renderiza direto no container do formulário
-        uiExercises.renderExercisesForSelection(
-          allExercises,
-          "#selected-exercises-list-form",
-          selectedIds,
-        );
-      } catch (error) {
-        console.error("Erro ao carregar exercícios no editar:", error);
-      }
-    };
-    // Container da Imagem/Ícone
-    const iconContainer = document.createElement("div");
-    iconContainer.classList.add("icon-container");
-    // Verifica se é uma imagem Base64 ou URL
-    if (
-      training.icon &&
-      (training.icon.startsWith("data:image") ||
-        training.icon.startsWith("http"))
-    ) {
-      const img = document.createElement("img");
-      img.src = training.icon;
-      img.alt = `Foto de ${training.name}`;
-      img.classList.add("workout-image");
-      iconContainer.appendChild(img);
-    } else {
-      const i = document.createElement("i");
-      const rawValue = training.icon || "dumbbell";
-      const iconMap = {
-        "arm-muscle": "hand-fist",
-        back: "child",
-        legs: "shoe-prints",
-        heart: "heart-pulse",
-        running: "person-running",
-        medal: "medal",
-        fire: "fire",
-        dumbbell: "dumbbell",
-      };
-      const iconName = iconMap[rawValue] || rawValue || "dumbbell";
-      i.className = `fa-solid fa-${iconName}`;
-      iconContainer.appendChild(i);
-    }
-    // Nome
-    const title = document.createElement("h3");
-    title.textContent = training.name;
-    // Subtítulo
-    const subtitle = document.createElement("p");
-    subtitle.textContent = training.subtitle;
-    // Colocando na div
-    workoutCard.appendChild(editBtn);
-    workoutCard.appendChild(iconContainer);
-    workoutCard.appendChild(title);
-    workoutCard.appendChild(subtitle);
-    // Adicionando o card pronto a Grid
-    trainingsGrid.appendChild(workoutCard);
-
-    // Configura a tela de detalhes para o treino clicado, possibilitando editar e excluir
-    workoutCard.onclick = () => uiTraining.openTraining(training);
-  },
-
-  // Função de exclusão
   confirmExclusionTraining(training) {
     const modalOverlay = document.createElement("div");
     modalOverlay.className = "confirm-modal-overlay";
@@ -605,26 +549,39 @@ const uiTraining = {
     `;
     document.body.appendChild(modalOverlay);
 
-    modalOverlay.querySelector("#cancel-delete").onclick = () =>
-      modalOverlay.remove();
+    modalOverlay.querySelector("#cancel-delete").onclick = () => modalOverlay.remove();
 
     modalOverlay.querySelector("#confirm-delete").onclick = async () => {
       await trainingApi.deleteTraining(training.id);
       modalOverlay.remove();
+
       document.querySelector(".active-workout-section").classList.add("hidden");
       document.querySelector(".workouts-section").classList.remove("hidden");
-      uiTraining.renderTrainings();
+      document.querySelector(".exercises-library-section").classList.remove("hidden");
+
+      this.renderTrainings();
+      this.showToastTraining("Treino excluído com sucesso!", "warning");
     };
   },
 
-  // Pega os ids dos exercícios de cada treino
+  // ==========================================================================
+  // HELPERS (UTILITÁRIOS)
+  // ==========================================================================
   getCurrentSelectedIds() {
-    // Se tiver um treino aberto na tela, retorna os exercícios dele
+    const modal = document.querySelector("#training-modal");
+    // CORREÇÃO: Se o modal de criação/edição estiver aberto, foca na edição atual.
+    if (modal && modal.classList.contains("active")) {
+      return selectedExercisesIds || [];
+    }
+    // Caso contrário (se o usuário estiver só navegando no treino), puxa do treino aberto
     if (currentActiveTraining) {
       return currentActiveTraining.exercises || [];
     }
-    // Senão, retorna os exercícios do formulário de criação/edição
     return selectedExercisesIds || [];
+  },
+
+  getCurrentActiveTrainingData() {
+    return currentActiveTraining;
   },
 };
 

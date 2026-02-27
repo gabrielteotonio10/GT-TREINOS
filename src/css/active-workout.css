@@ -1,14 +1,16 @@
 /* ==========================================================================
-   PÁGINA DE TREINO ATIVO (EXECUÇÃO)
+   1. LAYOUT PRINCIPAL DO TREINO ATIVO E DETALHES DE EXERCÍCIO
    ========================================================================== */
-.active-workout-section {
+
+.active-workout-section, 
+.active-exercise-details-section {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
   animation: fadeIn 0.4s ease;
 }
 
-/* --- Cabeçalho de Navegação --- */
+/* --- Cabeçalho de Navegação (Voltar e Editar) --- */
 .active-header {
   display: flex;
   justify-content: space-between;
@@ -17,7 +19,9 @@
 }
 
 .back-arrow-btn,
-.edit-workout-btn {
+.back-arrow-exercise-btn,
+.edit-workout-btn,
+.edit-exercise-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -30,7 +34,9 @@
 }
 
 .back-arrow-btn:hover,
-.edit-workout-btn:hover {
+.back-arrow-exercise-btn:hover,
+.edit-workout-btn:hover,
+.edit-exercise-btn:hover {
   color: var(--primary-color);
   transform: scale(1.1);
 }
@@ -40,7 +46,8 @@
   margin-bottom: 40px;
 }
 
-.active-title {
+.active-title,
+.active-exercise-title {
   font-size: 2.2rem;
   color: var(--primary-color);
   font-weight: 800;
@@ -48,7 +55,8 @@
   line-height: 1.2;
 }
 
-.active-subtitle {
+.active-subtitle,
+.active-exercise-subtitle {
   font-size: 1.1rem;
   color: #7f8c8d;
   font-weight: 500;
@@ -56,9 +64,139 @@
   letter-spacing: 1px;
 }
 
+/* Subtítulo específico do exercício com ícone */
+.active-exercise-subtitle {
+  color: var(--secondary-color);
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
 /* ==========================================================================
-   LISTA DE EXERCÍCIOS DO TREINO
+   2. CRONÔMETROS DO TREINO ATIVO
    ========================================================================== */
+
+.workout-timer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 0 20px 20px 20px; 
+  border: 1px solid #e0e0e0;
+}
+
+/* --- Painel Duplo (Treino + Descanso) --- */
+#dual-timers-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-label {
+  font-size: 0.8rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.timer-divider {
+  width: 2px;
+  height: 60px;
+  background-color: #ddd;
+}
+
+.timer-display {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  font-variant-numeric: tabular-nums;
+  min-width: 100px;
+  text-align: center;
+}
+
+#main-workout-time { font-size: 2.5rem; color: #007bff; }
+#rest-timer-display { font-size: 1.8rem; margin-bottom: 10px; }
+
+/* --- Botões do Cronômetro --- */
+.timer-controls {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  gap: 15px;               
+  width: 100%;            
+  margin-top: 5px;       
+}
+
+.timer-btn {
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.timer-btn:active { transform: scale(0.9); }
+.play-btn { background-color: #007bff; }
+.stop-btn { background-color: #dc3545; }
+
+/* --- Modo Flutuante do Cronômetro --- */
+.workout-timer-container.floating-mode {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  margin: 0;
+  padding: 10px 20px;
+  background: #ffffff;
+  border-radius: 50px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  border: 2px solid #007bff;
+  transform: scale(0.85); 
+  transform-origin: bottom right;
+  cursor: pointer;
+}
+
+.workout-timer-container.floating-mode::before {
+  content: "Clique para voltar";
+  position: absolute;
+  top: -25px;
+  right: 0;
+  font-size: 0.7rem;
+  color: #007bff;
+  background: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #007bff;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.workout-timer-container.floating-mode:hover::before { opacity: 1; }
+
+
+/* ==========================================================================
+   3. LISTA DE EXERCÍCIOS DO TREINO (CARDS)
+   ========================================================================== */
+
 .active-exercises-list {
   display: flex;
   flex-direction: column;
@@ -75,6 +213,7 @@
   padding: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .exercise-item:hover {
@@ -109,7 +248,7 @@
   font-weight: 500;
 }
 
-/* --- Botão Interativo de Check --- */
+/* --- Botão Interativo de Check (Bolinha Verde) --- */
 .check-exercise-btn {
   width: 45px;
   height: 45px;
@@ -123,9 +262,11 @@
   justify-content: center;
   align-items: center;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 10; /* Garante que o clique seja priorizado sobre o card */
 }
 
-.check-exercise-btn.done {
+.check-exercise-btn.completed {
   background-color: #27ae60;
   border-color: #27ae60;
   color: white;
@@ -137,9 +278,110 @@
   background-color: rgba(39, 174, 96, 0.05);
 }
 
+
 /* ==========================================================================
-   RODAPÉ DE AÇÕES (FINALIZAÇÃO)
+   4. TELA DE DETALHES DE UM EXERCÍCIO ATIVO
    ========================================================================== */
+
+/* --- Imagem/Ícone Principal do Exercício --- */
+.exercise-hero-image {
+  width: 100%;
+  height: 250px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.exercise-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Caso seja ícone */
+.hero-icon-wrapper {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.hero-icon-wrapper i {
+  font-size: 5rem;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+}
+
+/* --- Informações de Execução (Séries, Reps, Carga) --- */
+.exercise-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.info-box {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #eee;
+}
+
+.info-box i {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.info-box .label {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.info-box strong {
+  font-size: 1.1rem;
+  color: var(--text-primary-color);
+}
+
+/* --- Observações e Equipamentos --- */
+.exercise-description-area {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid #eee;
+}
+
+.detail-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.detail-item i {
+  color: var(--primary-color);
+  margin-top: 4px;
+}
+
+.description-text p {
+  margin-top: 5px;
+  color: #666;
+}
+
+
+/* ==========================================================================
+   5. RODAPÉ DE AÇÕES (FINALIZAR OU EXCLUIR)
+   ========================================================================== */
+
 .active-footer-actions {
   display: flex;
   flex-direction: column;
@@ -167,7 +409,8 @@
   box-shadow: 0 8px 20px rgba(22, 78, 128, 0.3);
 }
 
-.delete-workout-btn {
+.delete-workout-btn,
+.delete-exercise-library-btn {
   background-color: transparent;
   color: #e74c3c;
   border: 2px solid transparent;
@@ -183,14 +426,27 @@
   gap: 8px;
 }
 
-.delete-workout-btn:hover {
+.delete-exercise-library-btn {
+  border-color: #e74c3c;
+  width: 100%;
+}
+
+.delete-workout-btn:hover,
+.delete-exercise-library-btn:hover {
   background-color: rgba(231, 76, 60, 0.1);
   border-color: #e74c3c;
 }
 
+.delete-exercise-library-btn:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+
 /* ==========================================================================
-   MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
+   6. MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
    ========================================================================== */
+
 .confirm-modal-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -258,9 +514,11 @@
   transform: translateY(-2px);
 }
 
+
 /* ==========================================================================
-   ANIMAÇÕES E MEDIA QUERIES
+   7. ANIMAÇÕES E RESPONSIVIDADE
    ========================================================================== */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

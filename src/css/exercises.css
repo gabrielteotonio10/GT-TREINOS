@@ -1,9 +1,56 @@
-/* --- SEÇÃO BIBLIOTECA DE EXERCÍCIOS --- */
+/* ==========================================================================
+   1. SEÇÃO BIBLIOTECA DE EXERCÍCIOS E CABEÇALHO
+   ========================================================================== */
+
 .exercises-library-section {
   padding: 12px 26px; 
 }
 
-/* Grid Inteligente Compacto */
+/* --- Cabeçalho da Biblioteca (Título + Pesquisa) --- */
+.library-header {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start !important;
+  gap: 30px !important;
+  margin-bottom: 35px;
+  width: 100%;
+}
+
+.library-header .section-title {
+  position: relative; 
+  font-size: 2.2rem;            
+  color: var(--primary-color);  
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+  display: inline-block; 
+}
+
+/* A barrinha animada Premium do título */
+.library-header .section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 60px;
+  height: 5px;
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  animation: growWidth 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Limite da barra de pesquisa específica da biblioteca */
+.library-search {
+  max-width: 500px;
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   2. GRID E CARDS DE EXERCÍCIOS (MINIATURAS)
+   ========================================================================== */
+
+/* --- Grid Inteligente Compacto --- */
 .exercises-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
@@ -11,7 +58,7 @@
   width: 100%;
 }
 
-/* O Card Miniatura */
+/* --- O Card Miniatura --- */
 .exercise-mini-card {
   background-color: white;
   border-radius: 12px;
@@ -24,29 +71,43 @@
   display: flex;
   flex-direction: column;
 }
-.exercise-mini-card p{
+
+.exercise-mini-card p {
   text-align: center;
   margin-top: 10px;
 }
+
 .exercise-mini-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   border-color: var(--secondary-color);
 }
 
-/* Área da Imagem */
+/* --- Área da Imagem do Card --- */
 .mini-card-image {
   height: 100px;
   width: 100%;
   position: relative;
 }
+
 .mini-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover; 
 }
 
-/* Badge de Categoria */
+/* Regra para quando for um ícone invés de foto */
+.mini-card-image.is-icon i {
+  font-size: 4rem; 
+  color: var(--primary-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Badge de Categoria sobre a Imagem --- */
 .category-badge {
   position: absolute;
   bottom: 5px;
@@ -60,7 +121,7 @@
   font-weight: bold;
 }
 
-/* Informações do Texto */
+/* --- Informações de Texto do Card --- */
 .mini-card-info {
   padding: 10px;
   flex: 1; 
@@ -68,6 +129,7 @@
   flex-direction: column;
   justify-content: space-between;
 }
+
 .mini-card-info h4 {
   font-size: 0.95rem;
   color: var(--text-primary-color);
@@ -75,12 +137,13 @@
   line-height: 1.2;
 }
 
-/* Stats (Séries, Reps, Carga) */
+/* --- Stats (Séries, Reps, Carga) --- */
 .exercise-stats {
   display: flex;
   flex-wrap: wrap; 
   gap: 6px;
 }
+
 .exercise-stats span {
   font-size: 0.7rem;
   color: #7f8c8d;
@@ -91,12 +154,13 @@
   align-items: center;
   gap: 3px;
 }
+
 .exercise-stats i {
   font-size: 0.6rem;
   color: var(--primary-color);
 }
 
-/* Botão de Opções (3 pontinhos) */
+/* --- Botão de Opções (3 pontinhos) --- */
 .mini-card-options {
   position: absolute;
   top: 5px;
@@ -114,13 +178,14 @@
   color: #666;
   opacity: 0.8;
 }
+
 .mini-card-options:hover {
   background-color: var(--primary-color);
   color: white;
   opacity: 1;
 }
 
-/* Estilo do Botão "Adicionar Novo" */
+/* Estilo do Card "Adicionar Novo" (Versão Vazia) */
 .add-new-exercise-btn {
   border: 2px dashed #ccc;
   background-color: transparent;
@@ -130,43 +195,50 @@
   color: #aaa;
   min-height: 160px; /* Mesma altura média dos outros cards */
 }
-.add-new-exercise-btn:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-  background-color: rgba(var(--primary-rgb), 0.05);
-}
+
 .add-new-exercise-btn i {
   font-size: 2rem;
   margin-bottom: 5px;
 }
 
 
-/* --- SEÇÃO FORMULÁRIO DE EXERCÍCIOS --- */
+/* ==========================================================================
+   3. FORMULÁRIO DE EXERCÍCIOS (Criação/Edição)
+   ========================================================================== */
 
-
-/* Linhas do Formulário */
+/* Linhas e Colunas do Formulário */
 .form-row {
   display: flex;
   gap: 15px;
   margin-bottom: 15px;
 }
+
 .flex-grow {
   flex: 1; 
 }
 
-/* Colunas para métricas (Séries, Reps, Carga) */
 .three-cols {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
 }
 
-/* Wrapper para Inputs Numéricos com Ícone */
+/* Label de Seção */
+.section-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Wrapper para Inputs Numéricos com Ícone (Séries/Reps/Carga) */
 .number-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
+
 .number-input-wrapper i {
   position: absolute;
   left: 12px;
@@ -175,6 +247,7 @@
   font-size: 0.9rem;
   pointer-events: none;
 }
+
 .number-input-wrapper input {
   padding-left: 35px;
   width: 100%;
@@ -184,12 +257,14 @@
   font-size: 1rem;
   transition: border-color 0.3s;
 }
-.number-input-wrapper input:focus {
+
+.number-input-wrapper input:focus,
+textarea:focus {
   border-color: var(--primary-color);
   outline: none;
 }
 
-/* Ajuste para o Textarea */
+/* Ajuste para o Textarea de Descrição */
 textarea {
   width: 100%;
   padding: 12px;
@@ -199,56 +274,18 @@ textarea {
   resize: vertical; 
   min-height: 80px;
 }
-textarea:focus {
-  border-color: var(--primary-color);
-  outline: none;
-}
-
-/* Label de Seção (pequeno título dentro do form) */
-.section-label {
-  display: block;
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-/* Responsividade para telas pequenas */
-@media (max-width: 500px) {
-  .form-row {
-    flex-direction: column;
-    gap: 0;
-  }
-  .three-cols {
-    grid-template-columns: 1fr; 
-    gap: 0;
-  }
-}
 
 
-/* --- ESTILO DETALHES DO EXERCÍCIO --- */
+/* ==========================================================================
+   4. TELA DE DETALHES DO EXERCÍCIO ATIVO
+   ========================================================================== */
 
+/* Container Principal */
 .active-exercise-details-section {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
   animation: fadeIn 0.4s ease;
-}
-
-/* Capa do Exercício */
-.exercise-hero-image {
-  width: 100%;
-  height: 250px;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 25px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.exercise-hero-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 /* Subtítulo com Ícone */
@@ -261,43 +298,23 @@ textarea:focus {
   gap: 8px;
 }
 
-/* Grade de Informações Técnicas */
-.exercise-info-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin: 30px 0;
+/* Container que segura o ícone principal caso não haja foto */
+.hero-icon-wrapper {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
 }
 
-.info-box {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 15px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  border: 1px solid #eee;
+.hero-icon-wrapper i {
+    font-size: 5rem;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
 }
 
-.info-box i {
-  color: var(--primary-color);
-  font-size: 1.2rem;
-}
-
-.info-box .label {
-  font-size: 0.75rem;
-  color: #7f8c8d;
-  text-transform: uppercase;
-}
-
-.info-box strong {
-  font-size: 1.1rem;
-  color: var(--text-primary-color);
-}
-
-/* Itens de Detalhe */
+/* Itens de Detalhe (Instruções e Equipamento) */
 .exercise-description-area {
   background: white;
   border-radius: 15px;
@@ -323,7 +340,7 @@ textarea:focus {
   color: #666;
 }
 
-/* Estilo do Botão Excluir */
+/* Botão de Excluir Específico para Biblioteca */
 .delete-exercise-library-btn {
   width: 100%;
   background: transparent;
@@ -346,154 +363,11 @@ textarea:focus {
 }
 
 
-/* --- TÍTULO PRINCIPAL DOS EXERCÍCIOS --- */
-
-/* Remova a necessidade de estar dentro da section para testar */
-.section-title.exercise-view {
-  position: relative; /* Importante para a barrinha ::after aparecer */
-  margin-top: 30px;
-  font-size: 2.4rem;            
-  color: var(--primary-color);  
-  font-weight: 800;
-  margin-bottom: 45px;
-  letter-spacing: -1px;
-  display: inline-block; /* Garante que a barrinha acompanhe o texto */
-}
-
-.section-title.exercise-view::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -10px;
-  width: 60px;
-  height: 6px;
-  background-color: var(--secondary-color);
-  border-radius: 10px;
-  animation: growWidth 0.5s ease-out;
-}
-
-
-/* --- ÍCONE E IMAGEM --- */
-
-/* Container que segura o ícone quando não há foto */
-.hero-icon-wrapper {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-}
-
-/* O ícone em si dentro da área de destaque */
-.hero-icon-wrapper i {
-    font-size: 5rem; /* Deixa o ícone bem grande e imponente */
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
-}
-
-/* Regra para quando for um ícone */
-.mini-card-image.is-icon i {
-    font-size: 4rem; /* Ajuste para o tamanho que desejar */
-    color: var(--primary-color);
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* --- ÍCONE DE SAIR E EDITAR --- */
-
-/* Unificando o estilo dos botões de voltar e fechar */
-.active-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    align-items: center;
-}
-
-/* Isso garante que qualquer botão de voltar dentro de qualquer header ativo fique igual */
-.active-header button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--text-color); /* Ou a cor que você definiu para os treinos */
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.active-header button:hover {
-    transform: scale(1.1);
-    color: var(--primary-color);
-}
-
-/* Modal de Seleção (Fica embaixo) */
-#select-exercise-modal {
-    z-index: 2000 !important;
-}
-
-/* Modal de Criação (Fica por cima de tudo) */
-#exercise-modal {
-    z-index: 3000 !important;
-}
-
 /* ==========================================================================
-   LISTAS DE EXERCÍCIOS 
+   5. MODAL DE SELEÇÃO DE EXERCÍCIOS E ITENS DE LISTA
    ========================================================================== */
 
-/* O Container das Listas  */
-.available-exercises-list,
-.selected-exercises-list {
-  display: flex;
-  flex-direction: column; 
-  gap: 12px; 
-  width: 100%;
-  max-height: 350px; 
-  overflow-y: auto; 
-  padding: 8px;
-  margin-top: 15px;
-}
-
-/* O Item Individual do Exercício */
-.selectable-exercise-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 15px;
-  background-color: #ffffff;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  width: 100%; 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02); 
-  transition: all 0.2s ease;
-}
-
-/* Efeito ao passar o mouse */
-.selectable-exercise-item:hover {
-  border-color: var(--primary-color);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-  transform: translateY(-2px);
-}
-
-.selectable-content-left {
-  display: flex;
-  align-items: center;
-  gap: 15px; 
-}
-
-.selectable-exercise-info h4 {
-  margin: 0;
-  font-size: 1rem;
-  color: var(--text-primary-color);
-}
-
-.selectable-exercise-info p {
-  margin: 4px 0 0 0;
-  font-size: 0.8rem;
-  color: #7f8c8d;
-}
-
+/* Imagem e Ícone na Lista de Seleção */
 .mini-selection-img {
   width: 50px;
   height: 50px;
@@ -513,132 +387,13 @@ textarea:focus {
   color: var(--primary-color);
 }
 
-/* Estilo do Botão de Adicionar (+) */
-.selectable-exercise-add-btn {
-  background-color: rgba(0, 0, 0, 0.04);
-  color: var(--primary-color);
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
+.selectable-content-left {
   display: flex;
-  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 15px; 
 }
 
-.selectable-exercise-add-btn:hover {
-  background-color: var(--primary-color);
-  color: white;
-  transform: scale(1.1);
-}
-
-/* ==========================================================================
-   CABEÇALHO DA BIBLIOTECA (Título + Barra de Pesquisa)
-   ========================================================================== */
-
-.library-header {
-  display: flex;
-  flex-direction: column; 
-  align-items: flex-start !important;
-  gap: 30px !important;
-  margin-bottom: 35px;
-  width: 100%;
-}
-.library-header .section-title {
-  position: relative; 
-  font-size: 2.2rem;            
-  color: var(--primary-color);  
-  font-weight: 800;
-  margin-bottom: 10px;
-  letter-spacing: -1px;
-  display: inline-block; 
-}
-/* A barrinha animada Premium */
-.library-header .section-title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -8px;
-  width: 60px;
-  height: 5px;
-  background-color: var(--secondary-color);
-  border-radius: 10px;
-  animation: growWidth 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes growWidth {
-  from { width: 0; }
-  to { width: 60px; }
-}
-/* --- Container da Barra de Pesquisa --- */
-.search-bar-container {
-  position: relative;
-  width: 100%;
-}
-/* Classe específica para a barra da biblioteca não bugar a do formulário */
-.library-search {
-  max-width: 500px;
-  width: 100%;
-}
-/* --- O Ícone da Lupa --- */
-.search-bar-container .search-icon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #a0aab5;
-  font-size: 1.1rem;
-  pointer-events: none; 
-}
-/* --- O Input de Digitação --- */
-.search-bar-container input {
-  width: 100%;
-  height: 48px;
-  padding: 10px 15px 10px 48px; 
-  border: 1px solid #e1e5ea;
-  border-radius: 25px;
-  background-color: #f8f9fa;
-  font-size: 0.95rem;
-  font-family: inherit;
-  color: var(--text-primary-color, #333);
-  transition: all 0.3s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-/* --- Efeito Foco  --- */
-.search-bar-container input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15); 
-}
-
-/* --- Responsividade (Celulares) --- */
-@media (max-width: 650px) {
-  .library-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .library-search {
-    max-width: 100%; 
-  }
-}
-
-/* --TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE-- */
-
-
-/* Reduz o tamanho do botão apenas quando ele está dentro do estado vazio */
-.empty-actions .secondary-empty-btn {
-    padding: 8px 16px !important; 
-    font-size: 0.85rem !important;  
-    min-height: auto !important;    
-    height: 50px !important;       
-}
-
-/* --TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE-- */
-
-/* Etiqueta sutil de "Adicionado" */
+/* Etiqueta de Confirmação Visual */
 .added-label {
     font-size: 0.65rem;
     background-color: #e8f5e9; 
@@ -654,4 +409,38 @@ textarea:focus {
 @keyframes fadeInBadge {
     from { opacity: 0; transform: translateX(-5px); }
     to { opacity: 1; transform: translateX(0); }
+}
+
+/* Ajuste específico do botão secundário quando usado na área vazia */
+.empty-actions .secondary-empty-btn {
+    padding: 8px 16px !important; 
+    font-size: 0.85rem !important;  
+    min-height: auto !important;    
+    height: 50px !important;       
+}
+
+
+/* ==========================================================================
+   6. RESPONSIVIDADE (Tablets e Celulares)
+   ========================================================================== */
+
+@media (max-width: 650px) {
+  .library-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .library-search {
+    max-width: 100%; 
+  }
+}
+
+@media (max-width: 500px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .three-cols {
+    grid-template-columns: 1fr; 
+    gap: 0;
+  }
 }

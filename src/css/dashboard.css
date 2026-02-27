@@ -1,13 +1,21 @@
-/* Texto de Boas-vindas */
+/* ==========================================================================
+   1. MENSAGEM DE BOAS-VINDAS (HERO TEXT)
+   ========================================================================== */
+
 .presentation-text {
   margin: 2rem 0;
   padding: 0 2rem;
 }
+
 .presentation-text p {
   font-weight: bold;
 }
 
-/* Grid dos 3 Cards Superiores */
+
+/* ==========================================================================
+   2. GRID DO DASHBOARD (VISÃO GERAL)
+   ========================================================================== */
+
 .website-presentation {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -15,11 +23,16 @@
   padding: 0 2rem;
   margin-bottom: 3rem;
 }
+
 .website-presentation h2 {
   color: var(--text-secondary-color);
 }
 
-/* Estilo Visual dos Cards */
+
+/* ==========================================================================
+   3. CARDS DO DASHBOARD
+   ========================================================================== */
+
 .dashboard-card {
   background-color: white;
   padding: 25px;
@@ -30,6 +43,7 @@
   flex-direction: column;
   height: 100%;
 }
+
 .dashboard-card h2 {
   font-size: 1.1rem;
   color: var(--primary-color);
@@ -38,28 +52,7 @@
   padding-bottom: 10px;
 }
 
-/* Lista de Dias da Semana */
-.week-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.day-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.95rem;
-  color: #555;
-}
-.day-item i {
-  font-size: 18px;
-  color: #ccc;
-}
-.day-item i.checked {
-  color: var(--secondary-color);
-}
-
-/* Conteúdo Interno dos Cards */
+/* --- Conteúdo Interno dos Cards --- */
 .card-content {
   display: flex;
   flex-direction: column;
@@ -69,10 +62,42 @@
   flex-grow: 1;
   gap: 10px;
 }
+
 .card-content h3 {
   font-size: 2rem;
   color: var(--text-primary-color);
 }
+
+
+/* ==========================================================================
+   4. COMPONENTES ESPECÍFICOS DOS CARDS
+   ========================================================================== */
+
+/* --- Lista de Dias da Semana --- */
+.week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.day-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.day-item i {
+  font-size: 18px;
+  color: #ccc;
+}
+
+.day-item i.checked {
+  color: var(--secondary-color);
+}
+
+/* --- Badge de Status --- */
 .status-badge {
   background-color: #d4edda;
   color: #155724;
@@ -81,6 +106,8 @@
   font-size: 0.8rem;
   font-weight: bold;
 }
+
+/* --- Botão de Ação (Apenas Dashboard) --- */
 .action-btn {
   background-color: var(--secondary-color);
   color: white;
@@ -93,19 +120,83 @@
   width: 100%;
   margin-top: 10px;
 }
+
 .action-btn:hover {
   background-color: var(--primary-color);
 }
 
-/* Responsividade do Dashboard */
+
+/* ==========================================================================
+   5. RESPONSIVIDADE (Tablets e Celulares)
+   ========================================================================== */
+
 @media (max-width: 900px) {
+  
   .website-presentation {
     grid-template-columns: 1fr;
   }
 
-  /* Ajustado para bater com o novo HTML */
+  /* Ajustes de espaçamento lateral para telas menores */
   .presentation-text,
   .website-presentation {
     padding: 0 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   ALERTA DE PERFIL INCOMPLETO
+   ========================================================================== */
+
+.profile-alert-section {
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.profile-alert {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 15px 25px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.alert-content i {
+  font-size: 2rem;
+  color: #ffc107;
+}
+
+.alert-content strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 3px;
+}
+
+.alert-content p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-alert {
+    flex-direction: column;
+    text-align: center;
+  }
+  .alert-content {
+    flex-direction: column;
+  }
+  #go-to-profile-alert-btn {
+    width: 100%;
   }
 }

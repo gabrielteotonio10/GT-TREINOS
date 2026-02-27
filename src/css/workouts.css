@@ -1,43 +1,13 @@
 /* ==========================================================================
-   1. CLASSES UTILITÁRIAS
+   1. CLASSES UTILITÁRIAS E COMPONENTES GERAIS
    ========================================================================== */
+
+/* --- Ocultar Elementos --- */
 .hidden {
   display: none !important;
 }
 
-/* ==========================================================================
-   2. SISTEMA DE NOTIFICAÇÕES (TOAST)
-   ========================================================================== */
-.toast-notification {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 9999;
-  transition: opacity 0.5s ease;
-  font-weight: bold;
-}
-
-.toast-notification.error {
-    background-color: #e74c3c !important; /* Vermelho vibrante */
-}
-
-.toast-notification.warning {
-    background-color: #f1c40f !important; 
-    color: #333; 
-}
-
-.toast-notification.fade-out {
-  opacity: 0;
-}
-
-/* ==========================================================================
-   3. TÍTULOS DE SEÇÃO
-   ========================================================================== */
+/* --- Títulos de Seção --- */
 .workouts-section .section-title {
   font-size: 2rem;
   font-weight: 700;
@@ -47,7 +17,17 @@
   position: relative;
 }
 
-/* Visualização Interna de Treinos */
+.section-title-training {
+  font-size: 2rem;               
+  font-weight: 800;              
+  color: var(--primary-color);   
+  margin-bottom: 30px;          
+  position: relative;            
+  display: inline-block;        
+  letter-spacing: -0.5px;      
+}
+
+/* Título com animação inferior (Premium) */
 .workouts-section .section-title.training-view {
   margin-top: 30px !important;
   font-size: 2.4rem;            
@@ -74,19 +54,93 @@
   to { width: 60px; }
 }
 
-.section-title-training {
-  font-size: 2rem;               
-  font-weight: 800;              
-  color: var(--primary-color);   
-  margin-bottom: 30px;          
-  position: relative;            
-  display: inline-block;        
-  letter-spacing: -0.5px;      
-}
 
 /* ==========================================================================
-   4. BOTÕES GERAIS
+   2. SISTEMA DE NOTIFICAÇÕES (TOAST)
    ========================================================================== */
+
+.toast-notification {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background-color: #4CAF50; /* Verde Sucesso */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+  font-weight: bold;
+}
+
+.toast-notification.error {
+  background-color: #e74c3c !important; /* Vermelho Erro */
+}
+
+.toast-notification.warning {
+  background-color: #f1c40f !important; /* Amarelo Aviso */
+  color: #333; 
+}
+
+.toast-notification.fade-out {
+  opacity: 0;
+}
+
+
+/* ==========================================================================
+   3. BOTÕES PADRÕES
+   ========================================================================== */
+
+/* --- Botões Primários --- */
+.primary-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.primary-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+/* --- Botões Secundários / Vazios --- */
+.secondary-empty-btn {
+  background-color: transparent !important;
+  border: 2px solid var(--secondary-color) !important;
+  color: var(--secondary-color) !important;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.secondary-empty-btn:hover {
+  background-color: var(--secondary-color) !important;
+  color: white !important;
+}
+
+/* --- Botão Cancelar --- */
+.cancel-btn {
+  background: none;
+  border: 2px solid transparent;
+  color: #666;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* --- Botão Adicionar (Destaque) --- */
 .add-new-workout-btn,
 .add-new-exercise-btn {
   background-color: var(--secondary-color); 
@@ -111,55 +165,37 @@
   box-shadow: 0 6px 20px rgba(22, 78, 128, 0.3);
 }
 
-.primary-btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 8px;
-  font-weight: bold;
+/* --- Botão Adicionar dentro do Treino Ativo --- */
+.add-exercise-to-workout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 2px dashed #d1d9e6;
+  border-radius: 16px;
+  color: #888;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  background-color: rgba(230, 240, 247, 0.2);
 }
 
-.primary-btn:hover {
-  background-color: var(--secondary-color);
+.add-exercise-to-workout-btn:hover {
+  background-color: rgba(230, 240, 247, 0.5);
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+  transform: translateY(-2px);
 }
 
-.cancel-btn {
-  background: none;
-  border: 2px solid transparent;
-  color: #666;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-}
+.add-exercise-to-workout-btn i { font-size: 1.2rem; }
+.add-exercise-to-workout-btn span { font-weight: 600; font-size: 1rem; }
 
-.cancel-btn:hover {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.secondary-empty-btn {
-  background-color: transparent !important;
-  border: 2px solid var(--secondary-color) !important;
-  color: var(--secondary-color) !important;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.secondary-empty-btn:hover {
-  background-color: var(--secondary-color) !important;
-  color: white !important;
-}
 
 /* ==========================================================================
-   5. ESTADOS VAZIOS (EMPTY STATES)
+   4. ESTADOS VAZIOS (EMPTY STATES)
    ========================================================================== */
+
 .empty-state-container {
   grid-column: 1 / -1; 
   background: linear-gradient(145deg, #ffffff, #f9f9f9); 
@@ -175,13 +211,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
   margin: 10px 0 20px 0;
   transition: all 0.3s ease;
-}
-
-.empty-state-container .add-new-workout-btn:hover,
-.empty-state-container .add-new-exercise-btn:hover {
-  background-color: rgba(22, 78, 128, 0.05);
-  border-color: var(--primary-color);
-  color: var(--primary-color);
 }
 
 .empty-icon {
@@ -218,9 +247,24 @@
   margin-top: 10px;
 }
 
+.empty-state-container .add-new-workout-btn:hover,
+.empty-state-container .add-new-exercise-btn:hover {
+  background-color: rgba(22, 78, 128, 0.05);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.empty-state {
+  color: #888;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+
 /* ==========================================================================
-   6. SEÇÃO E GRID DE TREINOS
+   5. SEÇÃO E GRID DE TREINOS (HOME)
    ========================================================================== */
+
 .workouts-section {
   padding: 0 2rem;
   margin-bottom: 4rem;
@@ -237,6 +281,7 @@
   gap: 20px;
 }
 
+/* --- Card Individual de Treino --- */
 .workout-card {
   background-color: white;
   border: 2px solid var(--background-secondary-color);
@@ -308,11 +353,11 @@
   color: var(--secondary-color);
 }
 
-/* Card de Criar Novo Treino */
+/* --- Card de "Criar Novo Treino" --- */
 .workout-card.add-new-workout {
   border-style: dashed;
   background-color: rgba(230, 240, 247, 0.3);
-  order: 9999;
+  order: 9999; /* Garante que fique sempre no final da lista */
 }
 
 .workout-card.add-new-workout .icon-container {
@@ -320,9 +365,32 @@
   font-size: 4rem;
 }
 
+/* --- Borda azul para o treino em andamento --- */
+.workout-card.running-border {
+  border: 2px solid #007bff;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+  position: relative;
+}
+
+.workout-card.running-border::after {
+  content: "Em andamento";
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: #007bff;
+  color: white;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+
 /* ==========================================================================
-   7. MODAIS E FORMULÁRIOS
+   6. MODAIS E FORMULÁRIOS
    ========================================================================== */
+
+/* --- Container e Fundo Desfocado --- */
 .modal-container {
   display: none;
   margin: auto;
@@ -343,6 +411,7 @@
   display: flex;
 }
 
+/* --- Cartão Branco do Modal --- */
 .form-card {
   background-color: white;
   padding: 30px;
@@ -374,6 +443,7 @@
   color: #c25959;
 }
 
+/* --- Grupos de Inputs --- */
 .form-group {
   margin-bottom: 20px;
 }
@@ -408,41 +478,7 @@
   margin-top: 30px;
 }
 
-/* Botão de Adicionar Exercício dentro do Treino Ativo */
-.add-exercise-to-workout-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 20px;
-    margin-bottom: 30px;
-    border: 2px dashed #d1d9e6;
-    border-radius: 16px;
-    color: #888;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: rgba(230, 240, 247, 0.2);
-}
-
-.add-exercise-to-workout-btn:hover {
-    background-color: rgba(230, 240, 247, 0.5);
-    border-color: var(--secondary-color);
-    color: var(--secondary-color);
-    transform: translateY(-2px);
-}
-
-.add-exercise-to-workout-btn i {
-    font-size: 1.2rem;
-}
-
-.add-exercise-to-workout-btn span {
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-/* ==========================================================================
-   8. COMPONENTES DO FORMULÁRIO (Ícones e Buscas)
-   ========================================================================== */
+/* --- Seletor de Ícones --- */
 .icon-selector-grid {
   display: flex;
   gap: 10px;
@@ -467,6 +503,10 @@
   transition: 0.3s;
 }
 
+.icon-box:hover {
+  border-color: var(--secondary-color);
+}
+
 .icon-option input:checked + .icon-box {
   background-color: var(--primary-color);
   color: white;
@@ -475,29 +515,26 @@
   box-shadow: 0 4px 10px rgba(22, 78, 128, 0.3);
 }
 
-.icon-box:hover {
-  border-color: var(--secondary-color);
-}
-
 .icon-box.upload {
   border-style: dashed;
 }
 
+/* --- Barra de Pesquisa --- */
 .search-bar-container {
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.search-bar-container input {
-  padding-left: 40px !important;
-  padding-right: 50px !important;
-}
-
 .search-icon {
   position: absolute;
   left: 15px;
   color: #aaa;
+}
+
+.search-bar-container input {
+  padding-left: 40px !important;
+  padding-right: 50px !important;
 }
 
 .create-exercise-btn {
@@ -518,6 +555,7 @@
   background-color: var(--primary-color);
 }
 
+/* --- Listas dentro dos Formulários --- */
 .selected-exercises-list {
   margin-top: 15px;
   background-color: var(--background-secondary-color);
@@ -529,94 +567,21 @@
   border: 1px dashed #ccc;
 }
 
-.empty-state {
-  color: #888;
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-/* ==========================================================================
-   9. RESPONSIVIDADE
-   ========================================================================== */
-/* ==========================================================================
-   9. RESPONSIVIDADE (Celulares e Tablets)
-   ========================================================================== */
-@media (max-width: 768px) {
-  .workouts-grid {
-    grid-template-columns: 1fr 1fr; 
-    gap: 12px; 
-  }
-
-  /* Deixa o card mais "magrinho" por dentro */
-  .workout-card {
-    padding: 15px 10px; 
-    border-radius: 12px;
-  }
-
-  /* Reduz drasticamente o tamanho das fotos e ícones no celular */
-  .workout-card .icon-container {
-    width: 55px;  
-    height: 55px;
-    font-size: 2.2rem; 
-    margin-bottom: 5px;
-  }
-
-  .workout-image {
-    width: 55px;
-    height: 55px;
-  }
-
-  /* Ícone do botão de "Criar Novo" no celular */
-  .workout-card.add-new-workout .icon-container {
-    font-size: 2rem; 
-  }
-
-  /* Textos proporcionais ao card pequeno */
-  .workout-card h3 {
-    font-size: 1.05rem; 
-    margin-bottom: 2px;
-  }
-
-  .workout-card p {
-    font-size: 0.75rem; 
-  }
-
-  /* Ajusta a engrenagem */
-  .edit-icon {
-    top: 10px;
-    right: 10px;
-    font-size: 1rem;
-  }
-}
-/* ==========================================================================
-   LISTA DE SELEÇÃO DENTRO DO MODAL
-   ========================================================================== */
 .available-exercises-list {
   max-height: 350px;
-  overflow-y: auto; /* Cria a barra de rolagem se tiver muitos exercícios */
+  overflow-y: auto; 
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding-right: 5px; 
 }
 
-/* Estilo do scrollbar (barra de rolagem) para ficar elegante */
-.available-exercises-list::-webkit-scrollbar {
-  width: 6px;
-}
-.available-exercises-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-.available-exercises-list::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
-}
-.available-exercises-list::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color);
-}
+/* Scrollbar personalizada */
+.available-exercises-list::-webkit-scrollbar { width: 6px; }
+.available-exercises-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.available-exercises-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.available-exercises-list::-webkit-scrollbar-thumb:hover { background: var(--secondary-color); }
 
-/* Item individual da lista de seleção */
 .selectable-exercise-item {
   display: flex;
   align-items: center;
@@ -662,4 +627,200 @@
   background: var(--secondary-color);
   color: white;
   transform: scale(1.1);
+}
+
+
+/* ==========================================================================
+   7. CRONÔMETRO INTERNO E AÇÕES DO TREINO (EXECUÇÃO)
+   ========================================================================== */
+
+/* --- Checkbox de Exercício Concluído (Bolinha Verde) --- */
+.check-exercise-btn {
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10; /* Garante sobreposição ao clique do card */
+}
+
+.check-exercise-btn.completed {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+  transform: scale(1.1);
+}
+
+/* --- Container Geral dos Cronômetros --- */
+.workout-timer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 0 20px 20px 20px; 
+  border: 1px solid #e0e0e0;
+}
+
+#dual-timers-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-label {
+  font-size: 0.8rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+#main-workout-time {
+  font-size: 2.5rem;
+  color: #007bff;
+}
+
+#rest-timer-display {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.timer-divider {
+  width: 2px;
+  height: 60px;
+  background-color: #ddd;
+}
+
+.workout-timer-container .timer-display {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  font-variant-numeric: tabular-nums;
+  min-width: 100px;
+  text-align: center;
+}
+
+/* --- Controles do Cronômetro de Descanso --- */
+.timer-controls {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  gap: 15px;               
+  width: 100%;            
+  margin-top: 5px;       
+}
+
+.timer-btn {
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.timer-btn:active { transform: scale(0.9); }
+.play-btn { background-color: #007bff; }
+.stop-btn { background-color: #dc3545; }
+
+/* --- Modo Flutuante do Cronômetro --- */
+.workout-timer-container.floating-mode {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  margin: 0;
+  padding: 10px 20px;
+  background: #ffffff;
+  border-radius: 50px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  border: 2px solid #007bff;
+  transform: scale(0.85); 
+  transform-origin: bottom right;
+  cursor: pointer;
+}
+
+.workout-timer-container.floating-mode::before {
+  content: "Clique para voltar ao treino";
+  position: absolute;
+  top: -25px;
+  right: 0;
+  font-size: 0.7rem;
+  color: #007bff;
+  background: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #007bff;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.workout-timer-container.floating-mode:hover::before {
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   8. RESPONSIVIDADE GERAL
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .workouts-grid {
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+  }
+
+  /* Deixa o card mais compacto por dentro */
+  .workout-card {
+    padding: 15px 10px; 
+    border-radius: 12px;
+  }
+
+  /* Reduz drasticamente o tamanho das fotos e ícones no celular */
+  .workout-card .icon-container {
+    width: 55px;  
+    height: 55px;
+    font-size: 2.2rem; 
+    margin-bottom: 5px;
+  }
+
+  .workout-image {
+    width: 55px;
+    height: 55px;
+  }
+
+  /* Ícone do botão de "Criar Novo" no celular */
+  .workout-card.add-new-workout .icon-container {
+    font-size: 2rem; 
+  }
+
+  /* Textos proporcionais ao card pequeno */
+  .workout-card h3 {
+    font-size: 1.05rem; 
+    margin-bottom: 2px;
+  }
+
+  .workout-card p {
+    font-size: 0.75rem; 
+  }
+
+  /* Ajusta a engrenagem */
+  .edit-icon {
+    top: 10px;
+    right: 10px;
+    font-size: 1rem;
+  }
 }

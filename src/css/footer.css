@@ -1,4 +1,8 @@
-/* Container Principal do Rodapé */
+/* ==========================================================================
+   RODAPÉ PRINCIPAL (FOOTER)
+   ========================================================================== */
+
+/* --- Container Geral --- */
 .footer-container {
   background-color: var(--primary-color);
   color: white;
@@ -7,7 +11,7 @@
   border-top: 3px solid var(--secondary-color);
 }
 
-/* Conteúdo Flexível do Rodapé */
+/* --- Layout Interno (Flexbox) --- */
 .footer-content {
   display: flex;
   justify-content: space-around;
@@ -17,15 +21,10 @@
   margin: 0 auto;
 }
 
-/* Seções Individuais (Sobre, Social, etc) */
+/* --- Seções Individuais (Colunas) --- */
 .footer-section {
   flex: 1;
   min-width: 200px;
-}
-
-.footer-logo {
-  font-size: 24px;
-  width: 200px;
 }
 
 .footer-section h3 {
@@ -34,10 +33,21 @@
   color: white;
 }
 
-/* Links do Footer (Caso adicione listas no futuro) */
+.footer-logo {
+  font-size: 24px;
+  width: 200px;
+}
+
+
+/* ==========================================================================
+   LINKS E NAVEGAÇÃO INTERNA DO RODAPÉ
+   ========================================================================== */
+
+/* (Caso adicione listas de páginas no futuro) */
 .footer-section ul {
   list-style: none;
 }
+
 .footer-section ul li button {
   background: none;
   border: none;
@@ -46,12 +56,17 @@
   cursor: pointer;
   transition: 0.3s;
 }
+
 .footer-section ul li button:hover {
   color: white;
   padding-left: 5px;
 }
 
-/* Seção de Redes Sociais */
+
+/* ==========================================================================
+   REDES SOCIAIS
+   ========================================================================== */
+
 .social {
   margin-top: 50px; /* Ajuste conforme necessidade visual */
 }
@@ -72,7 +87,11 @@
   transform: translateY(-5px);
 }
 
-/* Parte Inferior (Copyright) */
+
+/* ==========================================================================
+   PARTE INFERIOR (COPYRIGHT)
+   ========================================================================== */
+
 .footer-bottom {
   text-align: center;
   margin-top: 40px;
@@ -82,12 +101,17 @@
   color: white;
 }
 
-/* Responsividade */
+
+/* ==========================================================================
+   RESPONSIVIDADE (Tablets e Celulares)
+   ========================================================================== */
+
 @media (max-width: 768px) {
   .footer-content {
     flex-direction: column;
     text-align: center;
   }
+  
   .social-icons {
     justify-content: center;
   }

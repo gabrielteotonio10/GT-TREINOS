@@ -1,0 +1,152 @@
+/* ==========================================================================
+   1. COMPONENTE: BOTÃO TOGGLE (SWITCH DO MODO ESCURO)
+   ========================================================================== */
+
+.theme-toggle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 1px solid #e0e0e0;
+}
+
+.theme-label {
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- O Switch "estilo iPhone" --- */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input { 
+  opacity: 0; 
+  width: 0; 
+  height: 0; 
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 4px; bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+/* Estado Ativo (Ligado) */
+input:checked + .slider { 
+  background-color: #7000ff; 
+}
+
+input:checked + .slider:before { 
+  transform: translateX(24px); 
+}
+
+
+/* ==========================================================================
+   2. REGRAS GERAIS DE CORES DO MODO ESCURO
+   ========================================================================== */
+
+/* --- Fundo e Texto Base --- */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* --- Cards, Modais e Áreas de Destaque --- */
+body.dark-mode header, 
+body.dark-mode footer,
+body.dark-mode .workout-card,
+body.dark-mode .exercise-mini-card,
+body.dark-mode .modal-content,
+body.dark-mode .workout-timer-container,
+body.dark-mode .theme-toggle-container,
+body.dark-mode .confirm-modal-card {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #333;
+}
+
+/* --- Formulários, Inputs e Itens de Lista --- */
+body.dark-mode .exercise-item,
+body.dark-mode input, 
+body.dark-mode textarea, 
+body.dark-mode select {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border-color: #444;
+}
+
+
+/* ==========================================================================
+   3. TIPOGRAFIA NO MODO ESCURO
+   ========================================================================== */
+
+/* --- Títulos Principais --- */
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4 {
+  color: #ffffff;
+}
+
+/* --- Textos Secundários e Legendas --- */
+body.dark-mode .presentation-text p,
+body.dark-mode .active-subtitle,
+body.dark-mode .theme-label {
+  color: #aaaaaa;
+}
+
+
+/* ==========================================================================
+   4. AJUSTES ESPECÍFICOS: PÁGINA DE PERFIL
+   ========================================================================== */
+
+/* Forçando o fundo escuro absoluto nos containers principais do perfil */
+body.dark-mode .profile-section,
+body.dark-mode #profile-section,
+body.dark-mode section#profile-section,
+body.dark-mode .profile-container,
+body.dark-mode .profile-header { 
+  background-color: #121212 !important; 
+  color: #ffffff;
+}
+
+/* Caixa do formulário de perfil (cinza escuro) */
+body.dark-mode #profile-form {
+  background-color: #1e1e1e !important;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* Ajustando rótulos que podem sumir no fundo preto */
+body.dark-mode .profile-section label,
+body.dark-mode .profile-section h2,
+body.dark-mode .profile-section h3,
+body.dark-mode .profile-column-title {
+  color: #ffffff !important;
+}
+
+/* Alerta no modo escuro */
+body.dark-mode .profile-alert { background-color: #332701; border-color: #4d3a00; color: #ffda6a; }

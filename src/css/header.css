@@ -1,9 +1,15 @@
+/* ==========================================================================
+   CABEÇALHO PRINCIPAL (HEADER & NAVEGAÇÃO)
+   ========================================================================== */
+
+/* --- Container Principal --- */
 .main-header {
   background-color: var(--primary-color);
   padding: 20px 0;
   border-bottom: var(--secondary-color) 3px solid;
 }
 
+/* --- Elementos Internos (Flexbox) --- */
 .header-elements {
   display: flex;
   margin: 0 auto;
@@ -13,27 +19,18 @@
   max-width: 1300px;
 }
 
+/* --- Logo --- */
 .main-logo {
   width: 300px;
   margin-left: 10px;
   cursor: pointer;
 }
 
-/* Botão Menu Mobile */
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 30px;
-  color: var(--text-tertiary-color); 
-  cursor: pointer;
-}
 
-.mobile-menu-btn:hover {
-  color: var(--secondary-color);
-}
+/* ==========================================================================
+   NAVEGAÇÃO DESKTOP
+   ========================================================================== */
 
-/* Navegação Desktop */
 .header-menu {
   display: flex;
   gap: 70px;
@@ -54,21 +51,48 @@
   color: var(--secondary-color);
 }
 
-/* Responsividade */
+
+/* ==========================================================================
+   MENU MOBILE (BOTÃO HAMBÚRGUER)
+   ========================================================================== */
+
+.mobile-menu-btn {
+  display: none; /* Escondido por padrão no Desktop */
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: var(--text-tertiary-color); 
+  cursor: pointer;
+}
+
+.mobile-menu-btn:hover {
+  color: var(--secondary-color);
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE (Tablets e Celulares)
+   ========================================================================== */
+
 @media (max-width: 768px) {
+  
+  /* Ajustes do Header Mobile */
   .mobile-menu-btn {
     display: block;
     margin-left: 30px;
   }
+  
   .main-logo {
     margin-right: 30px;
   }
+  
+  /* Comportamento da Gaveta (Side Menu) */
   .header-menu {
     display: flex;
     flex-direction: column;
     position: fixed;
     top: 70px;
-    left: -100%;
+    left: -100%; /* Esconde o menu fora da tela à esquerda */
     width: 60%;
     height: calc(100vh - 70px);
     background-color: var(--primary-color);
@@ -77,6 +101,8 @@
     z-index: 1000;
     margin-top: 100px;
   }
+  
+  /* Classe adicionada via JS para fazer o menu deslizar para dentro */
   .header-menu.active {
     left: 0;
   }
