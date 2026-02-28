@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Renderização Inicial
   await uiTraining.renderTrainings();
   await uiExercises.renderExercises();
+  renderDashboard();
 
   // ==========================================================================
   // EVENTOS DE FORMULÁRIO: TREINOS
@@ -823,6 +824,57 @@ if (historyTraining && historyTraining.length > 0) {
   console.log("Treino sugerido para hoje:", sugestedTraining.training_name);
 }
 
+// Capturando os últimos 7 dias
+const lastDays = [];
+for (let i = 0; i < 7; i++) {
+  let dataObj = new Date();
+  dataObj.setDate(dataObj.getDate() - i);
+  const dataFormatada = dataObj.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  lastDays.push(dataFormatada);
+}
+// Inverte a lista para ficar do dia mais antigo para o de hoje
+lastDays.reverse();
+// Extraindo e formatando as datas do histórico
+const trainingDates = historyTraining.map((treino) => {
+  const dataDoTreino = new Date(treino.date); // Transforma a string do JSON em Data
+  return dataDoTreino.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+});
+// O usuário treinou nesses últimos 7 dias?
+const resumoSemana = lastDays.map((dia) => {
+  // Verifica se o dia atual do laço existe dentro das datas treinadas
+  const treinouNesseDia = trainingDates.includes(dia);
+  return {
+    data: dia,
+    treinou: treinouNesseDia,
+  };
+});
+
+for (let i = 0; i < resumoSemana.length; i++) {
+  const dataString = resumoSemana[i].data; // Ex: "28/02/2026"
+  // Dividimos a string pela barra
+  const [dia, mes, ano] = dataString.split("/");
+  const dataObjeto = new Date(ano, mes - 1, dia);
+  let diaSemana = dataObjeto.toLocaleDateString("pt-BR", { weekday: "long" });
+
+  diaSemana = diaSemana.split("-")[0];
+  diaSemana = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+
+  const icone = resumoSemana[i].treinou ? "✅" : "❌";
+  console.log(`${diaSemana}: ${icone}`);
+}
+
+// Capturando quantos treinos já foram realizados
+const totalTrainingsDone = historyTraining ? historyTraining.length : 0;
+console.log("Total de treinos realizados:", totalTrainingsDone);
+
 // Capturando o treino mais completado
 const trainings = await apiTraining.getTrainings();
 if (trainings && trainings.length > 0) {
@@ -840,6 +892,8 @@ if (trainings && trainings.length > 0) {
   );
 }
 
+// ==========================================================================
+
 // Capturando o exercício mais completado
 const exercises = await apiExercises.getExercises();
 if (exercises && exercises.length > 0) {
@@ -856,6 +910,8 @@ if (exercises && exercises.length > 0) {
     mostCompleted.times_completed,
   );
 }
+
+// ==========================================================================
 
 // Calculando a Taxa Metabólica Basal a o Índice de Massa Corporal
 const userText = localStorage.getItem("currentUser");
@@ -903,6 +959,327 @@ if (userText) {
     }
   } else {
     console.log(
-      "Dados insuficientes para calcular a TMB. Preencha peso, altura, idade e gênero no perfil.");
+      "Dados insuficientes para calcular a TMB. Preencha peso, altura, idade e gênero no perfil.",
+    );
+  }
+}
+
+// Função para desenhar a Home e a aba de Resultados
+export async function renderDashboard() {
+  const historyTraining = await apiTraining.getHistory();
+  const totalTrainingsDone = historyTraining ? historyTraining.length : 0;
+
+  const homeDashboard = document.getElementById("home-dashboard");
+  const resultsContent = document.getElementById("results-content-area");
+
+  // ==========================================================================
+  // VALIDAÇÃO: SE NÃO TIVER TREINOS
+  // ==========================================================================
+  if (totalTrainingsDone === 0) {
+    const semTreinoHTML = `
+      <div class="empty-state-banner">
+        <h4>Nenhum treino realizado ainda 😴</h4>
+        <p>Comece sua jornada agora mesmo e acompanhe seus resultados aqui.</p>
+        <button class="action-btn" id="go-to-trainings-btn">Ir para Treinos</button>
+      </div>
+    `;
+    homeDashboard.innerHTML = semTreinoHTML;
+    if (resultsContent) resultsContent.innerHTML = semTreinoHTML;
+    document.querySelectorAll("#go-to-trainings-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelector(".training-btn").click();
+      });
+    });
+    return;
+  }
+
+  // ==========================================================================
+  // LÓGICA DE DADOS 
+  // ==========================================================================
+  const lastTrainingLog = historyTraining[historyTraining.length - 1];
+  const date = new Date(lastTrainingLog.date);
+  const formattedDate = date.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const formattedTime = date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  let sugestedTrainingLog = lastTrainingLog;
+  if (historyTraining.length > 1) {
+    let randomIndex = Math.floor(Math.random() * (historyTraining.length - 1));
+    if (historyTraining[randomIndex] === lastTrainingLog)
+      randomIndex === 0 ? randomIndex++ : randomIndex--;
+    sugestedTrainingLog = historyTraining[randomIndex];
+  }
+
+  const lastTrainingData = await apiTraining.getTrainingById(lastTrainingLog.training_id);
+  const sugestedTrainingData = await apiTraining.getTrainingById(sugestedTrainingLog.training_id);
+
+  const lastDays = [];
+  for (let i = 0; i < 7; i++) {
+    let dataObj = new Date();
+    dataObj.setDate(dataObj.getDate() - i);
+    const dataFormatada = dataObj.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    lastDays.push({ obj: dataObj, formatada: dataFormatada });
+  }
+  lastDays.reverse();
+
+  const trainingDates = historyTraining.map((t) =>
+    new Date(t.date).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }),
+  );
+
+  let weekHTML = '<ul class="compact-week-list">';
+  lastDays.forEach((diaInfo) => {
+    const treinouNesseDia = trainingDates.includes(diaInfo.formatada);
+    let diaSemana = diaInfo.obj.toLocaleDateString("pt-BR", {
+      weekday: "long",
+    });
+    diaSemana =
+      diaSemana.charAt(0).toUpperCase() + diaSemana.split("-")[0].slice(1);
+
+    let nomeTreinoFeito = "";
+    if (treinouNesseDia) {
+      const treinoDoDia = historyTraining.find(
+        (t) =>
+          new Date(t.date).toLocaleDateString("pt-BR") === diaInfo.formatada,
+      );
+      if (treinoDoDia)
+        nomeTreinoFeito = `<span class="day-training-name">${treinoDoDia.training_name}</span>`;
+    }
+
+    const iconClass = treinouNesseDia ? "done" : "missed";
+    const iconSymbol = treinouNesseDia
+      ? '<i class="fa-solid fa-circle-check"></i>'
+      : '<i class="fa-regular fa-circle"></i>';
+
+    weekHTML += `
+      <li class="compact-day-item ${iconClass}">
+        <div class="day-left">${iconSymbol} <span>${diaSemana}</span></div>
+        ${nomeTreinoFeito}
+      </li>
+    `;
+  });
+  weekHTML += "</ul>";
+
+  let mostCompletedTraining = null;
+  const trainings = await apiTraining.getTrainings();
+  if (trainings && trainings.length > 0) {
+    mostCompletedTraining = trainings[0];
+    for (let i = 1; i < trainings.length; i++) {
+      if (
+        (trainings[i].times_completed || 0) >
+        (mostCompletedTraining.times_completed || 0)
+      )
+        mostCompletedTraining = trainings[i];
+    }
+  }
+
+  let mostCompletedExercise = null;
+  const exercises = await apiExercises.getExercises();
+  if (exercises && exercises.length > 0) {
+    mostCompletedExercise = exercises[0];
+    for (let i = 1; i < exercises.length; i++) {
+      if (
+        (exercises[i].times_completed || 0) >
+        (mostCompletedExercise.times_completed || 0)
+      )
+        mostCompletedExercise = exercises[i];
+    }
+  }
+
+  const userText = localStorage.getItem("currentUser");
+  let healthHTML = "";
+  if (userText) {
+    const user = JSON.parse(userText);
+    if (user.weight && user.height && user.age && user.gender) {
+      let tmb = 0;
+      if (user.gender === "masculino" || user.gender === "outro") {
+        const tmbM = 10 * user.weight + 6.25 * user.height - 5 * user.age + 5;
+        tmb = user.gender === "masculino" ? tmbM : tmbM * 0.9;
+      } else if (user.gender === "feminino") {
+        tmb = 10 * user.weight + 6.25 * user.height - 5 * user.age - 161;
+      }
+
+      const IMC = user.weight / (user.height / 100) ** 2;
+      let imcText = "";
+      let imcColor = "";
+      switch (true) {
+        case IMC < 18.5:
+          imcText = "Abaixo do peso";
+          imcColor = "#ffc107";
+          break;
+        case IMC >= 18.5 && IMC < 25:
+          imcText = "Peso normal";
+          imcColor = "#28a745";
+          break;
+        case IMC >= 25 && IMC < 30:
+          imcText = "Sobrepeso";
+          imcColor = "#fd7e14";
+          break;
+        case IMC >= 30:
+          imcText = "Obesidade";
+          imcColor = "#dc3545";
+          break;
+      }
+
+      healthHTML = `
+        <div class="health-card" style="border-left: 5px solid #007bff;">
+          <span class="stat-title">TMB Estimada</span>
+          <span class="stat-value" style="color: #007bff;">${Math.round(tmb)} <span style="font-size: 0.9rem; color: #888;">kcal/dia</span></span>
+        </div>
+        <div class="health-card" style="border-left: 5px solid ${imcColor};">
+          <span class="stat-title">IMC (${IMC.toFixed(1)})</span>
+          <span class="stat-value" style="color: ${imcColor};">${imcText}</span>
+        </div>
+      `;
+    } else {
+      healthHTML = `
+        <div class="empty-state-banner error">
+          <h4>Dados Incompletos ⚠️</h4>
+          <p>Preencha peso, altura, idade e gênero no perfil.</p>
+          <button class="action-btn" id="go-to-profile-btn" style="background: #dc3545;">Completar Perfil</button>
+        </div>
+      `;
+    }
+  }
+
+  // ==========================================================================
+  // INJETANDO NA HOME
+  // ==========================================================================
+  document.getElementById("home-weekly-tracker").innerHTML = weekHTML;
+
+  // ==========================================================================
+  // INJETANDO NA ABA DE RESULTADOS (LAYOUT BALANCEADO)
+  // ==========================================================================
+  if (resultsContent) {
+    resultsContent.innerHTML = `
+      <div class="results-layout-column">
+        <h3 class="results-topic-title">Frequência da Semana</h3>
+        <div class="dashboard-card shadow-card">
+          ${weekHTML}
+        </div>
+
+        <h3 class="results-topic-title">Último Treino</h3>
+        <p class="highlight-times-text" style="margin-bottom: 5px;">Concluído em ${formattedDate} às ${formattedTime}</p>
+        <div id="results-last-training-container" class="card-injection-area"></div>
+      </div>
+
+      <div class="results-layout-column">
+        <h3 class="results-topic-title" style="margin-top: 0;">Visão Geral</h3>
+        <div class="highlight-box">
+          <p class="highlight-label">Total de Treinos</p>
+          <h4>${totalTrainingsDone}</h4>
+        </div>
+
+        <h3 class="results-topic-title">Meus Favoritos</h3>
+        <p id="results-favorite-training-times" class="highlight-times-text"></p>
+        <div id="results-favorite-training-container" class="card-injection-area"></div>
+        
+        <p id="results-favorite-exercise-times" class="highlight-times-text" style="margin-top: 10px;"></p>
+        <div id="results-favorite-exercise-container" class="card-injection-area exercise-injection"></div>
+
+        <h3 class="results-topic-title">Minha Saúde</h3>
+        <div class="health-stats-container shadow-card">
+          ${healthHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================================================
+  // INJEÇÃO DOS CARDS NATIVOS
+  // ==========================================================================
+  const injectCard = (containerId, data, renderFunction, originalGridId) => {
+    const container = document.getElementById(containerId);
+    if (!container || !data) return;
+
+    // Acha a grade original (seja Treino ou Exercício) e troca o ID dela temporariamente
+    const realGrid = document.getElementById(originalGridId);
+    if (realGrid) realGrid.id = originalGridId + "-temp-hidden";
+
+    // Transforma o nosso contêiner vazio na "grade falsa"
+    container.innerHTML = `<div id="${originalGridId}" style="width: 100%; display: flex; flex-direction: column; gap: 10px;"></div>`;
+
+    // Chama a SUA função original (ela vai achar a grade falsa que acabamos de criar)
+    renderFunction(data);
+
+    // Renomeia nossa grade falsa para não dar conflito no resto do site
+    const fakeGrid = container.querySelector(`#${originalGridId}`);
+    if (fakeGrid) fakeGrid.id = `injected-${containerId}`;
+
+    // Devolve o ID original para a biblioteca real voltar a funcionar
+    if (realGrid) realGrid.id = originalGridId;
+  };
+
+  // Injetando na Home
+  injectCard(
+    "home-last-training-container",
+    lastTrainingData,
+    uiTraining.addTrainingToList.bind(uiTraining),
+    "workouts-grid",
+  );
+  injectCard(
+    "home-suggested-training-container",
+    sugestedTrainingData,
+    uiTraining.addTrainingToList.bind(uiTraining),
+    "workouts-grid",
+  );
+
+  // Injetando na aba Resultados
+  if (lastTrainingData) {
+    injectCard(
+      "results-last-training-container",
+      lastTrainingData,
+      uiTraining.addTrainingToList.bind(uiTraining),
+      "workouts-grid",
+    );
+  }
+
+  if (mostCompletedTraining && mostCompletedTraining.times_completed > 0) {
+    const timeText = document.getElementById("results-favorite-training-times");
+    if (timeText)
+      timeText.textContent = `Ficha realizada ${mostCompletedTraining.times_completed} vezes`;
+    injectCard(
+      "results-favorite-training-container",
+      mostCompletedTraining,
+      uiTraining.addTrainingToList.bind(uiTraining),
+      "workouts-grid",
+    );
+  }
+
+  if (mostCompletedExercise && mostCompletedExercise.times_completed > 0) {
+    const timeTextEx = document.getElementById(
+      "results-favorite-exercise-times",
+    );
+    if (timeTextEx)
+      timeTextEx.textContent = `Exercício feito ${mostCompletedExercise.times_completed} vezes`;
+    injectCard(
+      "results-favorite-exercise-container",
+      mostCompletedExercise,
+      uiExercises.addExerciseToList.bind(uiExercises),
+      "exercises-list",
+    );
+  }
+
+  // Evento do botão de perfil caso faltem dados
+  const btnProfile = document.getElementById("go-to-profile-btn");
+  if (btnProfile) {
+    btnProfile.addEventListener("click", () => {
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        if (btn.textContent.includes("Perfil")) btn.click();
+      });
+    });
   }
 }

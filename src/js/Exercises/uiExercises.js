@@ -323,15 +323,12 @@ const uiExercises = {
 
   // Abre a página de detalhes de um exercício específico
   openExercise(exercise) {
-    const exercisePage = document.querySelector(
-      ".active-exercise-details-section",
-    );
-    const exercisesSection = document.querySelector(
-      ".exercises-library-section",
-    );
+    const exercisePage = document.querySelector(".active-exercise-details-section");
+    const exercisesSection = document.querySelector(".exercises-library-section");
     const workoutsSection = document.querySelector(".workouts-section");
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
+    const resultsSection = document.querySelector("#results-section");
 
     // Esconde as outras seções
     [
@@ -339,6 +336,7 @@ const uiExercises = {
       workoutsSection,
       presentationText,
       websitePresentation,
+      resultsSection
     ].forEach((section) => {
       if (section) section.classList.add("hidden");
     });

@@ -1,0 +1,256 @@
+/* ==========================================================================
+   DASHBOARD & RESULTADOS (HOME E ABA RESULTADOS)
+   ========================================================================== */
+
+/* Grid Principal da Aba Resultados */
+.results-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+@media (min-width: 768px) {
+  .results-dashboard-grid {
+    grid-template-columns: 1fr 1fr; /* Divide em 2 colunas no desktop */
+  }
+}
+
+/* Títulos de Seção na Aba Resultados */
+.results-topic-title {
+  color: #333;
+  font-size: 1.1rem;
+  margin: 20px 0 10px 0;
+  border-left: 3px solid var(--primary-color, #007bff);
+  padding-left: 8px;
+}
+
+/* Card com sombra para agrupar conteúdos (ex: Frequência) */
+.shadow-card {
+  background: var(--bg-card, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  border: 1px solid #f0f0f0;
+}
+
+/* ================= FREQUÊNCIA DA SEMANA (LISTA COMPACTA) ================= */
+.compact-week-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compact-day-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.compact-day-item.done {
+  background: #eafaf1; /* Verde clarinho */
+  border-left: 4px solid #28a745;
+}
+
+.compact-day-item.missed {
+  opacity: 0.6;
+}
+
+.day-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+}
+
+.compact-day-item.done .day-left {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.day-training-name {
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ================= INJEÇÃO DE CARDS NATIVOS ================= */
+/* Área onde o JS vai colocar o card de treino/exercício */
+.card-injection-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Ajusta o card de treino para ocupar 100% da largura na aba resultados */
+.card-injection-area .workout-card {
+  width: 100%;
+  margin: 0; /* Remove margens que possam vir do grid original */
+  box-sizing: border-box;
+}
+
+/* Ajusta o card de exercício (mini-card) para a aba resultados */
+.exercise-injection .exercise-mini-card {
+  width: 100%; 
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Esconde o botão de edição/lixeira nos cards injetados na aba Resultados,
+   para que o usuário apenas clique para abrir, e não para editar. */
+#results-section .workout-card .edit-icon,
+#results-section .exercise-mini-card .mini-card-options {
+  display: none !important;
+}
+
+/* ================= DESTAQUES E ESTATÍSTICAS ================= */
+/* Bloco azul de Total Realizados */
+.highlight-box {
+  background: var(--bg-card, #ffffff);
+  padding: 20px 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+  border-left: 5px solid var(--primary-color, #007bff); /* Detalhe azul apenas na lateral */
+  margin-bottom: 15px;
+}
+
+.highlight-box .highlight-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.highlight-box .highlight-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.highlight-box h4 {
+  margin: 0;
+  font-size: 2.2rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.highlight-box .highlight-icon {
+  font-size: 2.5rem;
+  color: rgba(0, 123, 255, 0.15); /* Ícone gigante mas bem suave/transparente no fundo */
+}
+
+/* Texto pequeno escrito "Realizado X vezes" */
+.highlight-times-text {
+  font-size: 0.8rem;
+  color: #888;
+  margin: -5px 0 10px 0;
+  font-style: italic;
+}
+
+/* ================= SAÚDE (IMC e TMB) ================= */
+.health-stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  padding: 15px 0; /* Remove o padding horizontal se estiver dentro de um card */
+}
+
+/* Se o container de saúde estiver dentro de uma div com sombra, tira o fundo dele */
+.shadow-card .health-stats-container {
+  padding: 0;
+}
+
+.health-card {
+  background: var(--bg-card, #ffffff);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px solid #eee;
+}
+
+.health-card .stat-title {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.health-card .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* ================= ESTADOS VAZIOS (EMPTY STATES) ================= */
+.empty-state-banner {
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  border-left: 5px solid #ffc107;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-top: 10px;
+}
+
+.empty-state-banner.error {
+  border-left-color: #dc3545;
+}
+
+.empty-state-banner h4 {
+  margin: 0;
+  color: #333;
+}
+
+.empty-state-banner p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Correção do Footer (Dá um espaço de respiro no final da aba) */
+.results-section {
+  padding-bottom: 80px; 
+  margin: 2rem;
+}
+
+/* O Grid Organizado em duas colunas independentes */
+.results-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 15px;
+  align-items: start; /* Impede que uma coluna estique a outra quebrando o footer */
+}
+
+@media (min-width: 768px) {
+  .results-dashboard-grid {
+    grid-template-columns: 1fr 1fr; /* Divide meio a meio no PC/Tablet */
+  }
+}
+
+/* Estrutura das Colunas */
+.results-layout-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

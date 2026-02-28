@@ -5,21 +5,19 @@ import uiTraining from "./Training/uiTraining.js";
 import uiExercises from "./Exercises/uiExercises.js";
 import apiExercises from "./Exercises/apiExercises.js";
 import { checkAuth } from "./auth.js";
+import { renderDashboard } from "./main.js";
 
 // ==========================================================================
 // SELEÇÃO DE SEÇÕES GERAIS (PÁGINAS)
 // ==========================================================================
 const presentationTextSection = document.querySelector(".presentation-text");
-const websitePresentationSection = document.querySelector(
-  ".website-presentation",
-);
+const websitePresentationSection = document.querySelector(".website-presentation");
 const workoutsSection = document.querySelector(".workouts-section");
 const exerciseSection = document.querySelector(".exercises-library-section");
 const pageTraining = document.querySelector(".active-workout-section");
-const pageExerciseDetails = document.querySelector(
-  ".active-exercise-details-section",
-);
+const pageExerciseDetails = document.querySelector(".active-exercise-details-section");
 const profileSection = document.querySelector("#profile-section");
+const resultsSection = document.querySelector("#results-section");
 
 // ==========================================================================
 // FUNÇÕES DE CONTROLE DE NAVEGAÇÃO
@@ -43,6 +41,7 @@ function hideAllSections() {
     pageTraining,
     pageExerciseDetails,
     profileSection,
+    resultsSection, 
   ];
   // Marca todas com "hidden" pra sumirem
   sections.forEach((section) => {
@@ -51,21 +50,24 @@ function hideAllSections() {
 }
 
 // Mostra a tela inicial (com boas-vindas, dashboard e biblioteca de treinos)
-function showHome() {
+async function showHome() {
   // Tira tudo da tela primeiro
   hideAllSections();
   // Mostra o que precisa na home
   presentationTextSection.classList.remove("hidden");
   websitePresentationSection.classList.remove("hidden");
   workoutsSection.classList.remove("hidden");
+  await uiTraining.renderTrainings();
+  await renderDashboard();
 
   // Renderiza os treinos do usuário
   uiTraining.renderTrainings();
+  renderDashboard();
   startPage();
 }
 
 // Mostra a biblioteca com treinos e exercícios disponíveis
-function changeForTraining() {
+async function changeForTraining() {
   // Esconde tudo primeiro
   hideAllSections();
   // Mostra só as bibliotecas
@@ -73,8 +75,19 @@ function changeForTraining() {
   exerciseSection.classList.remove("hidden");
 
   // Renderiza ambas as listas
-  uiTraining.renderTrainings();
-  uiExercises.renderExercises();
+  await uiTraining.renderTrainings();
+  await uiExercises.renderExercises();
+  startPage();
+}
+
+// Mostra a tela de Resultados
+async function showResults() {
+  hideAllSections();
+  resultsSection.classList.remove("hidden");
+  
+  // Chama a função que criamos para desenhar os gráficos e dados
+  await renderDashboard(); 
+  
   startPage();
 }
 
@@ -164,10 +177,7 @@ document.addEventListener("click", async (event) => {
 
   // --- ABERTURA DE MODAIS DE CRIAÇÃO/EDIÇÃO ---
   // Modal Treino
-  if (
-    target.closest(".add-new-workout-btn") ||
-    target.closest(".add-new-workout")
-  ) {
+  if (target.closest(".add-new-workout-btn") || target.closest(".add-new-workout")) {
     const modalTitleTreino = document.querySelector("#training-modal-title");
     if (modalTitleTreino) modalTitleTreino.textContent = "Novo Treino";
 
@@ -295,17 +305,29 @@ document.addEventListener("click", async (event) => {
       modal.classList.add("hidden");
     }
   }
+
+  if (target.closest(".nav-btn") && target.textContent.includes("Resultados")) {
+    showResults();
+  }
 });
 
 // ==========================================================================
 // EVENTOS FIXOS DIRETOS (BOTÕES QUE NÃO SOMEM)
 // ==========================================================================
 
-const btnTreinosNav = document.querySelector(".training-btn");
-const btnComecarHome = document.querySelector(".action-btn");
+document.addEventListener("click", (event) => {
+  const target = event.target;
 
-if (btnTreinosNav) btnTreinosNav.addEventListener("click", changeForTraining);
-if (btnComecarHome) btnComecarHome.addEventListener("click", changeForTraining);
+  // Se clicou no botão "Treinos" na barra de navegação
+  if (target.closest(".training-btn") || (target.closest(".nav-btn") && target.textContent.includes("Treinos"))) {
+    changeForTraining();
+  }
+
+  // Se clicou no botão "Ir para Treinos" do banner de Aviso (Empty State)
+  if (target.closest("#go-to-trainings-btn")) {
+    changeForTraining();
+  }
+});
 
 // ==========================================================================
 // INICIALIZAÇÃO
@@ -313,4 +335,5 @@ if (btnComecarHome) btnComecarHome.addEventListener("click", changeForTraining);
 document.addEventListener("DOMContentLoaded", () => {
   uiTraining.renderTrainings();
   startPage();
+  showHome();
 });

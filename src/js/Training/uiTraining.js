@@ -499,6 +499,7 @@ const uiTraining = {
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
     const exercisesSection = document.querySelector(".exercises-library-section");
+    const resultsSection = document.querySelector("#results-section");
 
     // Esconde tudo que não é a tela do treino
     [
@@ -507,6 +508,7 @@ const uiTraining = {
       presentationText,
       websitePresentation,
       exercisesSection,
+      resultsSection
     ].forEach((section) => {
       if (section) section.classList.add("hidden");
     });

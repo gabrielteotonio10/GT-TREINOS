@@ -40,39 +40,6 @@
       <p>Vamos manter o foco hoje?</p>
     </section>
 
-    <!-- APRESENTAÇÃO -->
-    <section class="website-presentation">
-      <div class="dashboard-card training-history">
-        <h2>Dias treinados:</h2>
-        <div class="week-list">
-          <div class="day-item"><i class="fa-solid fa-circle checked"></i><span>Segunda-feira</span></div>
-          <div class="day-item"><i class="fa-solid fa-circle checked"></i><span>Terça-feira</span></div>
-          <div class="day-item"><i class="fa-regular fa-circle"></i><span>Quarta-feira</span></div>
-          <div class="day-item"><i class="fa-regular fa-circle"></i><span>Quinta-feira</span></div>
-          <div class="day-item"><i class="fa-regular fa-circle"></i><span>Sexta-feira</span></div>
-        </div>
-      </div>
-
-      <div class="dashboard-card last-training">
-        <h2>Último Treino:</h2>
-        <div class="card-content">
-          <h3>Treino A</h3>
-          <p>Peito e Tríceps</p>
-          <span class="status-badge">Concluído</span>
-          <p class="small-text">Ontem às 18:30</p>
-        </div>
-      </div>
-
-      <div class="dashboard-card suggested-training">
-        <h2>Treino Sugerido:</h2>
-        <div class="card-content highlight">
-          <h3>Treino B</h3>
-          <p>Costas e Bíceps</p>
-          <button class="action-btn">Começar Agora</button>
-        </div>
-      </div>
-    </section>
-
     <!-- COMPLETAR INFORMAÇÕES -->
     <section class="profile-alert-section hidden" id="profile-alert-container">
       <div class="profile-alert">
@@ -86,6 +53,22 @@
         <button id="go-to-profile-alert-btn" class="primary-btn" style="padding: 8px 15px; font-size: 0.9rem;">
           Completar Agora
         </button>
+      </div>
+    </section>
+
+    <!-- APRESENTAÇÃO -->
+    <section class="website-presentation" id="home-dashboard">
+      <div class="dashboard-card training-history">
+        <h2>Dias treinados:</h2>
+        <div class="week-list" id="home-weekly-tracker"></div>
+      </div>
+      <div class="dashboard-card last-training">
+        <h2>Último Treino:</h2>
+        <div id="home-last-training-container" class="card-injection-area"></div>
+      </div>
+      <div class="dashboard-card suggested-training">
+        <h2>Treino Sugerido:</h2>
+        <div id="home-suggested-training-container" class="card-injection-area highlight-area"></div>
       </div>
     </section>
 
@@ -326,6 +309,46 @@
             <button type="submit" class="primary-btn" style="width: 100%;">Salvar Alterações</button>
           </div>
         </form>
+      </div>
+    </section>
+
+    <!-- RESULTADOS -->
+    <section class="results-section hidden" id="results-section">
+      <div class="library-header">
+        <h2 class="section-title" style="margin: 0;">Meus Resultados</h2>
+      </div>
+      <div id="results-content-area" class="results-dashboard-grid">
+        <div class="results-layout-left">
+          <h3 class="results-topic-title">Frequência da Semana</h3>
+          <div class="dashboard-card shadow-card">
+            <div id="results-weekly-tracker"></div>
+          </div>
+    
+          <h3 class="results-topic-title">Minha Saúde</h3>
+          <div class="health-stats-container shadow-card" id="results-health-container"></div>
+        </div>
+    
+        <div class="results-layout-right">
+          <h3 class="results-topic-title">Destaques</h3>
+    
+          <div class="highlight-box">
+            <p class="highlight-label">Total Realizados</p>
+            <h4 id="results-total-done">0</h4>
+          </div>
+    
+          <h3 class="results-topic-title">Ficha Favorita</h3>
+          <p id="results-favorite-training-times" class="highlight-times-text"></p>
+          <div id="results-favorite-training-container" class="card-injection-area"></div>
+    
+          <h3 class="results-topic-title">Exercício Favorito</h3>
+          <p id="results-favorite-exercise-times" class="highlight-times-text"></p>
+          <div id="results-favorite-exercise-container" class="card-injection-area exercise-injection"></div>
+    
+          <h3 class="results-topic-title">Último Treino</h3>
+          <p id="results-last-training-date" class="highlight-times-text"></p>
+          <div id="results-last-training-container" class="card-injection-area"></div>
+    
+        </div>
       </div>
     </section>
 
@@ -615,6 +638,7 @@
       </form>
     </div>
   </section>
+  
   <!-- SAIR DA CONTA -->
   <section id="logout-modal" class="modal-container hidden">
     <div class="form-card" style="text-align: center; max-width: 350px;">
