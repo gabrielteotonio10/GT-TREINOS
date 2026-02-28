@@ -4,11 +4,10 @@ import exercisesApi from "./apiExercises.js";
 let convertedPhotoExercise = "";
 
 const uiExercises = {
-  
   // =================================================================
   // UPLOAD E CONVERSÃO DE IMAGEM
   // =================================================================
-  
+
   // Converte uma foto enviada para base64 e diminui seu tamanho
   convertPhotoExercises(file) {
     const reader = new FileReader();
@@ -25,15 +24,18 @@ const uiExercises = {
         canvas.height = img.height * scaleSize;
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
 
         convertedPhotoExercise = canvas.toDataURL("image/jpeg", 0.7);
         console.log("Foto redimensionada e pronta!");
         // Desmarca os ícones normais para a foto ter prioridade
-        document.querySelectorAll('input[name="exercise-icon"]').forEach(r => r.checked = false);
+        document
+          .querySelectorAll('input[name="exercise-icon"]')
+          .forEach((r) => (r.checked = false));
 
         // Atualiza a cor do ícone no HTML para indicar sucesso
-        const uploadIcon = document.querySelector("#exercise-modal .upload-option .icon-box i");
+        const uploadIcon = document.querySelector(
+          "#exercise-modal .upload-option .icon-box i",
+        );
         if (uploadIcon) uploadIcon.style.color = "#4CAF50";
       };
     };
@@ -44,22 +46,25 @@ const uiExercises = {
   // MANIPULAÇÃO DE FORMULÁRIOS
   // =================================================================
 
-  // Captura as informações do formulário para salvar/editar
+  // Captura as informações do formulário e monta um objeto pra mandar pra API
   getFormDataExercise() {
     const id = document.querySelector("#exercise-id").value;
-    
+
     // Seleciona o ícone marcado
-    const iconInput = document.querySelector('input[name="exercise-icon"]:checked');
+    const iconInput = document.querySelector(
+      'input[name="exercise-icon"]:checked',
+    );
     let icon;
-    
+
+    // Ordem de prioridade: foto > ícone selecionado > padrão
     if (iconInput) {
       icon = iconInput.value; // Prioridade 1: Ícone marcado agora
     } else if (convertedPhotoExercise !== "") {
       icon = convertedPhotoExercise; // Prioridade 2: Foto em memória
     } else {
       icon = "dumbbell"; // Fallback: Padrão
-    };
-    
+    }
+
     const name = document.querySelector("#exercise-name").value;
     const muscle = document.querySelector("#exercise-muscle").value;
     const equipment = document.querySelector("#exercise-equipment").value;
@@ -67,8 +72,8 @@ const uiExercises = {
     const repetitions = document.querySelector("#exercise-repetitions").value;
     const load = document.querySelector("#exercise-load").value;
     const description = document.querySelector("#exercise-description").value;
-    
-    // Lógica do usuário logado
+
+    // Pega qual usuário tá logado
     const userString = localStorage.getItem("currentUser");
     const userEmail = userString ? JSON.parse(userString).email : null;
 
@@ -83,8 +88,8 @@ const uiExercises = {
       description,
       userEmail,
     };
-    
-    // Só adiciona o ID no pacote se ele realmente existir (caso de edição)
+
+    // Só adiciona o ID se for edição (já existe no banco)
     if (id) {
       data.id = id;
     }
@@ -92,59 +97,73 @@ const uiExercises = {
     return data;
   },
 
-  // Limpa o formulário e reseta estados visuais
+  // Limpa tudo: formulário, variáveis, ícone... tudo volta ao zero
   clearFormExercise() {
     document.querySelector("#exercise-form").reset();
     document.querySelector("#exercise-id").value = "";
-    convertedPhotoExercise = "";
-    
+    convertedPhotoExercise = ""; // Limpa a foto da memória
+
     // Reseta a cor do ícone de upload
-    const uploadIcon = document.querySelector("#exercise-modal .upload-option .icon-box i");
+    const uploadIcon = document.querySelector(
+      "#exercise-modal .upload-option .icon-box i",
+    );
     if (uploadIcon) uploadIcon.style.color = "";
-    
+
     console.log("Formulário de exercício limpo!");
   },
 
-  // Preenche o formulário com os dados do banco (Para edição)
+  // Preenche o formulário com os dados de um exercício que já existe (para edição)
   async fillFormExercise(exerciseId) {
-    document.querySelector("#exercise-modal-title").textContent = "Editar Exercício";
-    
+    document.querySelector("#exercise-modal-title").textContent =
+      "Editar Exercício";
+
     try {
+      // Busca o exercício do servidor
       const exercise = await exercisesApi.getExercisesById(exerciseId);
-      
+
+      // Preenche todos os campos com os dados dele
       document.querySelector("#exercise-id").value = exercise.id;
       document.querySelector("#exercise-name").value = exercise.name;
       document.querySelector("#exercise-muscle").value = exercise.muscle;
-      document.querySelector("#exercise-equipment").value = exercise.equipment || "";
+      document.querySelector("#exercise-equipment").value =
+        exercise.equipment || "";
       document.querySelector("#exercise-series").value = exercise.series || "";
-      document.querySelector("#exercise-repetitions").value = exercise.repetitions || "";
+      document.querySelector("#exercise-repetitions").value =
+        exercise.repetitions || "";
       document.querySelector("#exercise-load").value = exercise.load || "";
-      document.querySelector("#exercise-description").value = exercise.description || "";
-      
+      document.querySelector("#exercise-description").value =
+        exercise.description || "";
+
       // Lógica de pré-seleção da Foto/Ícone
-      const iconToSelect = document.querySelector(`input[name="exercise-icon"][value="${exercise.icon}"]`);
+      const iconToSelect = document.querySelector(
+        `input[name="exercise-icon"][value="${exercise.icon}"]`,
+      );
       if (iconToSelect) {
         iconToSelect.checked = true;
       } else if (exercise.icon && exercise.icon.startsWith("data:image")) {
+        // Se tem foto salva, marca o upload como ativo
         const uploadIcon = document.querySelector(".upload-option .icon-box i");
         if (uploadIcon) uploadIcon.style.color = "#4CAF50";
-        // Guarda a foto para ela não sumir ao salvar
+        // Guarda a foto em memória
         convertedPhotoExercise = exercise.icon;
         // Desmarca os botões de ícone
-        document.querySelectorAll('input[name="exercise-icon"]').forEach((r) => (r.checked = false));
+        document
+          .querySelectorAll('input[name="exercise-icon"]')
+          .forEach((r) => (r.checked = false));
       }
     } catch (error) {
       console.error("Erro ao preencher formulário:", error);
     }
   },
 
-  // Mostra um aviso (Toast)
+  // Mostra um aviso/toast que some sozinho
   showToastExercise(message) {
     const toast = document.createElement("div");
     toast.textContent = message;
     toast.classList.add("toast-notification");
     document.body.appendChild(toast);
-    
+
+    // Depois de 3 segundos, anima a saída e remove
     setTimeout(() => {
       toast.classList.add("fade-out");
       toast.addEventListener("transitionend", () => toast.remove());
@@ -155,15 +174,16 @@ const uiExercises = {
   // RENDERIZAÇÃO NA TELA
   // =================================================================
 
-  // Renderiza a grade de exercícios na Biblioteca Principal
+  // Renderiza a grade de exercícios na biblioteca com filtro de busca
   async renderExercises(searchTerm = "") {
     const listContainer = document.querySelector("#exercises-list");
     if (!listContainer) return;
 
     try {
+      // Busca todos os exercícios do usuário
       const allExercises = await exercisesApi.getExercises();
 
-      // Ajusta o estilo do título se a aba principal estiver aberta
+      // Ajusta o estilo do título dependendo de qual aba tá aberta
       const presentationSection = document.querySelector(".presentation-text");
       const titleElement = document.querySelector("#exercises-section-title");
       if (titleElement && presentationSection) {
@@ -174,9 +194,10 @@ const uiExercises = {
         }
       }
 
-      listContainer.innerHTML = ""; // Limpa a grade atual
+      // Limpa a grade
+      listContainer.innerHTML = "";
 
-      // Caso não haja nenhum exercício criado
+      // Se não tem nenhum exercício criado
       if (allExercises.length === 0) {
         listContainer.innerHTML = `
           <div class="empty-state-container" style="grid-column: 1 / -1;">
@@ -191,10 +212,10 @@ const uiExercises = {
         return;
       }
 
-      // Aplica o filtro de pesquisa (se houver)
+      // Filtra baseado no termo de busca
       const term = searchTerm.toLowerCase();
       const filteredExercises = allExercises.filter((exercise) =>
-        exercise.name.toLowerCase().includes(term)
+        exercise.name.toLowerCase().includes(term),
       );
 
       // Sempre desenha o botão de "Criar Exercício" primeiro
@@ -205,7 +226,7 @@ const uiExercises = {
         </div>
       `;
 
-      // Mensagem caso a pesquisa não encontre nada
+      // Mensagem se a busca não achou nada
       if (filteredExercises.length === 0) {
         listContainer.innerHTML += `
           <div style="grid-column: 1fr; text-align: left; padding: 20px 0; color: #666; width: 100%;">
@@ -215,7 +236,7 @@ const uiExercises = {
         return;
       }
 
-      // Monta os cards dos exercícios encontrados
+      // Renderiza cada exercício como um card
       filteredExercises.forEach((exercise) => this.addExerciseToList(exercise));
     } catch (error) {
       console.error("Render error:", error);
@@ -229,7 +250,8 @@ const uiExercises = {
     listContainer.innerHTML = "";
 
     if (exercisesList.length === 0) {
-      listContainer.innerHTML = '<p class="empty-state">Nenhum exercício encontrado.</p>';
+      listContainer.innerHTML =
+        '<p class="empty-state">Nenhum exercício encontrado.</p>';
       return;
     }
 
@@ -239,13 +261,24 @@ const uiExercises = {
 
       // Foto ou Ícone
       let visualMedia;
-      if (exercise.icon && (exercise.icon.startsWith("data:image") || exercise.icon.startsWith("http"))) {
+      if (
+        exercise.icon &&
+        (exercise.icon.startsWith("data:image") ||
+          exercise.icon.startsWith("http"))
+      ) {
         visualMedia = `<img src="${exercise.icon}" alt="${exercise.name}" class="mini-selection-img">`;
       } else {
         // Todos os ícones suportados
         const iconMap = {
-          dumbbell: "dumbbell", running: "person-running", "weight-hanging": "weight-hanging", bolt: "bolt",
-          "heart-pulse": "heart-pulse", fire: "fire", child: "child", "shoe-prints": "shoe-prints", bed: "bed"
+          dumbbell: "dumbbell",
+          running: "person-running",
+          "weight-hanging": "weight-hanging",
+          bolt: "bolt",
+          "heart-pulse": "heart-pulse",
+          fire: "fire",
+          child: "child",
+          "shoe-prints": "shoe-prints",
+          bed: "bed",
         };
         const iconName = iconMap[exercise.icon] || "dumbbell";
         visualMedia = `<div class="mini-selection-icon"><i class="fa-solid fa-${iconName}"></i></div>`;
@@ -253,10 +286,16 @@ const uiExercises = {
 
       // Lógica de seleção (se já está no treino ou não)
       const isSelected = selectedIds.includes(exercise.id);
-      const btnIcon = isSelected ? '<i class="fa-solid fa-minus"></i>' : '<i class="fa-solid fa-plus"></i>';
-      const btnStyle = isSelected ? 'style="color: #e74c3c; border-color: #e74c3c;"' : "";
-      const addedBadge = isSelected ? '<span class="added-label">Adicionado</span>' : "";
-      
+      const btnIcon = isSelected
+        ? '<i class="fa-solid fa-minus"></i>'
+        : '<i class="fa-solid fa-plus"></i>';
+      const btnStyle = isSelected
+        ? 'style="color: #e74c3c; border-color: #e74c3c;"'
+        : "";
+      const addedBadge = isSelected
+        ? '<span class="added-label">Adicionado</span>'
+        : "";
+
       // Montagem do HTML
       item.innerHTML = `
         <div class="idExerciseList hidden">${exercise.id}</div>
@@ -284,31 +323,51 @@ const uiExercises = {
 
   // Abre a página de detalhes de um exercício específico
   openExercise(exercise) {
-    const exercisePage = document.querySelector(".active-exercise-details-section");
-    const exercisesSection = document.querySelector(".exercises-library-section");
+    const exercisePage = document.querySelector(
+      ".active-exercise-details-section",
+    );
+    const exercisesSection = document.querySelector(
+      ".exercises-library-section",
+    );
     const workoutsSection = document.querySelector(".workouts-section");
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
 
     // Esconde as outras seções
-    [exercisesSection, workoutsSection, presentationText, websitePresentation].forEach((section) => {
+    [
+      exercisesSection,
+      workoutsSection,
+      presentationText,
+      websitePresentation,
+    ].forEach((section) => {
       if (section) section.classList.add("hidden");
     });
 
     // Preenche os textos de detalhes
     document.querySelector("#detail-exercise-name").textContent = exercise.name;
-    document.querySelector("#detail-exercise-muscle").innerHTML = `<i class="fa-solid fa-dna"></i> Músculo: ${exercise.muscle}`;
-    document.querySelector("#detail-exercise-series").textContent = exercise.series || "-";
-    document.querySelector("#detail-exercise-reps").textContent = exercise.repetitions || "-";
-    document.querySelector("#detail-exercise-load").textContent = exercise.load ? `${exercise.load} kg` : "-";
-    document.querySelector("#detail-exercise-equipment").textContent = exercise.equipment || "Nenhum";
-    document.querySelector("#detail-exercise-description").textContent = exercise.description || "Sem descrição.";
+    document.querySelector("#detail-exercise-muscle").innerHTML =
+      `<i class="fa-solid fa-dna"></i> Músculo: ${exercise.muscle}`;
+    document.querySelector("#detail-exercise-series").textContent =
+      exercise.series || "-";
+    document.querySelector("#detail-exercise-reps").textContent =
+      exercise.repetitions || "-";
+    document.querySelector("#detail-exercise-load").textContent = exercise.load
+      ? `${exercise.load} kg`
+      : "-";
+    document.querySelector("#detail-exercise-equipment").textContent =
+      exercise.equipment || "Nenhum";
+    document.querySelector("#detail-exercise-description").textContent =
+      exercise.description || "Sem descrição.";
 
     // Atualiza a foto principal do exercício
     const heroContainer = document.querySelector(".exercise-hero-image");
     heroContainer.innerHTML = "";
-    
-    if (exercise.icon && (exercise.icon.startsWith("data:image") || exercise.icon.startsWith("http"))) {
+
+    if (
+      exercise.icon &&
+      (exercise.icon.startsWith("data:image") ||
+        exercise.icon.startsWith("http"))
+    ) {
       const img = document.createElement("img");
       img.src = exercise.icon;
       img.alt = `Foto de ${exercise.name}`;
@@ -318,8 +377,15 @@ const uiExercises = {
       iconContainer.classList.add("hero-icon-wrapper");
       // Todos os ícones suportados
       const iconMap = {
-        dumbbell: "dumbbell", running: "person-running", "weight-hanging": "weight-hanging", bolt: "bolt",
-        "heart-pulse": "heart-pulse", fire: "fire", child: "child", "shoe-prints": "shoe-prints", bed: "bed"
+        dumbbell: "dumbbell",
+        running: "person-running",
+        "weight-hanging": "weight-hanging",
+        bolt: "bolt",
+        "heart-pulse": "heart-pulse",
+        fire: "fire",
+        child: "child",
+        "shoe-prints": "shoe-prints",
+        bed: "bed",
       };
       const iconName = iconMap[exercise.icon] || "dumbbell";
       iconContainer.innerHTML = `<i class="fa-solid fa-${iconName}"></i>`;
@@ -363,9 +429,13 @@ const uiExercises = {
     // Div Superior (Imagem/Ícone)
     const imageMuscle = document.createElement("div");
     imageMuscle.classList.add("mini-card-image");
-    
+
     let visualElement;
-    if (exercise.icon && (exercise.icon.startsWith("data:image") || exercise.icon.startsWith("http"))) {
+    if (
+      exercise.icon &&
+      (exercise.icon.startsWith("data:image") ||
+        exercise.icon.startsWith("http"))
+    ) {
       const img = document.createElement("img");
       img.src = exercise.icon;
       img.alt = `Foto de ${exercise.name}`;
@@ -375,18 +445,25 @@ const uiExercises = {
       const i = document.createElement("i");
       // Todos os ícones suportados
       const iconMap = {
-        dumbbell: "dumbbell", running: "person-running", "weight-hanging": "weight-hanging", bolt: "bolt",
-        "heart-pulse": "heart-pulse", fire: "fire", child: "child", "shoe-prints": "shoe-prints", bed: "bed"
+        dumbbell: "dumbbell",
+        running: "person-running",
+        "weight-hanging": "weight-hanging",
+        bolt: "bolt",
+        "heart-pulse": "heart-pulse",
+        fire: "fire",
+        child: "child",
+        "shoe-prints": "shoe-prints",
+        bed: "bed",
       };
       const iconName = iconMap[exercise.icon] || "dumbbell";
       i.className = `fa-solid fa-${iconName}`;
       visualElement = i;
     }
-    
+
     const categoryBadge = document.createElement("span");
     categoryBadge.classList.add("category-badge");
     categoryBadge.textContent = exercise.muscle;
-    
+
     imageMuscle.appendChild(visualElement);
     imageMuscle.appendChild(categoryBadge);
     exerciseCard.appendChild(imageMuscle);
@@ -394,23 +471,29 @@ const uiExercises = {
     // Div Inferior (Informações)
     const miniCardInfo = document.createElement("div");
     miniCardInfo.classList.add("mini-card-info");
-    
+
     const title = document.createElement("h4");
     title.textContent = exercise.name;
-    
+
     const statsContainer = document.createElement("div");
     statsContainer.classList.add("exercise-stats");
-    
+
     const createStat = (iconClass, text) => {
       const span = document.createElement("span");
       span.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${text}`;
       return span;
     };
-    
-    statsContainer.appendChild(createStat("fa-layer-group", `${exercise.series} Séries`));
-    statsContainer.appendChild(createStat("fa-rotate-right", `${exercise.repetitions} Reps`));
-    statsContainer.appendChild(createStat("fa-weight-hanging", `${exercise.load}kg`));
-    
+
+    statsContainer.appendChild(
+      createStat("fa-layer-group", `${exercise.series} Séries`),
+    );
+    statsContainer.appendChild(
+      createStat("fa-rotate-right", `${exercise.repetitions} Reps`),
+    );
+    statsContainer.appendChild(
+      createStat("fa-weight-hanging", `${exercise.load}kg`),
+    );
+
     miniCardInfo.appendChild(title);
     miniCardInfo.appendChild(statsContainer);
 
@@ -420,7 +503,7 @@ const uiExercises = {
     optionsBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
     optionsBtn.onclick = async (event) => {
       event.stopPropagation(); // Impede de abrir a tela de detalhes
-      await this.fillFormExercise(exercise.id); 
+      await this.fillFormExercise(exercise.id);
       const modal = document.querySelector("#exercise-modal");
       modal.classList.add("active");
       modal.classList.remove("hidden");
@@ -434,10 +517,10 @@ const uiExercises = {
     exerciseCard.appendChild(miniCardInfo);
     exerciseCard.appendChild(optionsBtn);
     exerciseCard.appendChild(idExercise);
-    
+
     // Configura clique do card para abrir detalhes
     exerciseCard.onclick = () => this.openExercise(exercise);
-    
+
     exercisesGrid.appendChild(exerciseCard);
   },
 
@@ -457,20 +540,25 @@ const uiExercises = {
     `;
     document.body.appendChild(modalOverlay);
 
-    modalOverlay.querySelector("#cancel-delete").onclick = () => modalOverlay.remove();
+    modalOverlay.querySelector("#cancel-delete").onclick = () =>
+      modalOverlay.remove();
 
     modalOverlay.querySelector("#confirm-delete").onclick = async () => {
       await exercisesApi.deleteExercises(exercise.id);
       modalOverlay.remove();
-      
+
       // Fecha a tela de detalhes e volta para a biblioteca de exercícios
-      document.querySelector(".active-exercise-details-section").classList.add("hidden");
-      document.querySelector(".exercises-library-section").classList.remove("hidden");
+      document
+        .querySelector(".active-exercise-details-section")
+        .classList.add("hidden");
+      document
+        .querySelector(".exercises-library-section")
+        .classList.remove("hidden");
       document.querySelector(".workouts-section").classList.remove("hidden"); // Garante que a tab principal volte
-      
+
       this.renderExercises();
     };
-  }
+  },
 };
 
 export default uiExercises;

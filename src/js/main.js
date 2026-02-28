@@ -6,6 +6,7 @@ import uiTraining from "./Training/uiTraining.js";
 import apiExercises from "./Exercises/apiExercises.js";
 import uiExercises from "./Exercises/uiExercises.js";
 import { register, login, checkAuth } from "./auth.js";
+import trainingApi from "./Training/apiTraining.js";
 
 // ==========================================================================
 // FUNÇÕES UTILITÁRIAS GLOBAIS
@@ -29,26 +30,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   await uiTraining.renderTrainings();
   await uiExercises.renderExercises();
 
-  // ========================================================================
+  // ==========================================================================
   // EVENTOS DE FORMULÁRIO: TREINOS
-  // ========================================================================
+  // ==========================================================================
   const trainingForm = document.querySelector("#training-form");
   if (trainingForm) {
     trainingForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      
+
+      // Pega os dados do formulário
       const trainingData = uiTraining.getFormDataTraining();
       try {
         if (trainingData.id) {
-          await apiTraining.updateTraining(trainingData); // Edita
+          // Busca os dados originais do treino no banco
+          const oldTrainingData = await apiTraining.getTrainingById(
+            trainingData.id,
+          );
+          // Mescla os dados
+          const mergedTrainingData = { ...oldTrainingData, ...trainingData };
+          await apiTraining.updateTraining(mergedTrainingData); // Edita
+
+          const currentActive = uiTraining.getCurrentActiveTrainingData();
+          if (currentActive && currentActive.id === trainingData.id) {
+            const freshTraining = await apiTraining.getTrainingById(
+              trainingData.id,
+            );
+            uiTraining.openTraining(freshTraining);
+          }
         } else {
-          await apiTraining.createTraining(trainingData); // Cria
+          // Se não tem ID, é um treino novo
+          await apiTraining.createTraining(trainingData);
         }
-        
+
+        // Limpa o formulário e fecha os modais
         uiTraining.clearFormTraining();
         closeAllModals();
-        
-        const successMessage = trainingData.id ? "Treino atualizado com sucesso!" : "Treino criado com sucesso!";
+
+        const successMessage = trainingData.id
+          ? "Treino atualizado com sucesso!"
+          : "Treino criado com sucesso!";
         uiTraining.showToastTraining(successMessage);
         uiTraining.renderTrainings();
       } catch (error) {
@@ -75,19 +95,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (exerciseForm) {
     exerciseForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      
+
       const exerciseData = uiExercises.getFormDataExercise();
       try {
         if (exerciseData.id) {
-          await apiExercises.updateExercises(exerciseData);
+          // Busca os dados originais no banco primeiro
+          const oldData = await apiExercises.getExercisesById(exerciseData.id);
+          // Mescla os antigos (para não perder o times_completed)
+          const mergedData = { ...oldData, ...exerciseData };
+          // Salva o pacote completo e mesclado
+          await apiExercises.updateExercises(mergedData);
+          // Se a tela de detalhes do exercício estiver aberta, recarrega ela
+          const detailSection = document.querySelector(
+            ".active-exercise-details-section",
+          );
+          if (!detailSection.classList.contains("hidden")) {
+            const freshExercise = await apiExercises.getExercisesById(
+              exerciseData.id,
+            );
+            uiExercises.openExercise(freshExercise);
+          }
         } else {
           await apiExercises.createExercises(exerciseData);
         }
-        
+
         uiExercises.clearFormExercise();
         closeAllModals();
-        
-        const successMessage = exerciseData.id ? "Exercício atualizado com sucesso!" : "Exercício criado com sucesso!";
+
+        const successMessage = exerciseData.id
+          ? "Exercício atualizado com sucesso!"
+          : "Exercício criado com sucesso!";
         uiTraining.showToastTraining(successMessage);
         uiExercises.renderExercises();
       } catch (error) {
@@ -108,9 +145,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // EVENTOS DE PESQUISA (BARRAS DE BUSCA)
   // ========================================================================
-  
+
   // Pesquisa na Biblioteca de Treinos
-  const trainingsSearchInput = document.querySelector("#trainings-search-input");
+  const trainingsSearchInput = document.querySelector(
+    "#trainings-search-input",
+  );
   if (trainingsSearchInput) {
     trainingsSearchInput.addEventListener("input", (event) => {
       uiTraining.renderTrainings(event.target.value);
@@ -118,21 +157,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Pesquisa na Biblioteca de Exercícios
-  const exercisesSearchInput = document.querySelector("#exercises-search-input");
+  const exercisesSearchInput = document.querySelector(
+    "#exercises-search-input",
+  );
   if (exercisesSearchInput) {
     exercisesSearchInput.addEventListener("input", (event) => {
       uiExercises.renderExercises(event.target.value);
     });
   }
 
-  // Lógica Reutilizável: Mostra todos os exercícios nas listas de seleção
+  // Mostra todos os exercícios nas listas de seleção ao clicar em botões específicos
   const seeAllInSearch = (selector, targetContainer) => {
     document.addEventListener("click", async (event) => {
       if (event.target.closest(selector)) {
         try {
           const allExercises = await apiExercises.getExercises();
-          const selectedIds = uiTraining.getCurrentSelectedIds(); 
-          
+          const selectedIds = uiTraining.getCurrentSelectedIds();
+
           // Ordena para manter selecionados no topo
           allExercises.sort((a, b) => {
             const aSelecionado = selectedIds.includes(a.id);
@@ -141,8 +182,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!aSelecionado && bSelecionado) return 1;
             return 0;
           });
-          
-          uiExercises.renderExercisesForSelection(allExercises, targetContainer, selectedIds);
+
+          uiExercises.renderExercisesForSelection(
+            allExercises,
+            targetContainer,
+            selectedIds,
+          );
         } catch (error) {
           console.error("Erro ao carregar lista de exercícios:", error);
         }
@@ -150,7 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
-  // Lógica Reutilizável: Filtra exercícios durante a digitação nos Modais
+  // Filtra exercícios em tempo real durante a digitação nos modais de seleção
   const setupSearchExercise = (inputElement, targetListId) => {
     if (!inputElement) return;
 
@@ -158,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const term = event.target.value.toLowerCase();
       try {
         const allExercises = await apiExercises.getExercises();
-        const selectedIds = uiTraining.getCurrentSelectedIds(); 
+        const selectedIds = uiTraining.getCurrentSelectedIds();
 
         const filteredExercises = allExercises.filter((exercise) =>
           exercise.name.toLowerCase().includes(term),
@@ -173,7 +218,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           return 0;
         });
 
-        uiExercises.renderExercisesForSelection(filteredExercises, targetListId, selectedIds);
+        uiExercises.renderExercisesForSelection(
+          filteredExercises,
+          targetListId,
+          selectedIds,
+        );
       } catch (error) {
         console.error("Erro ao filtrar exercícios:", error);
       }
@@ -190,12 +239,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupSearchExercise(searchInputForm, listIdForm);
 
   seeAllInSearch(".add-exercise-to-workout-btn", listId);
-  seeAllInSearch(".add-new-workout-btn, .add-new-workout, .edit-icon, .edit-workout-btn, #exercise-search", listIdForm);
+  seeAllInSearch(
+    ".add-new-workout-btn, .add-new-workout, .edit-icon, .edit-workout-btn, #exercise-search",
+    listIdForm,
+  );
 
   // ========================================================================
   // AUTENTICAÇÃO (LOGIN E CADASTRO)
   // ========================================================================
-  
+
   // Login
   const loginForm = document.querySelector("#login-form");
   if (loginForm) {
@@ -203,7 +255,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       event.preventDefault();
       const email = document.querySelector("#login-email").value;
       const password = document.querySelector("#login-password").value;
-      
+
       if (login(email, password)) {
         checkAuth();
         console.log("Login realizado com sucesso!");
@@ -224,10 +276,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const name = document.querySelector("#register-name").value;
       const email = document.querySelector("#register-email").value;
       const password = document.querySelector("#register-password").value;
-      
+
       const response = register(name, email, password);
       if (response.success) {
-        uiTraining.showToastTraining("Conta criada com sucesso! Faça seu login. 🎉");
+        uiTraining.showToastTraining(
+          "Conta criada com sucesso! Faça seu login. 🎉",
+        );
         registerForm.reset();
         document.querySelector("#register-section").classList.add("hidden");
         document.querySelector("#login-section").classList.remove("hidden");
@@ -240,7 +294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // PERFIL DO USUÁRIO E CONFIGURAÇÕES
   // ========================================================================
-  
+
   // Salvando dados do Perfil
   const profileForm = document.querySelector("#profile-form");
   if (profileForm) {
@@ -254,7 +308,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const age = document.querySelector("#profile-age").value;
       const gender = document.querySelector("#profile-gender").value;
       const newPassword = document.querySelector("#profile-password").value;
-      const newPasswordConfirm = document.querySelector("#profile-password-confirm").value;
+      const newPasswordConfirm = document.querySelector(
+        "#profile-password-confirm",
+      ).value;
 
       const users = JSON.parse(localStorage.getItem("users") || "[]");
       let currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -265,7 +321,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         users[userIndex].weight = weight;
         users[userIndex].height = height;
         users[userIndex].goal = goal;
-        users[userIndex].age = age; 
+        users[userIndex].age = age;
         users[userIndex].gender = gender;
 
         // Alteração de Senha
@@ -287,7 +343,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         uiTraining.showToastTraining("Perfil atualizado com sucesso! ✅");
         document.getElementById("hero-display-name").textContent = name;
-        
+
         // Remove alerta se tudo estiver preenchido
         checkProfileCompletion();
       }
@@ -303,16 +359,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const base64Image = e.target.result;
-          const avatarPreview = document.querySelector("#profile-avatar-preview");
+          const avatarPreview = document.querySelector(
+            "#profile-avatar-preview",
+          );
           avatarPreview.innerHTML = `<img src="${base64Image}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-          
+
           const users = JSON.parse(localStorage.getItem("users") || "[]");
           let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-          const userIndex = users.findIndex((u) => u.email === currentUser.email);
+          const userIndex = users.findIndex(
+            (u) => u.email === currentUser.email,
+          );
 
           if (userIndex !== -1) {
-            users[userIndex].photo = base64Image; 
-            currentUser.photo = base64Image; 
+            users[userIndex].photo = base64Image;
+            currentUser.photo = base64Image;
             localStorage.setItem("users", JSON.stringify(users));
             localStorage.setItem("currentUser", JSON.stringify(currentUser));
             uiTraining.showToastTraining("Foto atualizada com sucesso! 📸");
@@ -332,8 +392,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       event.preventDefault();
 
       const email = document.querySelector("#recovery-email").value;
-      const newPassword = document.querySelector("#recovery-new-password").value;
-      const confirmPassword = document.querySelector("#recovery-confirm-password").value;
+      const newPassword = document.querySelector(
+        "#recovery-new-password",
+      ).value;
+      const confirmPassword = document.querySelector(
+        "#recovery-confirm-password",
+      ).value;
 
       if (newPassword !== confirmPassword) {
         alert("Erro! As senhas não coincidem.");
@@ -347,10 +411,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         users[userIndex].password = newPassword;
         localStorage.setItem("users", JSON.stringify(users));
 
-        uiTraining.showToastTraining("Senha redefinida com sucesso! Faça seu login. ✅");
+        uiTraining.showToastTraining(
+          "Senha redefinida com sucesso! Faça seu login. ✅",
+        );
 
         forgotPasswordForm.reset();
-        document.querySelector("#forgot-password-modal").classList.remove("active");
+        document
+          .querySelector("#forgot-password-modal")
+          .classList.remove("active");
       } else {
         alert("E-mail não encontrado! Verifique se digitou corretamente.");
       }
@@ -371,7 +439,12 @@ document.addEventListener("click", async (event) => {
     const isFromSelectModal = target.closest("#select-exercise-modal");
 
     if (isFromSelectModal) {
-      uiTraining.addExerciseToExistingTraining(exerciseId, target);
+      await uiTraining.addExerciseToExistingTraining(exerciseId, target);
+      // Recarrega o treino no fundo para o exercício aparecer na hora na tela
+      const currentActive = uiTraining.getCurrentActiveTrainingData();
+      if (currentActive) {
+        uiTraining.openTraining(currentActive);
+      }
     } else {
       uiTraining.addExerciseToSelection(exerciseId, target);
     }
@@ -379,24 +452,27 @@ document.addEventListener("click", async (event) => {
     // Re-ordena e re-renderiza a lista para manter atualizada
     const allExercises = await apiExercises.getExercises();
     const selectedIds = uiTraining.getCurrentSelectedIds();
-    
+
     allExercises.sort((a, b) => {
       const aSel = selectedIds.includes(a.id);
       const bSel = selectedIds.includes(b.id);
       return aSel === bSel ? 0 : aSel ? -1 : 1;
     });
-    
-    uiExercises.renderExercisesForSelection(allExercises, "#select-exercise-list", selectedIds);
+
+    uiExercises.renderExercisesForSelection(
+      allExercises,
+      "#select-exercise-list",
+      selectedIds,
+    );
   }
 });
-
 
 // ==========================================================================
 // SISTEMA DE CRONÔMETROS E EXECUÇÃO DE TREINO
 // ==========================================================================
 
-window.runningWorkoutId = null; 
-let runningWorkoutData = null;  
+window.runningWorkoutId = null;
+let runningWorkoutData = null;
 
 let mainTimerInterval = null;
 let mainSeconds = 0;
@@ -406,21 +482,21 @@ let restSeconds = 0;
 let isRestRunning = false;
 
 // Elementos da UI (Cronômetros)
-const btnStartWorkout = document.querySelector('#start-workout-action-btn');
-const dualTimersWrapper = document.querySelector('#dual-timers-wrapper');
-const mainTimeDisplay = document.querySelector('#main-workout-time');
-const restTimeDisplay = document.querySelector('#rest-timer-display');
-const btnRestToggle = document.querySelector('#rest-timer-toggle');
-const btnRestStop = document.querySelector('#rest-timer-stop');
+const btnStartWorkout = document.querySelector("#start-workout-action-btn");
+const dualTimersWrapper = document.querySelector("#dual-timers-wrapper");
+const mainTimeDisplay = document.querySelector("#main-workout-time");
+const restTimeDisplay = document.querySelector("#rest-timer-display");
+const btnRestToggle = document.querySelector("#rest-timer-toggle");
+const btnRestStop = document.querySelector("#rest-timer-stop");
 
-// Utilitário de formatação de tempo (MM:SS)
+// Formata segundos para o formato MM:SS
 function formatTime(totalSeconds) {
-  const m = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-  const s = String(totalSeconds % 60).padStart(2, '0');
+  const m = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+  const s = String(totalSeconds % 60).padStart(2, "0");
   return `${m}:${s}`;
 }
 
-// Inicia Treino
+// Inicia o cronômetro principal do treino
 function startMainTimer() {
   btnStartWorkout.classList.add("hidden");
   dualTimersWrapper.classList.remove("hidden");
@@ -438,7 +514,7 @@ function startMainTimer() {
   }, 1000);
 }
 
-// Play/Pause Descanso
+// Alterna entre iniciar e pausar o cronômetro de descanso
 function toggleRestTimer() {
   if (isRestRunning) {
     clearInterval(restTimerInterval);
@@ -447,8 +523,8 @@ function toggleRestTimer() {
   } else {
     isRestRunning = true;
     btnRestToggle.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    btnRestStop.classList.remove('hidden');
-    
+    btnRestStop.classList.remove("hidden");
+
     restTimerInterval = setInterval(() => {
       restSeconds++;
       restTimeDisplay.textContent = formatTime(restSeconds);
@@ -456,20 +532,21 @@ function toggleRestTimer() {
   }
 }
 
-// Parar Descanso
+// Para e reseta o cronômetro de descanso
 function stopRestTimer() {
   clearInterval(restTimerInterval);
   isRestRunning = false;
   restSeconds = 0;
   restTimeDisplay.textContent = "00:00";
   btnRestToggle.innerHTML = '<i class="fa-solid fa-play"></i>';
-  btnRestStop.classList.add('hidden');
+  btnRestStop.classList.add("hidden");
 }
 
 // ==========================================================================
 // MODAIS DE CONFIRMAÇÃO DO TREINO (COMEÇAR E TERMINAR)
 // ==========================================================================
 
+// Exibe modal de confirmação antes de iniciar o treino
 function confirmStartWorkout() {
   const modalOverlay = document.createElement("div");
   modalOverlay.className = "confirm-modal-overlay";
@@ -486,16 +563,21 @@ function confirmStartWorkout() {
   `;
   document.body.appendChild(modalOverlay);
 
-  modalOverlay.querySelector("#cancel-start").onclick = () => modalOverlay.remove();
+  modalOverlay.querySelector("#cancel-start").onclick = () =>
+    modalOverlay.remove();
   modalOverlay.querySelector("#confirm-start").onclick = () => {
     modalOverlay.remove();
     startMainTimer(); // Só começa se clicar em Bora
   };
 }
 
+// Exibe modal de confirmação para finalizar o treino
 function confirmFinishWorkout() {
   if (mainSeconds === 0) {
-    uiTraining.showToastTraining("Você precisa iniciar o treino primeiro!", "warning");
+    uiTraining.showToastTraining(
+      "Você precisa iniciar o treino primeiro!",
+      "warning",
+    );
     return;
   }
 
@@ -514,7 +596,8 @@ function confirmFinishWorkout() {
   `;
   document.body.appendChild(modalOverlay);
 
-  modalOverlay.querySelector("#cancel-finish").onclick = () => modalOverlay.remove();
+  modalOverlay.querySelector("#cancel-finish").onclick = () =>
+    modalOverlay.remove();
   modalOverlay.querySelector("#confirm-finish").onclick = () => {
     modalOverlay.remove();
     finishAndSaveWorkout(); // Só salva e finaliza se clicar em Sim
@@ -522,25 +605,25 @@ function confirmFinishWorkout() {
 }
 
 // Listeners Cronômetros (Atualizado com as confirmações)
-if(btnStartWorkout) btnStartWorkout.addEventListener('click', confirmStartWorkout);
-if(btnRestToggle) btnRestToggle.addEventListener('click', toggleRestTimer);
-if(btnRestStop) btnRestStop.addEventListener('click', stopRestTimer);
-
+if (btnStartWorkout)
+  btnStartWorkout.addEventListener("click", confirmStartWorkout);
+if (btnRestToggle) btnRestToggle.addEventListener("click", toggleRestTimer);
+if (btnRestStop) btnRestStop.addEventListener("click", stopRestTimer);
 
 // ==========================================================================
 // FINALIZAR TREINO (AÇÃO PRINCIPAL)
 // ==========================================================================
+// Encerra o treino, salva no histórico e atualiza contadores de exercícios
 async function finishAndSaveWorkout() {
-
   clearInterval(mainTimerInterval);
   clearInterval(restTimerInterval);
-  
+
   const totalMinutes = Math.floor(mainSeconds / 60);
   const timeFormatted = formatTime(mainSeconds);
-  
+
   const user = JSON.parse(localStorage.getItem("currentUser"));
   const activeTraining = uiTraining.getCurrentActiveTrainingData();
-  
+
   // Salva no Histórico
   if (activeTraining) {
     const historyLog = {
@@ -549,27 +632,42 @@ async function finishAndSaveWorkout() {
       training_id: activeTraining.id,
       training_name: activeTraining.name,
       duration_minutes: totalMinutes,
-      userEmail: user.email
+      userEmail: user.email,
     };
     await apiTraining.saveHistory(historyLog);
+
+    try {
+      const trainingDataDb = await apiTraining.getTrainingById(
+        activeTraining.id,
+      );
+      if (trainingDataDb) {
+        let currentTrainingMade = parseInt(trainingDataDb.times_completed || 0);
+        trainingDataDb.times_completed = currentTrainingMade + 1;
+        await apiTraining.updateTraining(trainingDataDb);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar a contagem do treino:", error);
+    }
   }
 
   // Atualiza contagem de exercícios concluídos
-  const completedBtns = document.querySelectorAll('.check-exercise-btn.completed');
+  const completedBtns = document.querySelectorAll(
+    ".check-exercise-btn.completed",
+  );
   const updatePromises = [];
 
-  completedBtns.forEach(btn => {
-    const exerciseCard = btn.closest('.exercise-item');
-    if (!exerciseCard) return; 
-    
+  completedBtns.forEach((btn) => {
+    const exerciseCard = btn.closest(".exercise-item");
+    if (!exerciseCard) return;
+
     const exerciseId = exerciseCard.dataset.id;
-    
+
     const updateTask = async () => {
       try {
         const exData = await apiExercises.getExercisesById(exerciseId);
         if (exData) {
           let currentMade = parseInt(exData.times_completed || 0);
-          exData.times_completed = currentMade + 1; 
+          exData.times_completed = currentMade + 1;
           await apiExercises.updateExercises(exData);
         }
       } catch (error) {
@@ -587,55 +685,65 @@ async function finishAndSaveWorkout() {
   isRestRunning = false;
   mainTimeDisplay.textContent = "00:00";
   restTimeDisplay.textContent = "00:00";
-  btnStartWorkout.classList.remove('hidden');
-  dualTimersWrapper.classList.add('hidden');
-  dualTimersWrapper.classList.remove('floating-mode');
-  
-  document.querySelectorAll('.check-exercise-btn').forEach(btn => btn.classList.remove('completed'));
+  btnStartWorkout.classList.remove("hidden");
+  dualTimersWrapper.classList.add("hidden");
+  dualTimersWrapper.classList.remove("floating-mode");
 
-  window.runningWorkoutId = null; 
-  runningWorkoutData = null; 
-  
+  document
+    .querySelectorAll(".check-exercise-btn")
+    .forEach((btn) => btn.classList.remove("completed"));
+
+  window.runningWorkoutId = null;
+  runningWorkoutData = null;
+
   uiTraining.renderTrainings();
-  uiTraining.showToastTraining(`Treino finalizado! Duração: ${timeFormatted} ⏱️`);
-  
+  uiTraining.showToastTraining(
+    `Treino finalizado! Duração: ${timeFormatted} ⏱️`,
+  );
+
   document.querySelector(".active-workout-section").classList.add("hidden");
   document.querySelector(".workouts-section").classList.remove("hidden");
-  document.querySelector(".exercises-library-section").classList.remove("hidden");
+  document
+    .querySelector(".exercises-library-section")
+    .classList.remove("hidden");
 }
 
 // Sensor Global: Comportamentos da Tela do Treino (Botão Finalizar e Relógio Flutuante)
-document.addEventListener('click', (event) => {
+document.addEventListener("click", (event) => {
   const target = event.target;
-  
+
   // Finalizar
-  if (target.closest('.finish-workout-btn')) {
+  if (target.closest(".finish-workout-btn")) {
     confirmFinishWorkout();
   }
-  
+
   // Transforma relógio em flutuante ao sair da tela
-  if (target.closest('.back-arrow-btn') || target.closest('.nav-btn') || target.closest('.main-logo')) {
-      if (mainSeconds > 0 && dualTimersWrapper) {
-        dualTimersWrapper.classList.add('floating-mode');
-        document.body.appendChild(dualTimersWrapper);
-      }
+  if (
+    target.closest(".back-arrow-btn") ||
+    target.closest(".nav-btn") ||
+    target.closest(".main-logo")
+  ) {
+    if (mainSeconds > 0 && dualTimersWrapper) {
+      dualTimersWrapper.classList.add("floating-mode");
+      document.body.appendChild(dualTimersWrapper);
+    }
   }
 
   // Restaura relógio ao clicar nele
-  if (target.closest('#dual-timers-wrapper.floating-mode')) {
-      if(target.closest('.timer-btn')) return; 
-      
-      if (runningWorkoutData) {
-         dualTimersWrapper.classList.remove('floating-mode');
-         uiTraining.openTraining(runningWorkoutData);
-      }
+  if (target.closest("#dual-timers-wrapper.floating-mode")) {
+    if (target.closest(".timer-btn")) return;
+
+    if (runningWorkoutData) {
+      dualTimersWrapper.classList.remove("floating-mode");
+      uiTraining.openTraining(runningWorkoutData);
+    }
   }
 });
-
 
 // ==========================================================================
 // ALERTA DE PERFIL INCOMPLETO
 // ==========================================================================
+// Verifica se o perfil do usuário está completo e mostra alerta se houver campos faltando
 export function checkProfileCompletion() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (!currentUser) return;
@@ -643,11 +751,11 @@ export function checkProfileCompletion() {
   const alertContainer = document.querySelector("#profile-alert-container");
   if (!alertContainer) return;
 
-  const isComplete = 
-    currentUser.age && 
-    currentUser.gender && 
-    currentUser.weight && 
-    currentUser.height && 
+  const isComplete =
+    currentUser.age &&
+    currentUser.gender &&
+    currentUser.weight &&
+    currentUser.height &&
     currentUser.goal;
 
   if (!isComplete) {
@@ -670,10 +778,131 @@ const goToProfileBtn = document.querySelector("#go-to-profile-alert-btn");
 if (goToProfileBtn) {
   goToProfileBtn.addEventListener("click", () => {
     const navBtns = document.querySelectorAll(".nav-btn");
-    navBtns.forEach(btn => {
-      if(btn.textContent.trim() === "Perfil") {
+    navBtns.forEach((btn) => {
+      if (btn.textContent.trim() === "Perfil") {
         btn.click();
       }
     });
   });
+}
+
+// ==========================================================================
+
+// Capturando data e hora do último treino realizado
+const historyTraining = await trainingApi.getHistory();
+if (historyTraining && historyTraining.length > 0) {
+  const lastTraining = historyTraining[historyTraining.length - 1];
+  // Data
+  const date = new Date(lastTraining.date);
+  const formattedDate = date.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  console.log("Dia do último treino", formattedDate);
+  // Hora
+  const formattedTime = date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  console.log("Hora do último treino", formattedTime);
+
+  // Treino sugerido
+  let sugestedTraining = lastTraining;
+  if (historyTraining.length > 1) {
+    let randomIndex = Math.floor(Math.random() * (historyTraining.length - 1));
+    if (historyTraining[randomIndex] === lastTraining) {
+      if (randomIndex === 0) {
+        randomIndex++;
+      } else {
+        randomIndex--;
+      }
+    }
+    sugestedTraining = historyTraining[randomIndex];
+  }
+  console.log("Treino sugerido para hoje:", sugestedTraining.training_name);
+}
+
+// Capturando o treino mais completado
+const trainings = await apiTraining.getTrainings();
+if (trainings && trainings.length > 0) {
+  let mostCompleted = trainings[0];
+  for (let i = 1; i < trainings.length; i++) {
+    if (trainings[i].times_completed > mostCompleted.times_completed) {
+      mostCompleted = trainings[i];
+    }
+  }
+  console.log(
+    "Treino mais completado:",
+    mostCompleted.name,
+    "com",
+    mostCompleted.times_completed,
+  );
+}
+
+// Capturando o exercício mais completado
+const exercises = await apiExercises.getExercises();
+if (exercises && exercises.length > 0) {
+  let mostCompleted = exercises[0];
+  for (let i = 1; i < exercises.length; i++) {
+    if (exercises[i].times_completed > mostCompleted.times_completed) {
+      mostCompleted = exercises[i];
+    }
+  }
+  console.log(
+    "Exercício mais completado:",
+    mostCompleted.name,
+    "com",
+    mostCompleted.times_completed,
+  );
+}
+
+// Calculando a Taxa Metabólica Basal a o Índice de Massa Corporal
+const userText = localStorage.getItem("currentUser");
+if (userText) {
+  const user = JSON.parse(userText);
+  // Calculando a Taxa Metabólica Basal
+  if (user.weight && user.height && user.age && user.gender) {
+    let tmb = 0;
+    if (user.gender === "masculino" || user.gender === "outro") {
+      const tmbM = 10 * user.weight + 6.25 * user.height - 5 * user.age + 5;
+      user.gender === "masculino" ? (tmb = tmbM) : (tmb = tmbM * 0.9); // Reduz 10% para outros gêneros
+    } else if (user.gender === "feminino") {
+      tmb = 10 * user.weight + 6.25 * user.height - 5 * user.age - 161;
+    }
+    console.log(
+      "Taxa Metabólica Basal (TMB) estimada:",
+      Math.round(tmb),
+      "kcal/dia",
+    );
+  } else {
+    console.log(
+      "Dados insuficientes para calcular a TMB. Preencha peso, altura, idade e gênero no perfil.",
+    );
+  }
+
+  // Calculando o Índice de Massa Corporal
+  if (user.weight && user.height) {
+    const IMC = user.weight / (user.height / 100) ** 2;
+    console.log("Índice de Massa Corporal (IMC) estimado:", IMC.toFixed(2));
+    switch (true) {
+      case IMC < 18.5:
+        console.log("Você está abaixo do peso");
+        break;
+      case IMC >= 18.5 && IMC < 25:
+        console.log("Você está com peso normal");
+        break;
+      case IMC >= 25 && IMC < 30:
+        console.log("Você está com sobrepeso");
+        break;
+      case IMC >= 30:
+        console.log("Você está com obesidade");
+        break;
+      default:
+        console.log("Não foi possível calcular o IMC");
+    }
+  } else {
+    console.log(
+      "Dados insuficientes para calcular a TMB. Preencha peso, altura, idade e gênero no perfil.");
+  }
 }

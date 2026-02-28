@@ -10,18 +10,22 @@ import { checkAuth } from "./auth.js";
 // SELEÇÃO DE SEÇÕES GERAIS (PÁGINAS)
 // ==========================================================================
 const presentationTextSection = document.querySelector(".presentation-text");
-const websitePresentationSection = document.querySelector(".website-presentation");
+const websitePresentationSection = document.querySelector(
+  ".website-presentation",
+);
 const workoutsSection = document.querySelector(".workouts-section");
 const exerciseSection = document.querySelector(".exercises-library-section");
 const pageTraining = document.querySelector(".active-workout-section");
-const pageExerciseDetails = document.querySelector(".active-exercise-details-section");
+const pageExerciseDetails = document.querySelector(
+  ".active-exercise-details-section",
+);
 const profileSection = document.querySelector("#profile-section");
 
 // ==========================================================================
 // FUNÇÕES DE CONTROLE DE NAVEGAÇÃO
 // ==========================================================================
 
-// Sobe a tela suavemente para o topo
+// Sobe a página suavemente pro topo
 function startPage() {
   window.scrollTo({
     top: 0,
@@ -29,7 +33,7 @@ function startPage() {
   });
 }
 
-// Esconde todas as seções principais do app
+// Esconde todas as seções da aplicação (menos a que quer mostrar)
 function hideAllSections() {
   const sections = [
     presentationTextSection,
@@ -38,61 +42,75 @@ function hideAllSections() {
     exerciseSection,
     pageTraining,
     pageExerciseDetails,
-    profileSection
+    profileSection,
   ];
+  // Marca todas com "hidden" pra sumirem
   sections.forEach((section) => {
     if (section) section.classList.add("hidden");
   });
 }
 
-// Mostra a Tela Inicial (Dashboard + Biblioteca de Treinos)
+// Mostra a tela inicial (com boas-vindas, dashboard e biblioteca de treinos)
 function showHome() {
+  // Tira tudo da tela primeiro
   hideAllSections();
+  // Mostra o que precisa na home
   presentationTextSection.classList.remove("hidden");
   websitePresentationSection.classList.remove("hidden");
   workoutsSection.classList.remove("hidden");
 
+  // Renderiza os treinos do usuário
   uiTraining.renderTrainings();
   startPage();
 }
 
-// Mostra a Tela de Bibliotecas (Treinos e Exercícios)
+// Mostra a biblioteca com treinos e exercícios disponíveis
 function changeForTraining() {
+  // Esconde tudo primeiro
   hideAllSections();
+  // Mostra só as bibliotecas
   workoutsSection.classList.remove("hidden");
   exerciseSection.classList.remove("hidden");
 
+  // Renderiza ambas as listas
   uiTraining.renderTrainings();
   uiExercises.renderExercises();
   startPage();
 }
 
-// Mostra a Tela de Perfil e preenche os dados
+// Abre a tela de edição do perfil com todos os dados preenchidos
 function showProfile() {
+  // Esconde tudo
   hideAllSections();
+  // Mostra só o perfil
   profileSection.classList.remove("hidden");
-  fillProfileData(); 
-  startPage(); 
+  // Preenche os campos com os dados do usuário
+  fillProfileData();
+  startPage();
 }
 
-// Preenche os inputs da página de Perfil com os dados do LocalStorage
+// Busca o usuário logado e preenche todos os campos da página de perfil
 function fillProfileData() {
+  // Pega os dados do usuário do localStorage
   const userString = localStorage.getItem("currentUser");
 
   if (userString) {
     const user = JSON.parse(userString);
 
-    // Textos Básicos
+    // Preenche os dados básicos (email, nome)
     document.getElementById("profile-email").value = user.email || "";
-    document.getElementById("hero-display-email").textContent = user.email || "";
+    document.getElementById("hero-display-email").textContent =
+      user.email || "";
 
     const nomeExibicao = user.name ? user.name : user.email.split("@")[0];
     document.getElementById("profile-name").value = nomeExibicao;
     document.getElementById("hero-display-name").textContent = nomeExibicao;
 
-    // Medidas e Objetivo
-    if (user.weight) document.getElementById("profile-weight").value = user.weight;
-    if (user.height) document.getElementById("profile-height").value = user.height;
+    // Preenche medidas e objetivo
+    if (user.weight)
+      document.getElementById("profile-weight").value = user.weight;
+    if (user.height)
+      document.getElementById("profile-height").value = user.height;
     if (user.goal) document.getElementById("profile-goal").value = user.goal;
 
     // Foto de Perfil
@@ -130,8 +148,12 @@ document.addEventListener("click", async (event) => {
   if (backExerciseBtn) {
     if (backExerciseBtn.getAttribute("data-from") === "training") {
       // Volta do Exercício para o Treino Ativo
-      document.querySelector(".active-exercise-details-section").classList.add("hidden");
-      document.querySelector(".active-workout-section").classList.remove("hidden");
+      document
+        .querySelector(".active-exercise-details-section")
+        .classList.add("hidden");
+      document
+        .querySelector(".active-workout-section")
+        .classList.remove("hidden");
       backExerciseBtn.removeAttribute("data-from");
       window.scrollTo({ top: 150, behavior: "smooth" });
     } else {
@@ -142,10 +164,13 @@ document.addEventListener("click", async (event) => {
 
   // --- ABERTURA DE MODAIS DE CRIAÇÃO/EDIÇÃO ---
   // Modal Treino
-  if (target.closest(".add-new-workout-btn") || target.closest(".add-new-workout")) {
+  if (
+    target.closest(".add-new-workout-btn") ||
+    target.closest(".add-new-workout")
+  ) {
     const modalTitleTreino = document.querySelector("#training-modal-title");
     if (modalTitleTreino) modalTitleTreino.textContent = "Novo Treino";
-    
+
     const modal = document.querySelector("#training-modal");
     modal.classList.add("active");
     modal.classList.remove("hidden");
@@ -156,7 +181,7 @@ document.addEventListener("click", async (event) => {
   if (target.closest(".add-new-exercise-btn")) {
     const modalTitle = document.querySelector("#exercise-modal-title");
     if (modalTitle) modalTitle.textContent = "Novo Exercício";
-    
+
     const modal = document.querySelector("#exercise-modal");
     modal.classList.add("active");
     modal.classList.remove("hidden");
@@ -164,7 +189,10 @@ document.addEventListener("click", async (event) => {
   }
 
   // Modal Exercício a partir do Modal de Treino
-  if (target.closest(".create-exercise-btn") || target.closest(".create-new-exercise-from-modal-btn")) {
+  if (
+    target.closest(".create-exercise-btn") ||
+    target.closest(".create-new-exercise-from-modal-btn")
+  ) {
     const modalTitle = document.querySelector("#exercise-modal-title");
     if (modalTitle) modalTitle.textContent = "Novo Exercício";
 
@@ -188,7 +216,7 @@ document.addEventListener("click", async (event) => {
       uiExercises.renderExercisesForSelection(
         allExercises,
         "#available-exercises-list",
-        selectedIds
+        selectedIds,
       );
     }
   }
@@ -197,7 +225,7 @@ document.addEventListener("click", async (event) => {
   if (target.closest("#close-x-btn, #cancel-btn")) {
     document.querySelector("#training-modal").classList.remove("active");
   }
-  
+
   if (target.closest("#close-exercise-modal-btn, #cancel-exercise-btn")) {
     document.querySelector("#exercise-modal").classList.remove("active");
   }
@@ -257,7 +285,10 @@ document.addEventListener("click", async (event) => {
     }
   }
 
-  if (target.closest("#close-forgot-password-btn") || target.closest("#cancel-recovery-btn")) {
+  if (
+    target.closest("#close-forgot-password-btn") ||
+    target.closest("#cancel-recovery-btn")
+  ) {
     const modal = document.querySelector("#forgot-password-modal");
     if (modal) {
       modal.classList.remove("active");

@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const navMenu = document.querySelector(".header-menu");
   const navButtons = document.querySelectorAll(".nav-btn");
 
-  // Função de alternância (Toggle) para abrir/fechar a gaveta do menu
+  // Alterna entre abrir e fechar o menu mobile
   function toggleMenu(event) {
     // Evita o disparo duplo em telas touch (mobile)
     if (event.type === "touchstart") event.preventDefault();
-    
+
     if (navMenu) {
       navMenu.classList.toggle("active");
       const isOpen = navMenu.classList.contains("active");
@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 // ==========================================================================
 // SAUDAÇÃO PERSONALIZADA (HERO TEXT)
 // ==========================================================================
@@ -45,12 +44,11 @@ const usuario = localStorage.getItem("currentUser");
 if (usuario) {
   const nome = JSON.parse(usuario).name;
   const primeiroNome = nome.split(" ")[0]; // Corta a string e pega apenas o primeiro nome
-  
+
   if (presentationText) {
     presentationText.innerHTML = `Bem-vindo, ${primeiroNome}!`;
   }
 }
-
 
 // ==========================================================================
 // TEMA: MODO ESCURO (DARK MODE)
@@ -58,7 +56,7 @@ if (usuario) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const darkModeToggle = document.getElementById("dark-mode-toggle");
-  
+
   // --- CHECAGEM DE MEMÓRIA AO CARREGAR A PÁGINA ---
   // Se o usuário tinha ativado antes, liga o modo escuro automaticamente
   if (localStorage.getItem("dark-mode") === "enabled") {

@@ -98,6 +98,16 @@ const trainingApi = {
       console.error(error);
     }
   },
+
+  // Pega o histórico do treino
+  async getHistory() {
+    try {
+      const response = await fetch(`${BASE_URL}/history`);
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 export default trainingApi;
