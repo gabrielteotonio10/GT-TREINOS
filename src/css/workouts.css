@@ -160,6 +160,8 @@
   justify-content: center;
 }
 
+
+
 .add-new-workout-btn:hover,
 .add-new-exercise-btn:hover {
   background-color: var(--primary-color);

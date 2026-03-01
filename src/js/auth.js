@@ -20,6 +20,11 @@ export async function register(name, email, password) {
   if (error)
     return { success: false, message: "Erro ao salvar no banco de dados." };
 
+  localStorage.setItem(
+    "currentUser",
+    JSON.stringify({ name, email, password }),
+  );
+
   return { success: true };
 }
 

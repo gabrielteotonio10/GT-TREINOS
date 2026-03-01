@@ -53,6 +53,29 @@ function hideAllSections() {
   });
 }
 
+function updateUIWithUserData() {
+  const userString = localStorage.getItem("currentUser");
+  if (!userString) return;
+
+  const user = JSON.parse(userString);
+  const displayName = document.getElementById("hero-display-name");
+  const greetingElement = document.getElementById("greeting-text"); // Veja se tem esse ID no HTML
+
+  // Define a saudação baseada na hora
+  const hour = new Date().getHours();
+  let greeting = "Bom dia";
+  if (hour >= 12 && hour < 18) greeting = "Boa tarde";
+  if (hour >= 18 || hour < 5) greeting = "Boa noite";
+
+  if (displayName) {
+    displayName.textContent = user.name || user.email.split("@")[0];
+  }
+
+  if (greetingElement) {
+    greetingElement.textContent = greeting;
+  }
+}
+
 // Mostra a tela inicial (com boas-vindas, dashboard e biblioteca de treinos)
 async function showHome() {
   // Tira tudo da tela primeiro
@@ -64,9 +87,18 @@ async function showHome() {
     websitePresentationSection.classList.remove("hidden");
   if (workoutsSection) workoutsSection.classList.remove("hidden");
 
+  updateUIWithUserData();
+
   // Agora esperamos o Supabase responder antes de finalizar a transição
   await uiTraining.renderTrainings();
   await renderDashboard();
+
+  try {
+    // Garante que o dashboard e os treinos carreguem em paralelo para ser mais rápido
+    await Promise.all([uiTraining.renderTrainings(), renderDashboard()]);
+  } catch (error) {
+    console.error("Erro ao carregar dados da Home:", error);
+  }
 
   startPage();
 }
@@ -369,3 +401,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   startPage();
   await showHome();
 });
+
+const btnHambúrguer = document.querySelector(".menu-mobile-btn");
+if (btnHambúrguer) {
+  btnHambúrguer.addEventListener("click", (event) => {
+    event.stopPropagation(); 
+    document.querySelector(".nav-menu").classList.toggle("active");
+  });
+}

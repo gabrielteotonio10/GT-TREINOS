@@ -190,25 +190,6 @@
   color: white;
 }
 
-/* Estilo do Card "Adicionar Novo" (Versão Vazia) */
-.add-new-exercise-btn {
-  border: 2px dashed #ccc;
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #aaa;
-  min-height: 160px;
-  padding: 10px;
-  text-align: center;
-}
-
-.add-new-exercise-btn i {
-  font-size: 1.8rem;
-  margin-bottom: 5px;
-}
-
 
 /* ==========================================================================
    3. FORMULÁRIO DE EXERCÍCIOS (Criação/Edição)
