@@ -6,9 +6,12 @@
 .footer-container {
   background-color: var(--primary-color);
   color: white;
-  padding: 40px 20px 20px;
+  /* Padding dinâmico: maior no PC, menor no celular */
+  padding: clamp(30px, 6vw, 50px) 20px 20px;
   margin-top: 50px;
   border-top: 3px solid var(--secondary-color);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* --- Layout Interno (Flexbox) --- */
@@ -16,7 +19,7 @@
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap; 
-  gap: 30px;
+  gap: clamp(20px, 4vw, 40px); 
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -24,18 +27,23 @@
 /* --- Seções Individuais (Colunas) --- */
 .footer-section {
   flex: 1;
-  min-width: 200px;
+  min-width: 200px; 
+  display: flex;
+  flex-direction: column;
 }
 
 .footer-section h3 {
   margin-bottom: 20px;
-  font-size: 18px;
+  font-size: clamp(1.1rem, 3vw, 1.2rem);
   color: white;
+  font-weight: 700;
 }
 
 .footer-logo {
-  font-size: 24px;
-  width: 200px;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  max-width: 200px; 
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 
@@ -46,15 +54,20 @@
 /* (Caso adicione listas de páginas no futuro) */
 .footer-section ul {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .footer-section ul li button {
   background: none;
   border: none;
   color: #ccc;
-  padding: 8px 0;
+  padding: 10px 0; 
   cursor: pointer;
   transition: 0.3s;
+  font-size: 0.95rem;
+  font-family: inherit;
+  display: inline-block; 
 }
 
 .footer-section ul li button:hover {
@@ -68,18 +81,23 @@
    ========================================================================== */
 
 .social {
-  margin-top: 50px; /* Ajuste conforme necessidade visual */
+  margin-top: auto; 
 }
 
 .social-icons {
   display: flex;
   gap: 20px;
-  font-size: 24px;
+  font-size: clamp(1.5rem, 5vw, 1.8rem); 
+  flex-wrap: wrap; 
 }
 
 .social-icons a {
   color: white;
   transition: transform 0.3s, color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px; 
 }
 
 .social-icons a:hover {
@@ -94,11 +112,11 @@
 
 .footer-bottom {
   text-align: center;
-  margin-top: 40px;
+  margin-top: clamp(30px, 5vw, 40px);
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 14px;
-  color: white;
+  font-size: clamp(0.8rem, 3vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 
@@ -106,13 +124,41 @@
    RESPONSIVIDADE (Tablets e Celulares)
    ========================================================================== */
 
+/* Tablets em formato retrato e celulares horizontais */
 @media (max-width: 768px) {
   .footer-content {
     flex-direction: column;
     text-align: center;
+    align-items: center; 
+  }
+  
+  .footer-section {
+    align-items: center; 
+    width: 100%;
+  }
+
+  .footer-logo {
+    margin: 0 auto 15px auto; 
   }
   
   .social-icons {
     justify-content: center;
+    margin-top: 15px; 
+  }
+
+  .footer-section ul li button:hover {
+    padding-left: 0; 
+    transform: scale(1.05);
+  }
+}
+
+/* Celulares muito pequenos */
+@media (max-width: 480px) {
+  .footer-container {
+    margin-top: 30px;
+  }
+  
+  .footer-section h3 {
+    margin-bottom: 10px;
   }
 }

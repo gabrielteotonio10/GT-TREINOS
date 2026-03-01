@@ -9,7 +9,8 @@
   align-items: center;
   min-height: 100vh; 
   background-color: #f4f7f6; 
-  padding: 20px;
+  padding: 15px; 
+  box-sizing: border-box;
 }
 
 .auth-container {
@@ -21,7 +22,8 @@
   max-width: 1000px;
   min-height: 500px;
   overflow: hidden; 
-  margin: 40px;
+  margin: 0 auto; 
+  transition: all 0.3s ease;
 }
 
 /* --- Área da Esquerda: Visual / Branding --- */
@@ -42,7 +44,7 @@
 }
 
 .auth-visual-content h2 {
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem); /* Fonte fluida */
   margin-bottom: 15px;
   font-weight: 700;
 }
@@ -56,10 +58,11 @@
 /* --- Área da Direita: Formulário --- */
 .auth-form-area {
   width: 100%; 
-  padding: 40px 20px;
+  padding: 30px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .auth-form-content {
@@ -68,8 +71,8 @@
 }
 
 .auth-logo {
-  max-width: 140px;
-  margin-bottom: 30px;
+  max-width: 120px; 
+  margin-bottom: 25px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -78,7 +81,7 @@
 .auth-form-content h3 {
   color: #333;
   margin-bottom: 25px;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   text-align: center;
 }
 
@@ -86,9 +89,19 @@
 .login-btn { 
   width: 100%; 
   margin-top: 15px; 
-  padding: 14px;
+  padding: 16px; 
   font-size: 1rem;
-  border-radius: 8px;
+  border-radius: 10px; 
+  border: none;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
 }
 
 .switch-auth { 
@@ -96,6 +109,7 @@
   text-align: center;
   font-size: 0.95rem; 
   color: #666;
+  line-height: 1.4;
 }
 
 .switch-auth a { 
@@ -103,6 +117,8 @@
   text-decoration: none; 
   font-weight: 600; 
   transition: color 0.2s;
+  display: inline-block; 
+  padding: 5px;
 }
 
 .switch-auth a:hover {
@@ -112,10 +128,33 @@
 /* --- Responsividade (Tablets e Desktops) --- */
 @media (min-width: 768px) {
   .auth-visual {
-    display: block; /* Mostra a arte visual em telas maiores */
+    display: block;
   }
   .auth-form-area {
     width: 55%; 
     padding: 60px;
+  }
+}
+
+/* --- Ajustes para Celulares Pequenos --- */
+@media (max-width: 400px) {
+  .auth-container {
+    border-radius: 15px;
+  }
+  .auth-form-area {
+    padding: 20px 15px;
+  }
+  .auth-form-content h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* --- Suporte para orientação paisagem (Landscape) em celulares --- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .auth-wrapper {
+    align-items: flex-start;
+  }
+  .auth-container {
+    margin: 10px 0;
   }
 }

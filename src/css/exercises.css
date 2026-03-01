@@ -4,6 +4,7 @@
 
 .exercises-library-section {
   padding: 12px 26px; 
+  box-sizing: border-box;
 }
 
 /* --- Cabeçalho da Biblioteca (Título + Pesquisa) --- */
@@ -11,14 +12,14 @@
   display: flex;
   flex-direction: column; 
   align-items: flex-start !important;
-  gap: 30px !important;
+  gap: 20px !important;
   margin-bottom: 35px;
   width: 100%;
 }
 
 .library-header .section-title {
   position: relative; 
-  font-size: 2.2rem;            
+  font-size: clamp(1.6rem, 8vw, 2.2rem); 
   color: var(--primary-color);  
   font-weight: 800;
   margin-bottom: 10px;
@@ -53,7 +54,7 @@
 /* --- Grid Inteligente Compacto --- */
 .exercises-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); 
   gap: 15px;
   width: 100%;
 }
@@ -70,6 +71,7 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .exercise-mini-card p {
@@ -88,6 +90,7 @@
   height: 100px;
   width: 100%;
   position: relative;
+  flex-shrink: 0;
 }
 
 .mini-card-image img {
@@ -98,7 +101,7 @@
 
 /* Regra para quando for um ícone invés de foto */
 .mini-card-image.is-icon i {
-  font-size: 4rem; 
+  font-size: 3rem; 
   color: var(--primary-color);
   width: 100%;
   height: 100%;
@@ -112,9 +115,9 @@
   position: absolute;
   bottom: 5px;
   left: 5px;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   padding: 2px 6px;
   border-radius: 4px;
   text-transform: uppercase;
@@ -127,28 +130,31 @@
   flex: 1; 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .mini-card-info h4 {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-primary-color);
   margin-bottom: 8px;
   line-height: 1.2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* --- Stats (Séries, Reps, Carga) --- */
 .exercise-stats {
   display: flex;
   flex-wrap: wrap; 
-  gap: 6px;
+  gap: 4px;
 }
 
 .exercise-stats span {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: #7f8c8d;
   background-color: #f8f9fa;
-  padding: 2px 5px;
+  padding: 2px 4px;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -165,24 +171,23 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 28px; 
+  height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   cursor: pointer;
   color: #666;
-  opacity: 0.8;
+  z-index: 5;
 }
 
 .mini-card-options:hover {
   background-color: var(--primary-color);
   color: white;
-  opacity: 1;
 }
 
 /* Estilo do Card "Adicionar Novo" (Versão Vazia) */
@@ -190,14 +195,17 @@
   border: 2px dashed #ccc;
   background-color: transparent;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #aaa;
-  min-height: 160px; /* Mesma altura média dos outros cards */
+  min-height: 160px;
+  padding: 10px;
+  text-align: center;
 }
 
 .add-new-exercise-btn i {
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 5px;
 }
 
@@ -219,16 +227,16 @@
 
 .three-cols {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 /* Label de Seção */
 .section-label {
   display: block;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 600;
 }
 
@@ -241,21 +249,22 @@
 
 .number-input-wrapper i {
   position: absolute;
-  left: 12px;
+  left: 10px;
   color: var(--primary-color);
   opacity: 0.7;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   pointer-events: none;
 }
 
 .number-input-wrapper input {
-  padding-left: 35px;
+  padding-left: 30px;
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 8px;
   height: 45px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .number-input-wrapper input:focus,
@@ -273,6 +282,7 @@ textarea {
   font-family: inherit;
   resize: vertical; 
   min-height: 80px;
+  box-sizing: border-box;
 }
 
 
@@ -280,15 +290,15 @@ textarea {
    4. TELA DE DETALHES DO EXERCÍCIO ATIVO
    ========================================================================== */
 
-/* Container Principal */
 .active-exercise-details-section {
-  padding: 20px;
+  padding: 15px;
   max-width: 800px;
   margin: 0 auto;
   animation: fadeIn 0.4s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Subtítulo com Ícone */
 .active-exercise-subtitle {
   color: var(--secondary-color);
   font-weight: 600;
@@ -296,9 +306,9 @@ textarea {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-/* Container que segura o ícone principal caso não haja foto */
 .hero-icon-wrapper {
     width: 100%;
     height: 100%;
@@ -310,11 +320,10 @@ textarea {
 }
 
 .hero-icon-wrapper i {
-    font-size: 5rem;
+    font-size: clamp(3rem, 15vw, 5rem);
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
 }
 
-/* Itens de Detalhe (Instruções e Equipamento) */
 .exercise-description-area {
   background: white;
   border-radius: 15px;
@@ -328,11 +337,13 @@ textarea {
   margin-bottom: 15px;
   color: #555;
   line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .detail-item i {
   color: var(--primary-color);
   margin-top: 4px;
+  flex-shrink: 0;
 }
 
 .description-text p {
@@ -340,7 +351,6 @@ textarea {
   color: #666;
 }
 
-/* Botão de Excluir Específico para Biblioteca */
 .delete-exercise-library-btn {
   width: 100%;
   background: transparent;
@@ -355,6 +365,7 @@ textarea {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  margin-top: 20px;
 }
 
 .delete-exercise-library-btn:hover {
@@ -367,12 +378,12 @@ textarea {
    5. MODAL DE SELEÇÃO DE EXERCÍCIOS E ITENS DE LISTA
    ========================================================================== */
 
-/* Imagem e Ícone na Lista de Seleção */
 .mini-selection-img {
   width: 50px;
   height: 50px;
   border-radius: 10px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .mini-selection-icon {
@@ -385,17 +396,31 @@ textarea {
   align-items: center;
   font-size: 1.4rem;
   color: var(--primary-color);
+  flex-shrink: 0;
 }
 
 .selectable-content-left {
   display: flex;
   align-items: center;
   gap: 15px; 
+  flex: 1;
+  min-width: 0;
 }
 
-/* Etiqueta de Confirmação Visual */
+.selectable-exercise-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.selectable-exercise-info h4 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
 .added-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     background-color: #e8f5e9; 
     color: #2e7d32; 
     padding: 2px 6px;
@@ -403,44 +428,26 @@ textarea {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    animation: fadeInBadge 0.3s ease;
-}
-
-@keyframes fadeInBadge {
-    from { opacity: 0; transform: translateX(-5px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-/* Ajuste específico do botão secundário quando usado na área vazia */
-.empty-actions .secondary-empty-btn {
-    padding: 8px 16px !important; 
-    font-size: 0.85rem !important;  
-    min-height: auto !important;    
-    height: 50px !important;       
 }
 
 
 /* ==========================================================================
-   6. RESPONSIVIDADE (Tablets e Celulares)
+   6. RESPONSIVIDADE (MEDIA QUERIES)
    ========================================================================== */
 
-@media (max-width: 650px) {
-  .library-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .library-search {
-    max-width: 100%; 
+@media (max-width: 768px) {
+  .exercises-library-section {
+    padding: 12px 15px;
   }
 }
 
 @media (max-width: 500px) {
   .form-row {
     flex-direction: column;
-    gap: 0;
+    gap: 15px;
   }
   .three-cols {
     grid-template-columns: 1fr; 
-    gap: 0;
+    gap: 12px;
   }
 }

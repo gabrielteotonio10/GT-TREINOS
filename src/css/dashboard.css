@@ -9,6 +9,7 @@
 
 .presentation-text p {
   font-weight: bold;
+  line-height: 1.5; 
 }
 
 
@@ -18,7 +19,8 @@
 
 .website-presentation {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* O auto-fit faz com que os cards se quebrem sozinhos quando não houver espaço */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
   padding: 0 2rem;
   margin-bottom: 3rem;
@@ -42,6 +44,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  box-sizing: border-box; 
 }
 
 .dashboard-card h2 {
@@ -66,6 +69,7 @@
 .card-content h3 {
   font-size: 2rem;
   color: var(--text-primary-color);
+  word-break: break-word; 
 }
 
 
@@ -78,6 +82,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 }
 
 .day-item {
@@ -91,6 +96,7 @@
 .day-item i {
   font-size: 18px;
   color: #ccc;
+  flex-shrink: 0; 
 }
 
 .day-item i.checked {
@@ -105,6 +111,7 @@
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: bold;
+  display: inline-block;
 }
 
 /* --- Botão de Ação (Apenas Dashboard) --- */
@@ -112,13 +119,13 @@
   background-color: var(--secondary-color);
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 20px; 
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
   width: 100%;
-  margin-top: 10px;
+  margin-top: auto; 
 }
 
 .action-btn:hover {
@@ -131,17 +138,33 @@
    ========================================================================== */
 
 @media (max-width: 900px) {
-  
-  .website-presentation {
-    grid-template-columns: 1fr;
-  }
-
-  /* Ajustes de espaçamento lateral para telas menores */
+  /* O grid-template-columns já é fluido pelo minmax acima */
   .presentation-text,
   .website-presentation {
     padding: 0 1.5rem;
   }
 }
+
+@media (max-width: 480px) {
+  .presentation-text {
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .website-presentation {
+    padding: 0 1rem;
+    gap: 15px;
+  }
+
+  .dashboard-card {
+    padding: 20px;
+  }
+  
+  .card-content h3 {
+    font-size: 1.7rem;
+  }
+}
+
 
 /* ==========================================================================
    ALERTA DE PERFIL INCOMPLETO
@@ -176,6 +199,7 @@
 .alert-content i {
   font-size: 2rem;
   color: #ffc107;
+  flex-shrink: 0;
 }
 
 .alert-content strong {
@@ -190,14 +214,23 @@
 }
 
 @media (max-width: 768px) {
+  .profile-alert-section {
+    padding: 0 1rem;
+  }
+
   .profile-alert {
     flex-direction: column;
     text-align: center;
+    padding: 20px;
   }
+
   .alert-content {
     flex-direction: column;
+    gap: 10px;
   }
+
   #go-to-profile-alert-btn {
     width: 100%;
+    margin-top: 5px;
   }
 }

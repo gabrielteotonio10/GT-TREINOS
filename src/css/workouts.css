@@ -9,7 +9,7 @@
 
 /* --- Títulos de Seção --- */
 .workouts-section .section-title {
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 5vw, 2rem); 
   font-weight: 700;
   color: var(--text-secondary-color);
   margin-bottom: 20px;
@@ -18,7 +18,7 @@
 }
 
 .section-title-training {
-  font-size: 2rem;               
+  font-size: clamp(1.6rem, 6vw, 2rem);               
   font-weight: 800;              
   color: var(--primary-color);   
   margin-bottom: 30px;          
@@ -30,7 +30,7 @@
 /* Título com animação inferior (Premium) */
 .workouts-section .section-title.training-view {
   margin-top: 30px !important;
-  font-size: 2.4rem;            
+  font-size: clamp(1.8rem, 7vw, 2.4rem);            
   color: var(--primary-color);  
   font-weight: 800;
   margin-bottom: 45px;
@@ -63,7 +63,7 @@
   position: fixed;
   bottom: 40px;
   right: 40px;
-  background-color: #4CAF50; /* Verde Sucesso */
+  background-color: #4CAF50; 
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -74,11 +74,11 @@
 }
 
 .toast-notification.error {
-  background-color: #e74c3c !important; /* Vermelho Erro */
+  background-color: #e74c3c !important; 
 }
 
 .toast-notification.warning {
-  background-color: #f1c40f !important; /* Amarelo Aviso */
+  background-color: #f1c40f !important; 
   color: #333; 
 }
 
@@ -106,6 +106,8 @@
 .primary-btn:hover {
   background-color: var(--secondary-color);
 }
+
+.primary-btn:active { transform: scale(0.96); }
 
 /* --- Botões Secundários / Vazios --- */
 .secondary-empty-btn {
@@ -171,7 +173,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 20px;
+  padding: clamp(15px, 4vw, 20px);
   margin-bottom: 30px;
   border: 2px dashed #d1d9e6;
   border-radius: 16px;
@@ -201,7 +203,7 @@
   background: linear-gradient(145deg, #ffffff, #f9f9f9); 
   border: 2px dashed #d1d9e6; 
   border-radius: 24px;
-  padding: 40px 20px; 
+  padding: clamp(25px, 6vw, 40px) 20px; 
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -214,7 +216,7 @@
 }
 
 .empty-icon {
-  font-size: 4.5rem; 
+  font-size: clamp(3rem, 10vw, 4.5rem); 
   color: var(--secondary-color); 
   opacity: 0.4;
   margin-bottom: 5px;
@@ -229,14 +231,14 @@
 
 .empty-state-container h3 {
   color: var(--text-primary-color);
-  font-size: 1.6rem; 
+  font-size: clamp(1.3rem, 5vw, 1.6rem); 
   font-weight: 700;
   margin: 0;
 }
 
 .empty-state-container p {
   color: #7f8c8d;
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 4vw, 1.05rem);
   max-width: 400px;
   line-height: 1.6;
 }
@@ -245,6 +247,8 @@
   display: flex;
   gap: 15px;
   margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .empty-state-container .add-new-workout-btn:hover,
@@ -266,7 +270,7 @@
    ========================================================================== */
 
 .workouts-section {
-  padding: 0 2rem;
+  padding: 0 clamp(1rem, 4vw, 2rem); 
   margin-bottom: 4rem;
 }
 
@@ -277,7 +281,7 @@
 
 .workouts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
@@ -296,6 +300,7 @@
   justify-content: center;
   gap: 8px; 
   position: relative; 
+  height: 100%;
 }
 
 .workout-card:hover {
@@ -327,6 +332,7 @@
   margin-bottom: 15px;
   font-size: 5rem;
   color: var(--primary-color);
+  flex-shrink: 0;
 }
 
 .workout-image {
@@ -347,6 +353,7 @@
   font-size: 1.1rem;
   cursor: pointer;
   transition: color 0.3s ease;
+  padding: 5px; 
 }
 
 .edit-icon:hover {
@@ -357,7 +364,7 @@
 .workout-card.add-new-workout {
   border-style: dashed;
   background-color: rgba(230, 240, 247, 0.3);
-  order: 9999; /* Garante que fique sempre no final da lista */
+  order: 9999; 
 }
 
 .workout-card.add-new-workout .icon-container {
@@ -404,7 +411,7 @@
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  padding: 20px;
+  padding: 15px; 
 }
 
 .modal-container.active {
@@ -414,7 +421,7 @@
 /* --- Cartão Branco do Modal --- */
 .form-card {
   background-color: white;
-  padding: 30px;
+  padding: clamp(20px, 5vw, 30px);
   border-radius: 20px;
   width: 100%;
   max-width: 500px;
@@ -437,6 +444,7 @@
   font-size: 1.5rem;
   color: #999;
   cursor: pointer;
+  padding: 5px; 
 }
 
 .close-modal-btn:hover {
@@ -465,6 +473,7 @@
   font-size: 1rem;
   outline: none;
   transition: 0.3s;
+  box-sizing: border-box;
 }
 
 .form-card input[type="text"]:focus {
@@ -476,6 +485,7 @@
   justify-content: flex-end;
   gap: 15px;
   margin-top: 30px;
+  flex-wrap: wrap; 
 }
 
 /* --- Seletor de Ícones --- */
@@ -562,9 +572,12 @@
   border-radius: 10px;
   min-height: 80px;
   display: flex;
+  flex-direction: column; 
   justify-content: center;
   align-items: center;
   border: 1px dashed #ccc;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .available-exercises-list {
@@ -591,6 +604,7 @@
   border: 1px solid #e1e8ed;
   border-radius: 12px;
   transition: 0.2s ease;
+  gap: 10px;
 }
 
 .selectable-exercise-item:hover {
@@ -598,10 +612,18 @@
   background-color: rgba(22, 78, 128, 0.05);
 }
 
+.selectable-exercise-info {
+  min-width: 0;
+  flex: 1;
+}
+
 .selectable-exercise-info h4 {
   font-size: 1rem;
   color: var(--text-primary-color);
   margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .selectable-exercise-info p {
@@ -621,6 +643,7 @@
   align-items: center;
   cursor: pointer;
   transition: 0.3s;
+  flex-shrink: 0;
 }
 
 .selectable-exercise-add-btn:hover {
@@ -638,7 +661,7 @@
 .check-exercise-btn {
   transition: all 0.3s ease;
   position: relative;
-  z-index: 10; /* Garante sobreposição ao clique do card */
+  z-index: 10;
 }
 
 .check-exercise-btn.completed {
@@ -657,7 +680,7 @@
   background: #f8f9fa;
   padding: 15px;
   border-radius: 12px;
-  margin: 0 20px 20px 20px; 
+  margin: 0 0 20px 0;
   border: 1px solid #e0e0e0;
 }
 
@@ -667,12 +690,14 @@
   align-items: center;
   gap: 15px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .timer-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1;
 }
 
 .timer-label {
@@ -681,30 +706,31 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 5px;
+  text-align: center;
 }
 
 #main-workout-time {
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 8vw, 2.5rem);
   color: #007bff;
 }
 
 #rest-timer-display {
-  font-size: 1.8rem;
-  margin-bottom: 10px;
+  font-size: clamp(1.4rem, 6vw, 1.8rem);
+  margin-bottom: 5px;
 }
 
 .timer-divider {
-  width: 2px;
-  height: 60px;
+  width: 1px;
+  height: 40px;
   background-color: #ddd;
 }
 
 .workout-timer-container .timer-display {
-  font-size: 2.2rem;
+  font-size: clamp(1.4rem, 6vw, 2.2rem);
   font-weight: 700;
   color: #333;
   font-variant-numeric: tabular-nums;
-  min-width: 100px;
+  min-width: 80px;
   text-align: center;
 }
 
@@ -713,7 +739,7 @@
   display: flex;
   justify-content: center; 
   align-items: center;     
-  gap: 15px;               
+  gap: 10px;               
   width: 100%;            
   margin-top: 5px;       
 }
@@ -721,14 +747,14 @@
 .timer-btn {
   border: none;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   transition: transform 0.2s;
 }
 
@@ -742,7 +768,7 @@
   bottom: 20px;
   right: 20px;
   margin: 0;
-  padding: 10px 20px;
+  padding: 10px 15px;
   background: #ffffff;
   border-radius: 50px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
@@ -751,14 +777,17 @@
   transform: scale(0.85); 
   transform-origin: bottom right;
   cursor: pointer;
+  max-width: 180px;
 }
+
+.workout-timer-container.floating-mode .timer-divider { display: none; }
 
 .workout-timer-container.floating-mode::before {
   content: "Clique para voltar ao treino";
   position: absolute;
   top: -25px;
   right: 0;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: #007bff;
   background: white;
   padding: 2px 8px;
@@ -766,6 +795,7 @@
   border: 1px solid #007bff;
   opacity: 0;
   transition: opacity 0.3s;
+  white-space: nowrap;
 }
 
 .workout-timer-container.floating-mode:hover::before {
@@ -823,6 +853,63 @@
     right: 10px;
     font-size: 1rem;
   }
+
+  .workout-timer-container {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .timer-divider { display: none; }
+  
+  .workout-timer-container.floating-mode {
+    bottom: 15px;
+    right: 15px;
+    transform: scale(0.8);
+  }
+}
+
+/* Ajustes Adicionais para Celulares Muito Pequenos (iPhone SE, etc) */
+@media (max-width: 480px) {
+  .toast-notification {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    text-align: center;
+    width: auto;
+  }
+
+  .form-buttons {
+    flex-direction: column-reverse; 
+    gap: 10px;
+  }
+
+  .form-buttons button {
+    width: 100%;
+  }
+
+  .workout-timer-container {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .timer-divider { display: none; }
+  
+  .workout-timer-container.floating-mode {
+    bottom: 15px;
+    right: 15px;
+    transform: scale(0.8);
+  }
+  
+  .export-pdf-btn {
+    margin-right: 10px;
+  }
+}
+
+/* Centralização para garantir que 1 coluna fique alinhada caso a tela seja minúscula */
+@media (max-width: 320px) {
+  .workouts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .export-pdf-btn{
@@ -832,4 +919,7 @@
   cursor: pointer;
   color: #007bff;
   margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

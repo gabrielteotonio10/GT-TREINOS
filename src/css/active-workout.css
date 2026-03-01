@@ -8,6 +8,8 @@
   max-width: 800px;
   margin: 0 auto;
   animation: fadeIn 0.4s ease;
+  width: 100%; 
+  box-sizing: border-box;
 }
 
 /* --- Cabeçalho de Navegação (Voltar e Editar) --- */
@@ -16,6 +18,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  width: 100%;
 }
 
 .back-arrow-btn,
@@ -31,6 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 10px; /* Aumenta área de toque no mobile */
 }
 
 .back-arrow-btn:hover,
@@ -43,12 +47,12 @@
 
 /* --- Área de Títulos --- */
 .active-title-area {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .active-title,
 .active-exercise-title {
-  font-size: 2.2rem;
+  font-size: clamp(1.6rem, 8vw, 2.2rem); 
   color: var(--primary-color);
   font-weight: 800;
   margin-bottom: 8px;
@@ -57,7 +61,7 @@
 
 .active-subtitle,
 .active-exercise-subtitle {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #7f8c8d;
   font-weight: 500;
   text-transform: uppercase;
@@ -71,6 +75,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 
@@ -78,67 +83,71 @@
    2. CRONÔMETROS DO TREINO ATIVO
    ========================================================================== */
 
-.workout-timer-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 12px;
-  margin: 0 20px 20px 20px; 
-  border: 1px solid #e0e0e0;
-}
-
-/* --- Painel Duplo (Treino + Descanso) --- */
+/* Unificando a classe e o ID para evitar conflitos no Desktop */
+.workout-timer-container,
 #dual-timers-wrapper {
   display: flex;
-  justify-content: space-around;
+  justify-content: center; 
   align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
+  gap: 50px; 
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 15px;
+  margin: 0 0 30px 0;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .timer-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-width: 160px; 
 }
 
 .timer-label {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #666;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: bold;
 }
 
 .timer-divider {
   width: 2px;
-  height: 60px;
+  height: 80px;
   background-color: #ddd;
 }
 
 .timer-display {
-  font-size: 2.2rem;
   font-weight: 700;
   color: #333;
   font-variant-numeric: tabular-nums;
-  min-width: 100px;
   text-align: center;
+  line-height: 1;
 }
 
-#main-workout-time { font-size: 2.5rem; color: #007bff; }
-#rest-timer-display { font-size: 1.8rem; margin-bottom: 10px; }
+/* Fontes grandes no Desktop que encolhem suavemente no celular (clamp) */
+#main-workout-time { 
+  font-size: clamp(2.5rem, 6vw, 4rem); 
+  color: #007bff; 
+}
 
-/* --- Botões do Cronômetro --- */
+#rest-timer-display { 
+  font-size: clamp(1.8rem, 4vw, 2.5rem); 
+  margin-bottom: 12px; 
+}
+
 .timer-controls {
   display: flex;
   justify-content: center; 
   align-items: center;     
   gap: 15px;               
-  width: 100%;            
-  margin-top: 5px;       
 }
 
 .timer-btn {
@@ -152,12 +161,15 @@
   cursor: pointer;
   color: white;
   font-size: 1.2rem;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.2s;
+  flex-shrink: 0;
 }
 
 .timer-btn:active { transform: scale(0.9); }
 .play-btn { background-color: #007bff; }
+.play-btn:hover { background-color: #0056b3; }
 .stop-btn { background-color: #dc3545; }
+.stop-btn:hover { background-color: #c82333; }
 
 /* --- Modo Flutuante do Cronômetro --- */
 .workout-timer-container.floating-mode {
@@ -174,10 +186,18 @@
   transform: scale(0.85); 
   transform-origin: bottom right;
   cursor: pointer;
+  gap: 20px; 
+  width: auto; 
+}
+
+/* Esconde elementos desnecessários no modo bolha */
+.workout-timer-container.floating-mode .timer-divider,
+.workout-timer-container.floating-mode .timer-label { 
+  display: none; 
 }
 
 .workout-timer-container.floating-mode::before {
-  content: "Clique para voltar";
+  content: "Clique para voltar ao treino";
   position: absolute;
   top: -25px;
   right: 0;
@@ -189,8 +209,36 @@
   border: 1px solid #007bff;
   opacity: 0;
   transition: opacity 0.3s;
+  white-space: nowrap;
 }
-.workout-timer-container.floating-mode:hover::before { opacity: 1; }
+
+.workout-timer-container.floating-mode:hover::before { 
+  opacity: 1; 
+}
+
+/* ==========================================
+   AJUSTE DE SEGURANÇA PARA CELULARES
+   ========================================== */
+@media (max-width: 550px) {
+  .workout-timer-container,
+  #dual-timers-wrapper {
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .timer-divider {
+    width: 80%;
+    height: 1px; 
+  }
+  
+  /* Se estiver flutuando, volta a ficar lado a lado */
+  .workout-timer-container.floating-mode {
+    flex-direction: row;
+    bottom: 15px;
+    right: 15px;
+  }
+}
 
 
 /* ==========================================================================
@@ -200,7 +248,7 @@
 .active-exercises-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   margin-bottom: 50px;
 }
 
@@ -210,10 +258,11 @@
   background-color: white;
   border: 1px solid #e1e8ed;
   border-radius: 16px;
-  padding: 15px;
+  padding: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
 }
 
 .exercise-item:hover {
@@ -223,47 +272,54 @@
 }
 
 .exercise-img {
-  width: 75px;
-  height: 75px;
+  width: 65px;
+  height: 65px;
   border-radius: 12px;
   object-fit: cover;
-  margin-right: 20px;
+  margin-right: 15px;
   border: 2px solid #f0f0f0;
   background-color: #f9f9f9;
+  flex-shrink: 0; 
 }
 
 .exercise-info {
   flex: 1;
+  min-width: 0; 
 }
 
 .exercise-info h4 {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: var(--text-primary-color);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .exercise-info p {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #666;
   font-weight: 500;
 }
 
 /* --- Botão Interativo de Check (Bolinha Verde) --- */
 .check-exercise-btn {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid #ccc;
   background-color: transparent;
   color: transparent;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
-  z-index: 10; /* Garante que o clique seja priorizado sobre o card */
+  z-index: 10; 
+  flex-shrink: 0;
+  margin-left: 10px;
 }
 
 .check-exercise-btn.completed {
@@ -286,7 +342,7 @@
 /* --- Imagem/Ícone Principal do Exercício --- */
 .exercise-hero-image {
   width: 100%;
-  height: 250px;
+  height: 220px;
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 25px;
@@ -311,7 +367,7 @@
 }
 
 .hero-icon-wrapper i {
-  font-size: 5rem;
+  font-size: clamp(3rem, 15vw, 5rem);
   filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
 }
 
@@ -319,13 +375,13 @@
 .exercise-info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin: 30px 0;
+  gap: 10px;
+  margin: 25px 0;
 }
 
 .info-box {
   background: #f8f9fa;
-  padding: 15px;
+  padding: 12px 5px;
   border-radius: 15px;
   text-align: center;
   display: flex;
@@ -337,17 +393,17 @@
 
 .info-box i {
   color: var(--primary-color);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .info-box .label {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #7f8c8d;
   text-transform: uppercase;
 }
 
 .info-box strong {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-primary-color);
 }
 
@@ -355,21 +411,23 @@
 .exercise-description-area {
   background: white;
   border-radius: 15px;
-  padding: 20px;
+  padding: 15px;
   border: 1px solid #eee;
 }
 
 .detail-item {
   display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 12px;
   color: #555;
-  line-height: 1.5;
+  line-height: 1.4;
+  font-size: 0.95rem;
 }
 
 .detail-item i {
   color: var(--primary-color);
   margin-top: 4px;
+  flex-shrink: 0;
 }
 
 .description-text p {
@@ -385,18 +443,19 @@
 .active-footer-actions {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   border-top: 2px dashed #eee;
-  padding-top: 30px;
+  padding-top: 25px;
+  margin-top: 20px;
 }
 
 .finish-workout-btn {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 18px;
+  padding: 16px;
   border-radius: 14px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 0 6px 15px rgba(22, 78, 128, 0.2);
@@ -409,14 +468,16 @@
   box-shadow: 0 8px 20px rgba(22, 78, 128, 0.3);
 }
 
+.finish-workout-btn:active { transform: scale(0.98); }
+
 .delete-workout-btn,
 .delete-exercise-library-btn {
   background-color: transparent;
   color: #e74c3c;
   border: 2px solid transparent;
-  padding: 15px;
+  padding: 12px;
   border-radius: 14px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -437,11 +498,6 @@
   border-color: #e74c3c;
 }
 
-.delete-exercise-library-btn:hover {
-  background-color: #e74c3c;
-  color: white;
-}
-
 
 /* ==========================================================================
    6. MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
@@ -451,47 +507,48 @@
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10000;
-  transition: opacity 0.3s ease;
+  padding: 20px;
 }
 
 .confirm-modal-card {
   background-color: white;
-  padding: 30px;
+  padding: 25px;
   border-radius: 20px;
-  width: 90%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 380px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   animation: modalScale 0.3s ease-out;
 }
 
 .confirm-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: #e74c3c;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .confirm-modal-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: var(--primary-color);
   margin-bottom: 10px;
 }
 
 .confirm-modal-card p {
   color: #666;
+  font-size: 0.95rem;
   line-height: 1.5;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .confirm-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .confirm-actions button {
@@ -502,6 +559,7 @@
   cursor: pointer;
   transition: 0.3s;
   border: none;
+  font-size: 0.9rem;
 }
 
 .confirm-delete-btn {
@@ -509,14 +567,9 @@
   color: white;
 }
 
-.confirm-delete-btn:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
-}
-
 
 /* ==========================================================================
-   7. ANIMAÇÕES E RESPONSIVIDADE
+   7. ANIMAÇÕES E RESPONSIVIDADE (MEDIA QUERIES)
    ========================================================================== */
 
 @keyframes fadeIn {
@@ -529,9 +582,59 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-@media (max-width: 600px) {
-  .exercise-item { padding: 12px; }
-  .exercise-img { width: 60px; height: 60px; margin-right: 15px; }
-  .active-title { font-size: 1.8rem; }
-  .confirm-modal-card { width: 95%; padding: 20px; }
+/* Tablet e Celulares Grandes */
+@media (max-width: 768px) {
+  .active-workout-section, 
+  .active-exercise-details-section {
+    padding: 15px;
+  }
+}
+
+/* Celulares Médios e Pequenos */
+@media (max-width: 480px) {
+  .active-header { margin-bottom: 20px; }
+  
+  .workout-timer-container { 
+    flex-direction: column; 
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .timer-divider { display: none; }
+  
+  #dual-timers-wrapper {
+    gap: 10px;
+  }
+
+  .exercise-info-grid {
+    grid-template-columns: 1fr; /* Muda para lista em telas muito pequenas */
+    gap: 8px;
+  }
+  
+  .info-box {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    gap: 15px;
+  }
+
+  .exercise-hero-image { height: 180px; }
+
+  .exercise-item { padding: 10px; }
+  .exercise-img { width: 55px; height: 55px; margin-right: 12px; }
+  
+  .finish-workout-btn { padding: 14px; font-size: 1rem; }
+  
+  .workout-timer-container.floating-mode {
+    bottom: 15px;
+    right: 15px;
+    transform: scale(0.8);
+  }
+}
+
+/* Correção para celulares muito pequenos */
+@media (max-width: 350px) {
+  .active-title { font-size: 1.4rem; }
+  .timer-display { font-size: 1.2rem; }
+  #main-workout-time { font-size: 1.6rem; }
 }

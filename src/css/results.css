@@ -8,18 +8,19 @@
   grid-template-columns: 1fr;
   gap: 20px;
   margin-top: 15px;
+  align-items: start; 
 }
 
 @media (min-width: 768px) {
   .results-dashboard-grid {
-    grid-template-columns: 1fr 1fr; /* Divide em 2 colunas no desktop */
+    grid-template-columns: 1fr 1fr; 
   }
 }
 
 /* Títulos de Seção na Aba Resultados */
 .results-topic-title {
   color: #333;
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 4vw, 1.1rem); 
   margin: 20px 0 10px 0;
   border-left: 3px solid var(--primary-color, #007bff);
   padding-left: 8px;
@@ -30,8 +31,9 @@
   background: var(--bg-card, #ffffff);
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  padding: 15px;
+  padding: clamp(10px, 3vw, 15px); 
   border: 1px solid #f0f0f0;
+  box-sizing: border-box;
 }
 
 /* ================= FREQUÊNCIA DA SEMANA (LISTA COMPACTA) ================= */
@@ -48,14 +50,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
+  padding: 10px 12px; /* Reduzido levemente para mobile */
   background: #f9f9f9;
   border-radius: 8px;
   font-size: 0.9rem;
+  gap: 10px; 
 }
 
 .compact-day-item.done {
-  background: #eafaf1; /* Verde clarinho */
+  background: #eafaf1; 
   border-left: 4px solid #28a745;
 }
 
@@ -68,6 +71,7 @@
   align-items: center;
   gap: 10px;
   color: #555;
+  flex-shrink: 0; /* Impede que o dia da semana seja esmagado */
 }
 
 .compact-day-item.done .day-left {
@@ -80,6 +84,11 @@
   font-size: 0.85rem;
   font-weight: 500;
   text-align: right;
+  /* Trata nomes de treinos muito longos para não quebrar a tela */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%; 
 }
 
 /* ================= INJEÇÃO DE CARDS NATIVOS ================= */
@@ -94,7 +103,7 @@
 /* Ajusta o card de treino para ocupar 100% da largura na aba resultados */
 .card-injection-area .workout-card {
   width: 100%;
-  margin: 0; /* Remove margens que possam vir do grid original */
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -116,21 +125,23 @@
 /* Bloco azul de Total Realizados */
 .highlight-box {
   background: var(--bg-card, #ffffff);
-  padding: 20px 20px;
+  padding: clamp(15px, 4vw, 20px);
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid #eee;
-  border-left: 5px solid var(--primary-color, #007bff); /* Detalhe azul apenas na lateral */
+  border-left: 5px solid var(--primary-color, #007bff); 
   margin-bottom: 15px;
+  gap: 15px; 
 }
 
 .highlight-box .highlight-info {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  min-width: 0; 
 }
 
 .highlight-box .highlight-label {
@@ -143,14 +154,16 @@
 
 .highlight-box h4 {
   margin: 0;
-  font-size: 2.2rem;
+  font-size: clamp(1.8rem, 6vw, 2.2rem); 
   color: #333;
   font-weight: bold;
+  word-break: break-word; 
 }
 
 .highlight-box .highlight-icon {
-  font-size: 2.5rem;
-  color: rgba(0, 123, 255, 0.15); /* Ícone gigante mas bem suave/transparente no fundo */
+  font-size: clamp(2rem, 8vw, 2.5rem);
+  color: rgba(0, 123, 255, 0.15);
+  flex-shrink: 0;
 }
 
 /* Texto pequeno escrito "Realizado X vezes" */
@@ -164,9 +177,9 @@
 /* ================= SAÚDE (IMC e TMB) ================= */
 .health-stats-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 15px;
-  padding: 15px 0; /* Remove o padding horizontal se estiver dentro de um card */
+  padding: 15px 0; 
 }
 
 /* Se o container de saúde estiver dentro de uma div com sombra, tira o fundo dele */
@@ -183,17 +196,18 @@
   flex-direction: column;
   gap: 5px;
   border: 1px solid #eee;
+  box-sizing: border-box;
 }
 
 .health-card .stat-title {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #888;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .health-card .stat-value {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 5vw, 1.5rem);
   font-weight: 700;
 }
 
@@ -210,6 +224,7 @@
   align-items: center;
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   margin-top: 10px;
+  box-sizing: border-box;
 }
 
 .empty-state-banner.error {
@@ -230,27 +245,38 @@
 /* Correção do Footer (Dá um espaço de respiro no final da aba) */
 .results-section {
   padding-bottom: 80px; 
-  margin: 2rem;
+  /* Margin substituída por clamp para não esmagar conteúdo em telas pequenas */
+  margin: clamp(1rem, 3vw, 2rem);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
-/* O Grid Organizado em duas colunas independentes */
-.results-dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 15px;
-  align-items: start; /* Impede que uma coluna estique a outra quebrando o footer */
-}
-
-@media (min-width: 768px) {
-  .results-dashboard-grid {
-    grid-template-columns: 1fr 1fr; /* Divide meio a meio no PC/Tablet */
-  }
-}
-
+/* O Grid Organizado em duas colunas independentes 
 /* Estrutura das Colunas */
 .results-layout-column {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%;
+  min-width: 0; 
+}
+
+/* Ajustes Finais para Mobile Extra Pequeno */
+@media (max-width: 360px) {
+  .health-stats-container {
+    grid-template-columns: 1fr; /* 1 coluna se for extremamente pequeno */
+  }
+  
+  .compact-day-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .day-training-name {
+    text-align: left;
+    max-width: 100%;
+  }
 }

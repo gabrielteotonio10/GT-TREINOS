@@ -11,6 +11,7 @@
   border-radius: 12px;
   margin: 20px 0;
   border: 1px solid #e0e0e0;
+  transition: 0.3s ease;
 }
 
 .theme-label {
@@ -65,62 +66,158 @@ input:checked + .slider:before {
 
 
 /* ==========================================================================
-   2. REGRAS GERAIS DE CORES DO MODO ESCURO
+   2. REGRAS GERAIS E OVERRIDES DE VARIÁVEIS DO MODO ESCURO
    ========================================================================== */
 
 /* --- Fundo e Texto Base --- */
 body.dark-mode {
-  background-color: #121212;
-  color: #e0e0e0;
-}
-
-/* --- Cards, Modais e Áreas de Destaque --- */
-body.dark-mode header, 
-body.dark-mode footer,
-body.dark-mode .workout-card,
-body.dark-mode .exercise-mini-card,
-body.dark-mode .modal-content,
-body.dark-mode .workout-timer-container,
-body.dark-mode .theme-toggle-container,
-body.dark-mode .confirm-modal-card {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  border-color: #333;
-}
-
-/* --- Formulários, Inputs e Itens de Lista --- */
-body.dark-mode .exercise-item,
-body.dark-mode input, 
-body.dark-mode textarea, 
-body.dark-mode select {
-  background-color: #2c2c2c;
-  color: #ffffff;
-  border-color: #444;
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+  /* Subscreve as variáveis globais para forçar componentes não mapeados a escurecerem */
+  --background-primary-color: #121212;
+  --background-secondary-color: #1e1e1e;
+  --text-primary-color: #f0f0f0;
+  --bg-card: #1e1e1e;
 }
 
 
 /* ==========================================================================
-   3. TIPOGRAFIA NO MODO ESCURO
+   3. FUNDOS DE CARDS, SEÇÕES E MODAIS (O "Branco" vira "Cinza Escuro")
+   ========================================================================== */
+
+body.dark-mode .main-header, 
+body.dark-mode .footer-container,
+body.dark-mode .dashboard-card,
+body.dark-mode .workout-card,
+body.dark-mode .exercise-mini-card,
+body.dark-mode .shadow-card,
+body.dark-mode .highlight-box,
+body.dark-mode .health-card,
+body.dark-mode .profile-content,
+body.dark-mode .auth-container,
+body.dark-mode .form-card,
+body.dark-mode .confirm-modal-card,
+body.dark-mode .exercise-description-area,
+body.dark-mode .info-box,
+body.dark-mode .theme-toggle-container {
+  background-color: #1e1e1e !important;
+  border-color: #333 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Área em volta do Login/Cadastro */
+body.dark-mode .auth-wrapper {
+  background-color: #121212 !important;
+}
+
+/* Cronômetro e Botões Vazados */
+body.dark-mode .workout-timer-container,
+body.dark-mode #dual-timers-wrapper,
+body.dark-mode .add-new-workout,
+body.dark-mode .add-new-exercise-btn,
+body.dark-mode .add-exercise-to-workout-btn {
+  background-color: #1e1e1e !important;
+  border-color: #444 !important;
+}
+
+/* Empty States e Modais Vazios */
+body.dark-mode .empty-state-container,
+body.dark-mode .empty-state-banner,
+body.dark-mode .selected-exercises-list:empty {
+  background: #1e1e1e !important;
+  border-color: #444 !important;
+}
+
+
+/* ==========================================================================
+   4. FORMULÁRIOS, INPUTS E ITENS DE LISTA INTERNOS
+   ========================================================================== */
+
+/* Inputs de texto, dropdowns e caixas de busca */
+body.dark-mode input, 
+body.dark-mode textarea, 
+body.dark-mode select,
+body.dark-mode .custom-select,
+body.dark-mode .search-bar-container input {
+  background-color: #2c2c2c !important;
+  color: #ffffff !important;
+  border-color: #444 !important;
+}
+
+/* Cards menores dentro de listas (ex: Seleção de Exercícios, Frequência Semanal) */
+body.dark-mode .exercise-item,
+body.dark-mode .selectable-exercise-item,
+body.dark-mode .compact-day-item,
+body.dark-mode .mini-selection-icon {
+  background-color: #2c2c2c !important;
+  border-color: #444 !important;
+}
+
+/* Dia de treino concluído (esverdeado escuro) */
+body.dark-mode .compact-day-item.done {
+  background-color: rgba(40, 167, 69, 0.15) !important;
+  border-left-color: #28a745 !important;
+}
+
+/* Ícone de opções do card (3 pontinhos) e caixas de ícone do modal */
+body.dark-mode .mini-card-options,
+body.dark-mode .icon-box {
+  background-color: #333 !important;
+  color: #e0e0e0 !important;
+  border-color: #555 !important;
+}
+
+/* Stats do mini card de biblioteca (Séries x Reps) */
+body.dark-mode .exercise-stats span {
+  background-color: #333 !important;
+  color: #bbb !important;
+}
+
+
+/* ==========================================================================
+   5. TIPOGRAFIA NO MODO ESCURO (Textos Escuros viram Claros)
    ========================================================================== */
 
 /* --- Títulos Principais --- */
 body.dark-mode h1, 
 body.dark-mode h2, 
 body.dark-mode h3, 
-body.dark-mode h4 {
-  color: #ffffff;
+body.dark-mode h4,
+body.dark-mode .auth-form-content h3,
+body.dark-mode .workout-card h3,
+body.dark-mode .dashboard-card h2,
+body.dark-mode .results-topic-title {
+  color: #ffffff !important;
 }
 
-/* --- Textos Secundários e Legendas --- */
+/* --- Textos Secundários, Labels e Legendas --- */
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode label,
 body.dark-mode .presentation-text p,
 body.dark-mode .active-subtitle,
-body.dark-mode .theme-label {
-  color: #aaaaaa;
+body.dark-mode .theme-label,
+body.dark-mode .timer-label,
+body.dark-mode .day-left,
+body.dark-mode .day-training-name {
+  color: #aaaaaa !important;
+}
+
+/* --- Destaques Numéricos (Cronômetro e Resultados) --- */
+body.dark-mode .timer-display,
+body.dark-mode .highlight-box h4,
+body.dark-mode .health-card .stat-value {
+  color: #ffffff !important;
+}
+
+/* Ajuste da cor primária no texto (fica mais visível no preto) */
+body.dark-mode #main-workout-time {
+  color: #64b5f6 !important; /* Azul mais claro que o padrão */
 }
 
 
 /* ==========================================================================
-   4. AJUSTES ESPECÍFICOS: PÁGINA DE PERFIL
+   6. AJUSTES ESPECÍFICOS: PÁGINA DE PERFIL E DIVISORES
    ========================================================================== */
 
 /* Forçando o fundo escuro absoluto nos containers principais do perfil */
@@ -140,6 +237,12 @@ body.dark-mode #profile-form {
   border-radius: 8px;
 }
 
+/* Ajustando a borda do Avatar para não ficar uma linha branca gritante */
+body.dark-mode .profile-avatar {
+  border-color: #333 !important;
+  background-color: #2c2c2c !important;
+}
+
 /* Ajustando rótulos que podem sumir no fundo preto */
 body.dark-mode .profile-section label,
 body.dark-mode .profile-section h2,
@@ -148,5 +251,17 @@ body.dark-mode .profile-column-title {
   color: #ffffff !important;
 }
 
-/* Alerta no modo escuro */
-body.dark-mode .profile-alert { background-color: #332701; border-color: #4d3a00; color: #ffda6a; }
+/* Linhas divisórias globais */
+body.dark-mode .profile-divider,
+body.dark-mode .timer-divider,
+body.dark-mode .footer-bottom {
+  background-color: #444 !important;
+  border-color: #444 !important;
+}
+
+/* Alerta de perfil incompleto no modo escuro */
+body.dark-mode .profile-alert { 
+  background-color: #332701 !important; 
+  border-color: #4d3a00 !important; 
+  color: #ffda6a !important; 
+}

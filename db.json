@@ -8,7 +8,7 @@
       "equipment": "Barra",
       "series": "3",
       "repetitions": "8",
-      "load": "44",
+      "load": 55,
       "description": "vyvjv",
       "userEmail": "gabrielteotonio80@gmail.com",
       "times_completed": 2
@@ -21,7 +21,7 @@
       "equipment": "Halter",
       "series": "4",
       "repetitions": "8",
-      "load": "14",
+      "load": 55,
       "description": "Sem descrição",
       "userEmail": "gabrielteotonio80@gmail.com",
       "times_completed": 2
@@ -52,7 +52,7 @@
         "a44d"
       ],
       "userEmail": "gabrielteotonio80@gmail.com",
-      "times_completed": 4
+      "times_completed": 6
     }
   ],
   "history": [
@@ -83,6 +83,22 @@
     {
       "id": "log_1772305768662",
       "date": "2026-02-28T19:09:28.662Z",
+      "training_id": "e97b",
+      "training_name": "Treino A",
+      "duration_minutes": 0,
+      "userEmail": "gabrielteotonio80@gmail.com"
+    },
+    {
+      "id": "log_1772388605486",
+      "date": "2026-03-01T18:10:05.486Z",
+      "training_id": "e97b",
+      "training_name": "Treino A",
+      "duration_minutes": 2,
+      "userEmail": "gabrielteotonio80@gmail.com"
+    },
+    {
+      "id": "log_1772388892760",
+      "date": "2026-03-01T18:14:52.760Z",
       "training_id": "e97b",
       "training_name": "Treino A",
       "duration_minutes": 0,

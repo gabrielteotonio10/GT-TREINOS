@@ -6,12 +6,13 @@
 .profile-section {
   padding: 20px 0; 
   margin: 1rem 2rem;
+  box-sizing: border-box;
 }
 
 .profile-content {
   background: white;
   border-radius: 12px;
-  padding: 30px;
+  padding: clamp(15px, 5vw, 30px); 
   box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
   margin-top: 20px;
 }
@@ -26,11 +27,18 @@
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .logout-btn:hover {
   background: #dc3545;
   color: white;
+}
+
+.logout-btn:active {
+  transform: scale(0.95);
 }
 
 /* --- Cabeçalho do Perfil (Foto e Nome) --- */
@@ -45,17 +53,18 @@
   cursor: pointer;
   position: relative;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .profile-avatar {
-  width: 90px;
-  height: 90px;
+  width: clamp(80px, 15vw, 100px); 
+  height: clamp(80px, 15vw, 100px);
   border-radius: 50%;
   background-color: #f0f0f0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 35px;
+  font-size: clamp(30px, 5vw, 40px);
   color: #ccc;
   overflow: hidden;
   border: 3px solid white;
@@ -70,9 +79,9 @@
 
 .upload-badge {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #007bff;
+  bottom: 5px;
+  right: 5px;
+  background: var(--primary-color, #164e80);
   color: white;
   width: 28px;
   height: 28px;
@@ -82,18 +91,26 @@
   align-items: center;
   font-size: 12px;
   border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.profile-hero-text {
+  min-width: 0;
 }
 
 .profile-hero-text h2 {
   margin: 0 0 5px 0;
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 5vw, 1.5rem);
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile-hero-text p {
   margin: 0;
   color: #777;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 /* --- Divisória --- */
@@ -108,20 +125,20 @@
 .profile-form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 30px;
+  gap: 25px;
 }
 
 .profile-column-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #444;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .profile-column-title i {
-  color: #007bff;
+  color: var(--primary-color, #164e80);
 }
 
 /* --- Select Customizado --- */
@@ -134,11 +151,49 @@
   font-family: inherit;
   font-size: 1rem;
   color: #333;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
 }
 
-/* --- Responsividade (Formulário do Perfil) --- */
+/* --- Responsividade --- */
 @media (min-width: 768px) {
   .profile-form-grid {
-    grid-template-columns: 1fr 1fr; /* Duas colunas lado a lado no desktop */
+    grid-template-columns: 1fr 1fr; 
+  }
+  
+  .profile-section {
+    margin: 2rem auto;
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-section {
+    margin: 1rem;
+  }
+  
+  .profile-hero {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .profile-hero-text h2 {
+    white-space: normal;
+  }
+
+  .logout-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-content {
+    padding: 20px 15px;
   }
 }
