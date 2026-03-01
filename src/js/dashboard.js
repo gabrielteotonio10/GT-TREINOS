@@ -23,11 +23,12 @@ export async function renderDashboard() {
         <button class="action-btn" id="go-to-trainings-btn">Ir para Treinos</button>
       </div>
     `;
-    homeDashboard.innerHTML = semTreinoHTML;
+    if (homeDashboard) homeDashboard.innerHTML = semTreinoHTML;
     if (resultsContent) resultsContent.innerHTML = semTreinoHTML;
     document.querySelectorAll("#go-to-trainings-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        document.querySelector(".training-btn").click();
+        const trainingBtn = document.querySelector(".training-btn");
+        if (trainingBtn) trainingBtn.click();
       });
     });
     return;
@@ -58,6 +59,7 @@ export async function renderDashboard() {
     sugestedTrainingLog = historyTraining[randomIndex];
   }
 
+  // Busca os dados completos no Supabase usando os IDs do histórico
   const lastTrainingData = await apiTraining.getTrainingById(
     lastTrainingLog.training_id,
   );
@@ -209,7 +211,8 @@ export async function renderDashboard() {
       `;
     }
   }
-  document.getElementById("home-weekly-tracker").innerHTML = weekHTML;
+  const weeklyTracker = document.getElementById("home-weekly-tracker");
+  if (weeklyTracker) weeklyTracker.innerHTML = weekHTML;
 
   // ==========================================================================
   // INJETANDO NA ABA DE RESULTADOS

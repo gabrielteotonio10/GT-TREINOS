@@ -1,24 +1,24 @@
-const BASE_URL = "http://localhost:3000";
+import { supabase } from "../supabase.js";
 
 const trainingApi = {
   // Procura os treinos registrados
   async getTrainings() {
     try {
-      const response = await fetch(`${BASE_URL}/training`);
-      if (!response.ok) throw new Error("Erro ao buscar training");
-
-      const allTrainings = await response.json();
-
       // Vemos quem está logado
       const userString = localStorage.getItem("currentUser");
       const loggedEmail = userString ? JSON.parse(userString).email : null;
       // Se não tiver ninguém logado, não retorna nada
       if (!loggedEmail) return [];
-      // Filtra
-      const myTrainings = allTrainings.filter(
-        (training) => training.userEmail === loggedEmail,
-      );
-      return myTrainings;
+
+      // Filtra direto no Supabase
+      const { data, error } = await supabase
+        .from("trainings")
+        .select("*")
+        .eq("userEmail", loggedEmail);
+
+      if (error) throw error;
+
+      return data || [];
     } catch (error) {
       alert("Erro ao buscar os treinos");
       throw error;
@@ -28,8 +28,14 @@ const trainingApi = {
   // Procura um treino pelo Id
   async getTrainingById(id) {
     try {
-      const response = await fetch(`${BASE_URL}/training/${id}`);
-      return await response.json();
+      const { data, error } = await supabase
+        .from("trainings")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+      return data;
     } catch (error) {
       alert("Erro ao buscar treino por ID");
       throw error;
@@ -38,30 +44,28 @@ const trainingApi = {
 
   // Salva um treino
   async createTraining(training) {
-    const response = await fetch(`${BASE_URL}/training`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(training),
-    });
-    if (!response.ok) {
-      throw new Error(`Erro no servidor: ${response.status}`);
+    const { data, error } = await supabase
+      .from("trainings")
+      .insert([training])
+      .select();
+
+    if (error) {
+      throw new Error(`Erro no servidor: ${error.message}`);
     }
-    return await response.json();
+    return data[0];
   },
 
   // Edita um treino
   async updateTraining(training) {
     try {
-      const response = await fetch(`${BASE_URL}/training/${training.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(training),
-      });
-      return await response.json();
+      const { data, error } = await supabase
+        .from("trainings")
+        .update(training)
+        .eq("id", training.id)
+        .select();
+
+      if (error) throw error;
+      return data[0];
     } catch (error) {
       alert("Erro ao editar treino");
       throw error;
@@ -71,11 +75,10 @@ const trainingApi = {
   // Deleta um treino
   async deleteTraining(id) {
     try {
-      const response = await fetch(`${BASE_URL}/training/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error(`Erro no servidor: ${response.status}`);
+      const { error } = await supabase.from("trainings").delete().eq("id", id);
+
+      if (error) {
+        throw new Error(`Erro no servidor: ${error.message}`);
       }
       return true;
     } catch (error) {
@@ -87,13 +90,13 @@ const trainingApi = {
   // Salva o histórico do treino
   async saveHistory(historyData) {
     try {
-      const response = await fetch(`${BASE_URL}/history`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(historyData),
-      });
-      if (!response.ok) throw new Error("Erro ao salvar histórico");
-      return await response.json();
+      const { data, error } = await supabase
+        .from("history")
+        .insert([historyData])
+        .select();
+
+      if (error) throw new Error("Erro ao salvar histórico");
+      return data[0];
     } catch (error) {
       console.error(error);
     }
@@ -102,8 +105,18 @@ const trainingApi = {
   // Pega o histórico do treino
   async getHistory() {
     try {
-      const response = await fetch(`${BASE_URL}/history`);
-      return await response.json();
+      // Vemos quem está logado para pegar apenas o histórico dele
+      const userString = localStorage.getItem("currentUser");
+      const loggedEmail = userString ? JSON.parse(userString).email : null;
+      if (!loggedEmail) return [];
+
+      const { data, error } = await supabase
+        .from("history")
+        .select("*")
+        .eq("userEmail", loggedEmail);
+
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error(error);
     }

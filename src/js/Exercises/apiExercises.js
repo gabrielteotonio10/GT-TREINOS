@@ -1,23 +1,23 @@
-const BASE_URL = "http://localhost:3000";
+import { supabase } from "../supabase.js";
 
 const exercisesApi = {
   // Procura os exercícios registrados
   async getExercises() {
     try {
-      const response = await fetch(`${BASE_URL}/exercises`);
-      if (!response.ok) throw new Error("Erro ao buscar os exercícios");
-      const allExercises = await response.json();
-
       // Vê quem está logado
       const userString = localStorage.getItem("currentUser");
       const loggedEmail = userString ? JSON.parse(userString).email : null;
       if (!loggedEmail) return [];
-      // Só devolve os exercícios que pertencem a quem está logado
-      const myExercises = allExercises.filter(
-        (exercise) => exercise.userEmail === loggedEmail,
-      );
 
-      return myExercises;
+      // Só devolve os exercícios que pertencem a quem está logado (Busca direto no Supabase)
+      const { data, error } = await supabase
+        .from("exercises")
+        .select("*")
+        .eq("userEmail", loggedEmail);
+
+      if (error) throw error;
+
+      return data || [];
     } catch (error) {
       alert("Erro ao buscar os exercícios");
       throw error;
@@ -27,9 +27,14 @@ const exercisesApi = {
   // Procura um exercício pelo Id
   async getExercisesById(id) {
     try {
-      const response = await fetch(`${BASE_URL}/exercises/${id}`);
-      if (!response.ok) throw new Error("Exercício não encontrado no servidor");
-      return await response.json();
+      const { data, error } = await supabase
+        .from("exercises")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) throw new Error("Exercício não encontrado no servidor");
+      return data;
     } catch (error) {
       alert("Erro ao buscar exercício por ID");
       throw error;
@@ -38,30 +43,28 @@ const exercisesApi = {
 
   // Salva um exercício
   async createExercises(exercises) {
-    const response = await fetch(`${BASE_URL}/exercises`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(exercises),
-    });
-    if (!response.ok) {
-      throw new Error(`Erro no servidor: ${response.status}`);
+    const { data, error } = await supabase
+      .from("exercises")
+      .insert([exercises])
+      .select();
+
+    if (error) {
+      throw new Error(`Erro no servidor: ${error.message}`);
     }
-    return await response.json();
+    return data[0];
   },
 
   // Edita um exercício
   async updateExercises(exercises) {
     try {
-      const response = await fetch(`${BASE_URL}/exercises/${exercises.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(exercises),
-      });
-      return await response.json();
+      const { data, error } = await supabase
+        .from("exercises")
+        .update(exercises)
+        .eq("id", exercises.id)
+        .select();
+
+      if (error) throw error;
+      return data[0];
     } catch (error) {
       alert("Erro ao editar exercício");
       throw error;
@@ -71,11 +74,10 @@ const exercisesApi = {
   // Deleta um exercício
   async deleteExercises(id) {
     try {
-      const response = await fetch(`${BASE_URL}/exercises/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error(`Erro no servidor: ${response.status}`);
+      const { error } = await supabase.from("exercises").delete().eq("id", id);
+
+      if (error) {
+        throw new Error(`Erro no servidor: ${error.message}`);
       }
       return true;
     } catch (error) {

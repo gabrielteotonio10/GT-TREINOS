@@ -18,449 +18,461 @@
 </head>
 
 <body>
-  <!-- HEADER -->
-  <header class="main-header">
-    <section class="header-elements">
-      <button class="mobile-menu-btn">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="main-logo">
-      <nav class="header-menu">
-        <button class="training-btn nav-btn">Treinos</button>
-        <button class="nav-btn">Resultados</button>
-        <button class="nav-btn">Perfil</button>
-      </nav>
-    </section>
-  </header>
 
-  <main>
+  <div id="app-content">
 
-    <!-- TEXTO DE ENTRADA -->
-    <section class="presentation-text">
-      <h1 class="presentation-text-name">Bom dia, Gabriel!</h1>
-      <p>Vamos manter o foco hoje?</p>
-    </section>
-
-    <!-- COMPLETAR INFORMAÇÕES -->
-    <section class="profile-alert-section hidden" id="profile-alert-container">
-      <div class="profile-alert">
-        <div class="alert-content">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <div>
-            <strong>Complete seu perfil!</strong>
-            <p>Preencha sua idade, peso e altura para personalizarmos sua experiência.</p>
-          </div>
-        </div>
-        <button id="go-to-profile-alert-btn" class="primary-btn" style="padding: 8px 15px; font-size: 0.9rem;">
-          Completar Agora
+    <header class="main-header">
+      <section class="header-elements">
+        <button class="mobile-menu-btn">
+          <i class="fa-solid fa-bars"></i>
         </button>
-      </div>
-    </section>
+        <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="main-logo">
+        <nav class="header-menu">
+          <button class="training-btn nav-btn">Treinos</button>
+          <button class="nav-btn">Resultados</button>
+          <button class="nav-btn">Perfil</button>
+        </nav>
+      </section>
+    </header>
 
-    <!-- APRESENTAÇÃO -->
-    <section class="website-presentation" id="home-dashboard">
-      <div class="dashboard-card training-history">
-        <h2>Dias treinados:</h2>
-        <div class="week-list" id="home-weekly-tracker"></div>
-      </div>
-      <div class="dashboard-card last-training">
-        <h2>Último Treino:</h2>
-        <div id="home-last-training-container" class="card-injection-area"></div>
-      </div>
-      <div class="dashboard-card suggested-training">
-        <h2>Treino Sugerido:</h2>
-        <div id="home-suggested-training-container" class="card-injection-area highlight-area"></div>
-      </div>
-    </section>
+    <main>
 
-    <!-- TREINOS -->
-    <section class="workouts-section">
-      <div class="library-header">
-        <h2 class="section-title" id="trainings-section-title" style="margin: 0;">Meus Treinos</h2>
-        <div class="search-bar-container library-search" style="margin: 0;">
-          <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          <input type="text" id="trainings-search-input" placeholder="Pesquisar treinos...">
-        </div>
-      </div>
-      <div class="workouts-grid" id="workouts-grid"></div>
-    </section>
+      <section class="presentation-text">
+        <h1 class="presentation-text-name">Bom dia, Gabriel!</h1>
+        <p>Vamos manter o foco hoje?</p>
+      </section>
 
-    <!-- EXERCÍCIOS -->
-    <section class="exercises-library-section hidden">
-      <div class="library-header">
-        <h2 class="section-title" id="exercises-section-title" style="margin: 0;">Meus Exercícios</h2>
-        <div class="search-bar-container library-search" style="margin: 0;">
-          <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          <input type="text" id="exercises-search-input" placeholder="Pesquisar exercícios...">
-        </div>
-      </div>
-      <div class="exercises-grid" id="exercises-list"></div>
-    </section>
-
-    <!-- DETALHES DOS TREINOS -->
-    <section class="active-workout-section hidden">
-      <div class="active-header">
-        <button class="back-arrow-btn" aria-label="Voltar para treinos"><i class="fa-solid fa-arrow-left"></i></button>
-      
-        <div class="active-header-actions" style="display: flex; gap: 15px;">
-          <button class="export-pdf-btn" aria-label="Exportar PDF do Treino">
-            <i class="fa-solid fa-file-pdf"></i>
+      <section class="profile-alert-section hidden" id="profile-alert-container">
+        <div class="profile-alert">
+          <div class="alert-content">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>
+              <strong>Complete seu perfil!</strong>
+              <p>Preencha sua idade, peso e altura para personalizarmos sua experiência.</p>
+            </div>
+          </div>
+          <button id="go-to-profile-alert-btn" class="primary-btn" style="padding: 8px 15px; font-size: 0.9rem;">
+            Completar Agora
           </button>
-      
-          <button class="edit-workout-btn" aria-label="Editar treino"><i class="fa-solid fa-pen"></i></button>
         </div>
-      </div>
+      </section>
 
-      <div class="active-title-area">
-        <h2 class="active-title">Treino de Peito e Tríceps</h2>
-        <p class="active-subtitle">Foco em Hipertrofia</p>
-      </div>
-
-      <button id="start-workout-action-btn" class="action-btn"
-        style="width: calc(100% - 40px); margin: 0 20px 20px 20px;">
-        Começar Treino
-      </button>
-
-      <div id="dual-timers-wrapper" class="workout-timer-container hidden">
-        <div class="timer-section main-timer">
-          <span class="timer-label">Tempo de Treino</span>
-          <div class="timer-display" id="main-workout-time">00:00</div>
+      <section class="website-presentation" id="home-dashboard">
+        <div class="dashboard-card training-history">
+          <h2>Dias treinados:</h2>
+          <div class="week-list" id="home-weekly-tracker"></div>
         </div>
-        <div class="timer-divider"></div>
-        <div class="timer-section rest-timer">
-          <span class="timer-label">Descanso</span>
-          <div class="timer-display" id="rest-timer-display">00:00</div>
-          <div class="timer-controls">
-            <button id="rest-timer-toggle" class="timer-btn play-btn"><i class="fa-solid fa-play"></i></button>
-            <button id="rest-timer-stop" class="timer-btn stop-btn hidden"><i class="fa-solid fa-stop"></i></button>
+        <div class="dashboard-card last-training">
+          <h2>Último Treino:</h2>
+          <div id="home-last-training-container" class="card-injection-area"></div>
+        </div>
+        <div class="dashboard-card suggested-training">
+          <h2>Treino Sugerido:</h2>
+          <div id="home-suggested-training-container" class="card-injection-area highlight-area"></div>
+        </div>
+      </section>
+
+      <section class="workouts-section">
+        <div class="library-header">
+          <h2 class="section-title" id="trainings-section-title" style="margin: 0;">Meus Treinos</h2>
+          <div class="search-bar-container library-search" style="margin: 0;">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="trainings-search-input" placeholder="Pesquisar treinos...">
           </div>
         </div>
-      </div>
+        <div class="workouts-grid" id="workouts-grid"></div>
+      </section>
 
-      <div class="active-exercises-list">
-        <div class="exercise-item">
-          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=200&auto=format&fit=crop"
-            alt="Supino" class="exercise-img">
-          <div class="exercise-info">
-            <h4>Supino Reto com Barra</h4>
-            <p>4 Séries x 10 Repetições</p>
-          </div>
-          <button class="check-exercise-btn" aria-label="Marcar como feito"><i class="fa-solid fa-check"></i></button>
-        </div>
-        <div class="exercise-item">
-          <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=200&auto=format&fit=crop"
-            alt="Crucifixo" class="exercise-img">
-          <div class="exercise-info">
-            <h4>Crucifixo com Halteres</h4>
-            <p>3 Séries x 12 Repetições</p>
-          </div>
-          <button class="check-exercise-btn" aria-label="Marcar como feito"><i class="fa-solid fa-check"></i></button>
-        </div>
-      </div>
-
-      <div class="add-exercise-to-workout-btn">
-        <i class="fa-solid fa-plus"></i>
-        <span>Adicionar Exercício ao Treino</span>
-      </div>
-
-      <div class="active-footer-actions">
-        <button class="finish-workout-btn">Terminar Treino</button>
-        <button class="delete-workout-btn"><i class="fa-solid fa-trash"></i> Excluir Treino</button>
-      </div>
-    </section>
-
-    <!-- DETALHES DOS EXERCÍCIOS -->
-    <section class="active-exercise-details-section hidden">
-      <div class="active-header">
-        <button class="back-arrow-exercise-btn" aria-label="Voltar para biblioteca"><i
-            class="fa-solid fa-arrow-left"></i></button>
-        <button class="edit-exercise-btn" aria-label="Editar exercício"><i class="fa-solid fa-pen"></i></button>
-      </div>
-
-      <div class="exercise-hero-image">
-        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop"
-          id="detail-exercise-img" alt="Demonstração do exercício">
-      </div>
-
-      <div class="active-title-area">
-        <h2 class="active-exercise-title" id="detail-exercise-name">Supino Reto com Barra</h2>
-        <p class="active-exercise-subtitle" id="detail-exercise-muscle">
-          <i class="fa-solid fa-dna"></i> Músculo: Peitoral Maior
-        </p>
-      </div>
-
-      <div class="exercise-info-grid">
-        <div class="info-box"><i class="fa-solid fa-layer-group"></i><span class="label">Séries</span><strong
-            id="detail-exercise-series">3</strong></div>
-        <div class="info-box"><i class="fa-solid fa-rotate-right"></i><span class="label">Reps</span><strong
-            id="detail-exercise-reps">12</strong></div>
-        <div class="info-box"><i class="fa-solid fa-weight-hanging"></i><span class="label">Carga</span><strong
-            id="detail-exercise-load">40 kg</strong></div>
-      </div>
-
-      <div class="exercise-description-area">
-        <div class="detail-item">
-          <i class="fa-solid fa-dumbbell"></i>
-          <p><strong>Equipamento:</strong> <span id="detail-exercise-equipment">Barra e Banco</span></p>
-        </div>
-        <div class="detail-item description-text">
-          <i class="fa-solid fa-align-left"></i>
-          <div>
-            <strong>Instruções / Descrição:</strong>
-            <p id="detail-exercise-description">Mantenha a escápula retraída e controle a descida da barra até o peito.
-            </p>
+      <section class="exercises-library-section hidden">
+        <div class="library-header">
+          <h2 class="section-title" id="exercises-section-title" style="margin: 0;">Meus Exercícios</h2>
+          <div class="search-bar-container library-search" style="margin: 0;">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="exercises-search-input" placeholder="Pesquisar exercícios...">
           </div>
         </div>
-      </div>
+        <div class="exercises-grid" id="exercises-list"></div>
+      </section>
 
-      <div class="load-history-wrapper shadow-card" style="margin-top: 20px; padding: 15px;">
-        <h3 class="results-topic-title" style="margin-top: 0;">Progresso de Cargas</h3>
-      
-        <form id="load-form" style="display: flex; gap: 10px; margin-bottom: 15px;">
-          <input type="number" id="load-weight-input" placeholder="Peso (kg)" required
-            style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-          <input type="number" id="load-reps-input" placeholder="Reps" required
-            style="width: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-          <button type="submit" class="primary-btn" style="padding: 10px 15px; border-radius: 8px;"><i
-              class="fa-solid fa-plus"></i></button>
-        </form>
-      
-        <ul id="load-history-list"
-          style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
-        </ul>
-      </div>
+      <section class="active-workout-section hidden">
+        <div class="active-header">
+          <button class="back-arrow-btn" aria-label="Voltar para treinos"><i
+              class="fa-solid fa-arrow-left"></i></button>
 
-      <div class="active-footer-actions">
-        <button class="delete-exercise-library-btn">
-          <i class="fa-solid fa-trash"></i> Excluir da Biblioteca
+          <div class="active-header-actions" style="display: flex; gap: 15px;">
+            <button class="export-pdf-btn" aria-label="Exportar PDF do Treino">
+              <i class="fa-solid fa-file-pdf"></i>
+            </button>
+
+            <button class="edit-workout-btn" aria-label="Editar treino"><i class="fa-solid fa-pen"></i></button>
+          </div>
+        </div>
+
+        <div class="active-title-area">
+          <h2 class="active-title">Treino de Peito e Tríceps</h2>
+          <p class="active-subtitle">Foco em Hipertrofia</p>
+        </div>
+
+        <button id="start-workout-action-btn" class="action-btn"
+          style="width: calc(100% - 40px); margin: 0 20px 20px 20px;">
+          Começar Treino
         </button>
-      </div>
-    </section>
 
-    <!-- PERFIL DO USUÁRIO -->
-    <section class="profile-section hidden" id="profile-section">
-      <div class="library-header">
-        <h2 class="section-title" id="profile-section-title" style="margin: 0;">Meu Perfil</h2>
-        <button class="logout-btn" id="logout-btn">
-          <i class="fa-solid fa-right-from-bracket"></i> Sair
-        </button>
-      </div>
-
-      <div class="theme-toggle-container">
-        <span class="theme-label"><i class="fa-solid fa-moon"></i> Modo Escuro</span>
-        <label class="switch">
-          <input type="checkbox" id="dark-mode-toggle">
-          <span class="slider round"></span>
-        </label>
-      </div>
-
-      <div class="profile-content">
-        <div class="profile-hero">
-          <label class="upload-profile-label" for="profile-photo-input">
-            <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
-            <div class="profile-avatar" id="profile-avatar-preview">
-              <i class="fa-solid fa-user"></i>
+        <div id="dual-timers-wrapper" class="workout-timer-container hidden">
+          <div class="timer-section main-timer">
+            <span class="timer-label">Tempo de Treino</span>
+            <div class="timer-display" id="main-workout-time">00:00</div>
+          </div>
+          <div class="timer-divider"></div>
+          <div class="timer-section rest-timer">
+            <span class="timer-label">Descanso</span>
+            <div class="timer-display" id="rest-timer-display">00:00</div>
+            <div class="timer-controls">
+              <button id="rest-timer-toggle" class="timer-btn play-btn"><i class="fa-solid fa-play"></i></button>
+              <button id="rest-timer-stop" class="timer-btn stop-btn hidden"><i class="fa-solid fa-stop"></i></button>
             </div>
-            <span class="upload-badge"><i class="fa-solid fa-camera"></i></span>
+          </div>
+        </div>
+
+        <div class="active-exercises-list">
+          <div class="exercise-item">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=200&auto=format&fit=crop"
+              alt="Supino" class="exercise-img">
+            <div class="exercise-info">
+              <h4>Supino Reto com Barra</h4>
+              <p>4 Séries x 10 Repetições</p>
+            </div>
+            <button class="check-exercise-btn" aria-label="Marcar como feito"><i class="fa-solid fa-check"></i></button>
+          </div>
+          <div class="exercise-item">
+            <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=200&auto=format&fit=crop"
+              alt="Crucifixo" class="exercise-img">
+            <div class="exercise-info">
+              <h4>Crucifixo com Halteres</h4>
+              <p>3 Séries x 12 Repetições</p>
+            </div>
+            <button class="check-exercise-btn" aria-label="Marcar como feito"><i class="fa-solid fa-check"></i></button>
+          </div>
+        </div>
+
+        <div class="add-exercise-to-workout-btn">
+          <i class="fa-solid fa-plus"></i>
+          <span>Adicionar Exercício ao Treino</span>
+        </div>
+
+        <div class="active-footer-actions">
+          <button class="finish-workout-btn">Terminar Treino</button>
+          <button class="delete-workout-btn"><i class="fa-solid fa-trash"></i> Excluir Treino</button>
+        </div>
+      </section>
+
+      <section class="active-exercise-details-section hidden">
+        <div class="active-header">
+          <button class="back-arrow-exercise-btn" aria-label="Voltar para biblioteca"><i
+              class="fa-solid fa-arrow-left"></i></button>
+          <button class="edit-exercise-btn" aria-label="Editar exercício"><i class="fa-solid fa-pen"></i></button>
+        </div>
+
+        <div class="exercise-hero-image">
+          <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop"
+            id="detail-exercise-img" alt="Demonstração do exercício">
+        </div>
+
+        <div class="active-title-area">
+          <h2 class="active-exercise-title" id="detail-exercise-name">Supino Reto com Barra</h2>
+          <p class="active-exercise-subtitle" id="detail-exercise-muscle">
+            <i class="fa-solid fa-dna"></i> Músculo: Peitoral Maior
+          </p>
+        </div>
+
+        <div class="exercise-info-grid">
+          <div class="info-box"><i class="fa-solid fa-layer-group"></i><span class="label">Séries</span><strong
+              id="detail-exercise-series">3</strong></div>
+          <div class="info-box"><i class="fa-solid fa-rotate-right"></i><span class="label">Reps</span><strong
+              id="detail-exercise-reps">12</strong></div>
+          <div class="info-box"><i class="fa-solid fa-weight-hanging"></i><span class="label">Carga</span><strong
+              id="detail-exercise-load">40 kg</strong></div>
+        </div>
+
+        <div class="exercise-description-area">
+          <div class="detail-item">
+            <i class="fa-solid fa-dumbbell"></i>
+            <p><strong>Equipamento:</strong> <span id="detail-exercise-equipment">Barra e Banco</span></p>
+          </div>
+          <div class="detail-item description-text">
+            <i class="fa-solid fa-align-left"></i>
+            <div>
+              <strong>Instruções / Descrição:</strong>
+              <p id="detail-exercise-description">Mantenha a escápula retraída e controle a descida da barra até o
+                peito.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="load-history-wrapper shadow-card" style="margin-top: 20px; padding: 15px;">
+          <h3 class="results-topic-title" style="margin-top: 0;">Progresso de Cargas</h3>
+
+          <form id="load-form" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="number" id="load-weight-input" placeholder="Peso (kg)" required
+              style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+            <input type="number" id="load-reps-input" placeholder="Reps" required
+              style="width: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+            <button type="submit" class="primary-btn" style="padding: 10px 15px; border-radius: 8px;"><i
+                class="fa-solid fa-plus"></i></button>
+          </form>
+
+          <ul id="load-history-list"
+            style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+          </ul>
+        </div>
+
+        <div class="active-footer-actions">
+          <button class="delete-exercise-library-btn">
+            <i class="fa-solid fa-trash"></i> Excluir da Biblioteca
+          </button>
+        </div>
+      </section>
+
+      <section class="profile-section hidden" id="profile-section">
+        <div class="library-header">
+          <h2 class="section-title" id="profile-section-title" style="margin: 0;">Meu Perfil</h2>
+          <button class="logout-btn" id="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
+          </button>
+        </div>
+
+        <div class="theme-toggle-container">
+          <span class="theme-label"><i class="fa-solid fa-moon"></i> Modo Escuro</span>
+          <label class="switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="slider round"></span>
           </label>
-          <div class="profile-hero-text">
-            <h2 id="hero-display-name">Carregando...</h2>
-            <p id="hero-display-email">...</p>
-          </div>
         </div>
 
-        <hr class="profile-divider">
-
-        <form id="profile-form">
-          <div class="profile-form-grid">
-            <div class="profile-column">
-              <h3 class="profile-column-title"><i class="fa-solid fa-lock"></i> Dados de Acesso</h3>
-              <div class="form-group">
-                <label for="profile-name">Nome Completo</label>
-                <input type="text" id="profile-name" required>
+        <div class="profile-content">
+          <div class="profile-hero">
+            <label class="upload-profile-label" for="profile-photo-input">
+              <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
+              <div class="profile-avatar" id="profile-avatar-preview">
+                <i class="fa-solid fa-user"></i>
               </div>
-              <div class="form-group">
-                <label for="profile-email">E-mail (Login)</label>
-                <input type="email" id="profile-email" disabled style="background-color: #f5f5f5; color: #888;">
-              </div>
-              <div class="form-group">
-                <label for="profile-password" style="color: #d9534f;">Alterar Senha</label>
-                <input type="password" id="profile-password" placeholder="Nova senha (opcional)">
-                <label for="profile-password-confirm" style="color: #d9534f; margin-top: 10px">Confirmar senha</label>
-                <input type="password" id="profile-password-confirm" placeholder="Nova senha (opcional)">
-              </div>
+              <span class="upload-badge"><i class="fa-solid fa-camera"></i></span>
+            </label>
+            <div class="profile-hero-text">
+              <h2 id="hero-display-name">Carregando...</h2>
+              <p id="hero-display-email">...</p>
             </div>
+          </div>
 
-            <div class="profile-column">
-              <h3 class="profile-column-title"><i class="fa-solid fa-dumbbell"></i> Medidas & Objetivos</h3>
-              <div class="form-group">
-                <label for="profile-goal">Objetivo Principal</label>
-                <select id="profile-goal" class="custom-select">
-                  <option value="">Selecione...</option>
-                  <option value="hipertrofia">Hipertrofia</option>
-                  <option value="emagrecimento">Emagrecimento</option>
-                  <option value="resistencia">Resistência</option>
-                  <option value="saude">Saúde Geral</option>
-                </select>
-              </div>
-              <div class="form-row">
-                <div class="form-group flex-grow">
-                  <label for="profile-age">Idade</label>
-                  <input type="number" id="profile-age" placeholder="Ex: 25" min="10" max="120">
+          <hr class="profile-divider">
+
+          <form id="profile-form">
+            <div class="profile-form-grid">
+              <div class="profile-column">
+                <h3 class="profile-column-title"><i class="fa-solid fa-lock"></i> Dados de Acesso</h3>
+                <div class="form-group">
+                  <label for="profile-name">Nome Completo</label>
+                  <input type="text" id="profile-name" required>
                 </div>
-                <div class="form-group flex-grow">
-                  <label for="profile-gender">Sexo</label>
-                  <select id="profile-gender" class="custom-select">
+                <div class="form-group">
+                  <label for="profile-email">E-mail (Login)</label>
+                  <input type="email" id="profile-email" disabled style="background-color: #f5f5f5; color: #888;">
+                </div>
+                <div class="form-group">
+                  <label for="profile-password" style="color: #d9534f;">Alterar Senha</label>
+                  <input type="password" id="profile-password" placeholder="Nova senha (opcional)">
+                  <label for="profile-password-confirm" style="color: #d9534f; margin-top: 10px">Confirmar senha</label>
+                  <input type="password" id="profile-password-confirm" placeholder="Nova senha (opcional)">
+                </div>
+              </div>
+
+              <div class="profile-column">
+                <h3 class="profile-column-title"><i class="fa-solid fa-dumbbell"></i> Medidas & Objetivos</h3>
+                <div class="form-group">
+                  <label for="profile-goal">Objetivo Principal</label>
+                  <select id="profile-goal" class="custom-select">
                     <option value="">Selecione...</option>
-                    <option value="masculino">Masculino</option>
-                    <option value="feminino">Feminino</option>
-                    <option value="outro">Outro</option>
+                    <option value="hipertrofia">Hipertrofia</option>
+                    <option value="emagrecimento">Emagrecimento</option>
+                    <option value="resistencia">Resistência</option>
+                    <option value="saude">Saúde Geral</option>
                   </select>
                 </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group flex-grow">
-                  <label for="profile-weight">Peso (kg)</label>
-                  <input type="number" id="profile-weight" step="0.1" placeholder="Ex: 75.5">
+                <div class="form-row">
+                  <div class="form-group flex-grow">
+                    <label for="profile-age">Idade</label>
+                    <input type="number" id="profile-age" placeholder="Ex: 25" min="10" max="120">
+                  </div>
+                  <div class="form-group flex-grow">
+                    <label for="profile-gender">Sexo</label>
+                    <select id="profile-gender" class="custom-select">
+                      <option value="">Selecione...</option>
+                      <option value="masculino">Masculino</option>
+                      <option value="feminino">Feminino</option>
+                      <option value="outro">Outro</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="form-group flex-grow">
-                  <label for="profile-height">Altura (cm)</label>
-                  <input type="number" id="profile-height" placeholder="Ex: 175">
+                <div class="form-row">
+                  <div class="form-group flex-grow">
+                    <label for="profile-weight">Peso (kg)</label>
+                    <input type="number" id="profile-weight" step="0.1" placeholder="Ex: 75.5">
+                  </div>
+                  <div class="form-group flex-grow">
+                    <label for="profile-height">Altura (cm)</label>
+                    <input type="number" id="profile-height" placeholder="Ex: 175">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="form-buttons" style="margin-top: 30px;">
-            <button type="submit" class="primary-btn" style="width: 100%;">Salvar Alterações</button>
-          </div>
-        </form>
-      </div>
-    </section>
+            <div class="form-buttons" style="margin-top: 30px;">
+              <button type="submit" class="primary-btn" style="width: 100%;">Salvar Alterações</button>
+            </div>
+          </form>
+        </div>
+      </section>
 
-    <!-- RESULTADOS -->
-    <section class="results-section hidden" id="results-section">
-      <div class="library-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 class="section-title" style="margin: 0;">Meus Resultados</h2>
-      
-        <button class="export-results-pdf-btn" aria-label="Exportar Relatório"
-          style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #007bff;">
-          <i class="fa-solid fa-file-pdf"></i>
-        </button>
-      </div>
+      <section class="results-section hidden" id="results-section">
+        <div class="library-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 class="section-title" style="margin: 0;">Meus Resultados</h2>
 
-      <div id="results-content-area" class="results-dashboard-grid">
-        <div class="results-layout-left">
-          <h3 class="results-topic-title">Frequência da Semana</h3>
-          <div class="dashboard-card shadow-card">
-            <div id="results-weekly-tracker"></div>
-          </div>
-
-          <h3 class="results-topic-title">Minha Saúde</h3>
-          <div class="health-stats-container shadow-card" id="results-health-container"></div>
+          <button class="export-results-pdf-btn" aria-label="Exportar Relatório"
+            style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #007bff;">
+            <i class="fa-solid fa-file-pdf"></i>
+          </button>
         </div>
 
-        <div class="results-layout-right">
-          <h3 class="results-topic-title">Destaques</h3>
+        <div id="results-content-area" class="results-dashboard-grid">
+          <div class="results-layout-left">
+            <h3 class="results-topic-title">Frequência da Semana</h3>
+            <div class="dashboard-card shadow-card">
+              <div id="results-weekly-tracker"></div>
+            </div>
 
-          <div class="highlight-box">
-            <p class="highlight-label">Total Realizados</p>
-            <h4 id="results-total-done">0</h4>
+            <h3 class="results-topic-title">Minha Saúde</h3>
+            <div class="health-stats-container shadow-card" id="results-health-container"></div>
           </div>
 
-          <h3 class="results-topic-title">Ficha Favorita</h3>
-          <p id="results-favorite-training-times" class="highlight-times-text"></p>
-          <div id="results-favorite-training-container" class="card-injection-area"></div>
+          <div class="results-layout-right">
+            <h3 class="results-topic-title">Destaques</h3>
 
-          <h3 class="results-topic-title">Exercício Favorito</h3>
-          <p id="results-favorite-exercise-times" class="highlight-times-text"></p>
-          <div id="results-favorite-exercise-container" class="card-injection-area exercise-injection"></div>
+            <div class="highlight-box">
+              <p class="highlight-label">Total Realizados</p>
+              <h4 id="results-total-done">0</h4>
+            </div>
 
-          <h3 class="results-topic-title">Último Treino</h3>
-          <p id="results-last-training-date" class="highlight-times-text"></p>
-          <div id="results-last-training-container" class="card-injection-area"></div>
+            <h3 class="results-topic-title">Ficha Favorita</h3>
+            <p id="results-favorite-training-times" class="highlight-times-text"></p>
+            <div id="results-favorite-training-container" class="card-injection-area"></div>
 
-        </div>
-      </div>
-    </section>
+            <h3 class="results-topic-title">Exercício Favorito</h3>
+            <p id="results-favorite-exercise-times" class="highlight-times-text"></p>
+            <div id="results-favorite-exercise-container" class="card-injection-area exercise-injection"></div>
 
-    <!-- ENTRAR NA PLATAFORMA -->
-    <section id="login-section" class="auth-wrapper">
-      <div class="auth-container">
-        <div class="auth-visual">
-          <div class="auth-visual-content">
-            <h2>Bem-vindo de volta!</h2>
-            <p>Seu corpo, suas regras. Continue sua jornada com o GT Treinos.</p>
+            <h3 class="results-topic-title">Último Treino</h3>
+            <p id="results-last-training-date" class="highlight-times-text"></p>
+            <div id="results-last-training-container" class="card-injection-area"></div>
+
           </div>
         </div>
-        <div class="auth-form-area">
-          <div class="auth-form-content">
-            <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="auth-logo">
-            <h3>Acesse sua conta</h3>
-            <form id="login-form">
-              <div class="form-group">
-                <label for="login-email">E-mail</label>
-                <input type="email" id="login-email" placeholder="seu@email.com" required>
-              </div>
-              <div class="form-group">
-                <label for="login-password">Senha</label>
-                <input type="password" id="login-password" placeholder="••••••••" required>
-                <div style="text-align: right; margin-top: 8px;">
-                  <a href="#" id="forgot-password-link"
-                    style="font-size: 0.85rem; color: #007bff; text-decoration: none; font-weight: 600;">Esqueci minha
-                    senha</a>
-                </div>
-              </div>
-              <button type="submit" class="primary-btn login-btn">Entrar na plataforma</button>
-            </form>
-            <p class="switch-auth">Primeira vez aqui? <a href="#" id="go-to-register">Crie sua conta</a></p>
+      </section>
+
+    </main>
+
+    <footer class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section about">
+          <img src="img/logoNome.PNG" alt="Logo GT TREINOS" class="footer-logo">
+          <p>Transformando sua rotina de treinos da melhor forma possível.</p>
+        </div>
+        <div class="footer-section social">
+          <h3>Conecte-se</h3>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/gabrielteotonio._/" target="_blank"><i
+                class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/5531982211905" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="https://github.com/gabrielteotonio10" target="_blank"><i class="fa-brands fa-github"></i></a>
           </div>
         </div>
       </div>
-    </section>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Gabriel Teotônio - Todos os direitos reservados.</p>
+      </div>
+    </footer>
 
-    <!-- CRIAR CONTA -->
-    <section id="register-section" class="auth-wrapper hidden">
-      <div class="auth-container">
-        <div class="auth-visual">
-          <div class="auth-visual-content">
-            <h2>Comece Agora!</h2>
-            <p>Transforme sua rotina e acompanhe sua evolução de forma inteligente.</p>
-          </div>
-        </div>
-        <div class="auth-form-area">
-          <div class="auth-form-content">
-            <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="auth-logo">
-            <h3>Criar nova conta</h3>
-            <form id="register-form">
-              <div class="form-group">
-                <label for="register-name">Nome Completo</label>
-                <input type="text" id="register-name" placeholder="Ex: Gabriel Teotônio" required>
-              </div>
-              <div class="form-group">
-                <label for="register-email">E-mail</label>
-                <input type="email" id="register-email" placeholder="seu@email.com" required>
-              </div>
-              <div class="form-group">
-                <label for="register-password">Senha</label>
-                <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6">
-              </div>
-              <button type="submit" class="primary-btn login-btn">Cadastrar e Começar</button>
-            </form>
-            <p class="switch-auth">Já faz parte do time? <a href="#" id="go-to-login">Faça login</a></p>
-          </div>
+  </div>
+  <section id="login-section" class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-visual">
+        <div class="auth-visual-content">
+          <h2>Bem-vindo de volta!</h2>
+          <p>Seu corpo, suas regras. Continue sua jornada com o GT Treinos.</p>
         </div>
       </div>
-    </section>
+      <div class="auth-form-area">
+        <div class="auth-form-content">
+          <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="auth-logo">
+          <h3>Acesse sua conta</h3>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-email">E-mail</label>
+              <input type="email" id="login-email" placeholder="seu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="login-password">Senha</label>
+              <input type="password" id="login-password" placeholder="••••••••" required>
+              <div style="text-align: right; margin-top: 8px;">
+                <a href="#" id="forgot-password-link"
+                  style="font-size: 0.85rem; color: #007bff; text-decoration: none; font-weight: 600;">Esqueci minha
+                  senha</a>
+              </div>
+            </div>
+            <button type="submit" class="primary-btn login-btn">Entrar na plataforma</button>
+          </form>
+          <p class="switch-auth">Primeira vez aqui? <a href="#" id="go-to-register">Crie sua conta</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- BOTÃO DE SUBIR TELA -->
-    <button class="scrollTop hidden" aria-label="Voltar ao topo">
-      <i class="fa-solid fa-arrow-up"></i>
-    </button>
+  <section id="register-section" class="auth-wrapper hidden">
+    <div class="auth-container">
+      <div class="auth-visual">
+        <div class="auth-visual-content">
+          <h2>Comece Agora!</h2>
+          <p>Transforme sua rotina e acompanhe sua evolução de forma inteligente.</p>
+        </div>
+      </div>
+      <div class="auth-form-area">
+        <div class="auth-form-content">
+          <img src="img/logoCompleta.PNG" alt="Logo GT TREINOS" class="auth-logo">
+          <h3>Criar nova conta</h3>
+          <form id="register-form">
+            <div class="form-group">
+              <label for="register-name">Nome Completo</label>
+              <input type="text" id="register-name" placeholder="Ex: Gabriel Teotônio" required>
+            </div>
+            <div class="form-group">
+              <label for="register-email">E-mail</label>
+              <input type="email" id="register-email" placeholder="seu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="register-password">Senha</label>
+              <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+            <button type="submit" class="primary-btn login-btn">Cadastrar e Começar</button>
+          </form>
+          <p class="switch-auth">Já faz parte do time? <a href="#" id="go-to-login">Faça login</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  </main>
+  <button class="scrollTop hidden" aria-label="Voltar ao topo">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
 
-
-  <!-- CRIAR NOVO TREINO -->
   <section id="training-modal" class="modal-container hidden">
     <div class="form-card">
       <div class="modal-header">
@@ -529,7 +541,6 @@
     </div>
   </section>
 
-  <!-- CRIAR NOVO EXERCÍCIO -->
   <section id="exercise-modal" class="modal-container hidden">
     <div class="form-card">
       <div class="modal-header">
@@ -619,7 +630,6 @@
     </div>
   </section>
 
-  <!-- ADICIONAR EXERCÍCIO DENTRO DO TREINO -->
   <div class="modal-container hidden" id="select-exercise-modal">
     <div class="form-card">
       <div class="modal-header">
@@ -644,7 +654,6 @@
     </div>
   </div>
 
-  <!-- ABA DE ESQUECI A SENHA -->
   <section id="forgot-password-modal" class="modal-container hidden">
     <div class="form-card">
       <div class="modal-header">
@@ -675,7 +684,6 @@
     </div>
   </section>
 
-  <!-- SAIR DA CONTA -->
   <section id="logout-modal" class="modal-container hidden">
     <div class="form-card" style="text-align: center; max-width: 350px;">
       <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
@@ -690,40 +698,20 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer-container">
-    <div class="footer-content">
-      <div class="footer-section about">
-        <img src="img/logoNome.PNG" alt="Logo GT TREINOS" class="footer-logo">
-        <p>Transformando sua rotina de treinos da melhor forma possível.</p>
-      </div>
-      <div class="footer-section social">
-        <h3>Conecte-se</h3>
-        <div class="social-icons">
-          <a href="https://www.instagram.com/gabrielteotonio._/" target="_blank"><i
-              class="fa-brands fa-instagram"></i></a>
-          <a href="https://wa.me/5531982211905" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-          <a href="https://github.com/gabrielteotonio10" target="_blank"><i class="fa-brands fa-github"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Gabriel Teotônio - Todos os direitos reservados.</p>
-    </div>
-  </footer>
-
   <script type="module" src="/src/js/Exercises/uiExercises.js"></script>
   <script type="module" src="/src/js/Exercises/apiExercises.js"></script>
   <script type="module" src="/src/js/Training/uiTraining.js"></script>
   <script type="module" src="/src/js/Training/apiTraining.js"></script>
   <script type="module" src="/src/js/Loads/apiLoads.js"></script>
-  <script type="module" src="/src/js/Loads/uiLoads"></script>
+  <script type="module" src="/src/js/Loads/uiLoads.js"></script>
   <script type="module" src="/src/js/main.js"></script>
   <script type="module" src="/src/js/others.js"></script>
   <script type="module" src="/src/js/pages.js"></script>
   <script type="module" src="/src/js/auth.js"></script>
   <script type="module" src="/src/js/dashboard.js"></script>
   <script type="module" src="/src/js/profile.js"></script>
+  <script type="module" src="/src/js/supabase.js"></script>
+
 </body>
 
 </html>

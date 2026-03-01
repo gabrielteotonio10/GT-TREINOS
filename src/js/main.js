@@ -256,12 +256,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Login
   const loginForm = document.querySelector("#login-form");
   if (loginForm) {
-    loginForm.addEventListener("submit", (event) => {
+    loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const email = document.querySelector("#login-email").value;
       const password = document.querySelector("#login-password").value;
 
-      if (login(email, password)) {
+      // Espera a resposta do Supabase
+      if (await login(email, password)) {
         checkAuth();
         console.log("Login realizado com sucesso!");
         // Força renderização da página inicial
@@ -276,13 +277,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Cadastro
   const registerForm = document.querySelector("#register-form");
   if (registerForm) {
-    registerForm.addEventListener("submit", (event) => {
+    registerForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const name = document.querySelector("#register-name").value;
       const email = document.querySelector("#register-email").value;
       const password = document.querySelector("#register-password").value;
 
-      const response = register(name, email, password);
+      // Espera a resposta do Supabase
+      const response = await register(name, email, password);
       if (response.success) {
         uiTraining.showToastTraining(
           "Conta criada com sucesso! Faça seu login. 🎉",
@@ -301,7 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   const forgotPasswordForm = document.querySelector("#forgot-password-form");
   if (forgotPasswordForm) {
-    forgotPasswordForm.addEventListener("submit", (event) => {
+    forgotPasswordForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const email = document.querySelector("#recovery-email").value;
@@ -317,12 +319,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const userIndex = users.findIndex((u) => u.email === email);
+      // Procura o usuário no Supabase
+      const { data: user } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", email)
+        .maybeSingle();
 
-      if (userIndex !== -1) {
-        users[userIndex].password = newPassword;
-        localStorage.setItem("users", JSON.stringify(users));
+      if (user) {
+        // Atualiza a senha no banco
+        await supabase
+          .from("users")
+          .update({ password: newPassword })
+          .eq("email", email);
 
         uiTraining.showToastTraining(
           "Senha redefinida com sucesso! Faça seu login. ✅",
@@ -359,9 +368,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // Monta o pacote para o Banco de Dados
+      // Monta o pacote para o Banco de Dados (ID gerado pelo Supabase)
       const newLoad = {
-        id: "load_" + new Date().getTime(),
         exerciseId: currentExercise.id,
         userEmail: user.email,
         load: Number(weight),
@@ -370,7 +378,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
 
       try {
-        // Salva no db.json
+        // Salva no banco de dados (Supabase)
         await loadsApi.createLoads(newLoad);
 
         // Limpa os campos digitados
@@ -634,7 +642,6 @@ async function finishAndSaveWorkout() {
   // Salva no Histórico
   if (activeTraining) {
     const historyLog = {
-      id: "log_" + new Date().getTime(),
       date: new Date().toISOString(),
       training_id: activeTraining.id,
       training_name: activeTraining.name,
@@ -860,7 +867,8 @@ export async function exportWorkoutToPDF() {
   uiTraining.showToastTraining("Gerando PDF, aguarde... 📄", "warming");
 
   // Gera o PDF e faz o Download!
-  window.html2pdf()
+  window
+    .html2pdf()
     .set(opt)
     .from(pdfContainer)
     .save()
@@ -983,7 +991,8 @@ export async function exportResultsToPDF() {
 
   uiTraining.showToastTraining("Gerando PDF dos Resultados... 📊", "warming");
 
-  window.html2pdf()
+  window
+    .html2pdf()
     .set(opt)
     .from(pdfContainer)
     .save()
@@ -991,3 +1000,21 @@ export async function exportResultsToPDF() {
       uiTraining.showToastTraining("Relatório baixado com sucesso! ✅");
     });
 }
+
+// --------------------------- TESTES PARA O BANCO DE DADOS ---------------------------
+import { supabase } from "./supabase.js";
+
+async function testarConexao() {
+  console.log("🟡 Testando a conexão com o banco...");
+
+  // Tenta buscar qualquer coisa só pra ver se o banco responde
+  const { error } = await supabase.from("users").select("id").limit(1);
+
+  if (error) {
+    console.error("🔴 FALHA NA CONEXÃO:", error.message);
+  } else {
+    console.log("🟢 SUCESSO! O cabo está conectado perfeitamente.");
+  }
+}
+
+testarConexao();

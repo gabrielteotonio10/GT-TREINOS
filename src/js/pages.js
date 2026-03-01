@@ -11,11 +11,15 @@ import { renderDashboard } from "./dashboard.js";
 // SELEÇÃO DE SEÇÕES GERAIS (PÁGINAS)
 // ==========================================================================
 const presentationTextSection = document.querySelector(".presentation-text");
-const websitePresentationSection = document.querySelector(".website-presentation");
+const websitePresentationSection = document.querySelector(
+  ".website-presentation",
+);
 const workoutsSection = document.querySelector(".workouts-section");
 const exerciseSection = document.querySelector(".exercises-library-section");
 const pageTraining = document.querySelector(".active-workout-section");
-const pageExerciseDetails = document.querySelector(".active-exercise-details-section");
+const pageExerciseDetails = document.querySelector(
+  ".active-exercise-details-section",
+);
 const profileSection = document.querySelector("#profile-section");
 const resultsSection = document.querySelector("#results-section");
 
@@ -41,7 +45,7 @@ function hideAllSections() {
     pageTraining,
     pageExerciseDetails,
     profileSection,
-    resultsSection, 
+    resultsSection,
   ];
   // Marca todas com "hidden" pra sumirem
   sections.forEach((section) => {
@@ -54,15 +58,16 @@ async function showHome() {
   // Tira tudo da tela primeiro
   hideAllSections();
   // Mostra o que precisa na home
-  presentationTextSection.classList.remove("hidden");
-  websitePresentationSection.classList.remove("hidden");
-  workoutsSection.classList.remove("hidden");
+  if (presentationTextSection)
+    presentationTextSection.classList.remove("hidden");
+  if (websitePresentationSection)
+    websitePresentationSection.classList.remove("hidden");
+  if (workoutsSection) workoutsSection.classList.remove("hidden");
+
+  // Agora esperamos o Supabase responder antes de finalizar a transição
   await uiTraining.renderTrainings();
   await renderDashboard();
 
-  // Renderiza os treinos do usuário
-  uiTraining.renderTrainings();
-  renderDashboard();
   startPage();
 }
 
@@ -71,10 +76,10 @@ async function changeForTraining() {
   // Esconde tudo primeiro
   hideAllSections();
   // Mostra só as bibliotecas
-  workoutsSection.classList.remove("hidden");
-  exerciseSection.classList.remove("hidden");
+  if (workoutsSection) workoutsSection.classList.remove("hidden");
+  if (exerciseSection) exerciseSection.classList.remove("hidden");
 
-  // Renderiza ambas as listas
+  // Renderiza ambas as listas vindo do banco de dados
   await uiTraining.renderTrainings();
   await uiExercises.renderExercises();
   startPage();
@@ -83,11 +88,11 @@ async function changeForTraining() {
 // Mostra a tela de Resultados
 async function showResults() {
   hideAllSections();
-  resultsSection.classList.remove("hidden");
-  
-  // Chama a função que criamos para desenhar os gráficos e dados
-  await renderDashboard(); 
-  
+  if (resultsSection) resultsSection.classList.remove("hidden");
+
+  // Chama a função que criamos para desenhar os gráficos e dados (agora com await)
+  await renderDashboard();
+
   startPage();
 }
 
@@ -96,7 +101,7 @@ function showProfile() {
   // Esconde tudo
   hideAllSections();
   // Mostra só o perfil
-  profileSection.classList.remove("hidden");
+  if (profileSection) profileSection.classList.remove("hidden");
   // Preenche os campos com os dados do usuário
   fillProfileData();
   startPage();
@@ -111,27 +116,38 @@ function fillProfileData() {
     const user = JSON.parse(userString);
 
     // Preenche os dados básicos (email, nome)
-    document.getElementById("profile-email").value = user.email || "";
-    document.getElementById("hero-display-email").textContent =
-      user.email || "";
+    const emailInput = document.getElementById("profile-email");
+    const displayEmail = document.getElementById("hero-display-email");
+    if (emailInput) emailInput.value = user.email || "";
+    if (displayEmail) displayEmail.textContent = user.email || "";
 
-    const nomeExibicao = user.name ? user.name : user.email.split("@")[0];
-    document.getElementById("profile-name").value = nomeExibicao;
-    document.getElementById("hero-display-name").textContent = nomeExibicao;
+    const nomeExibicao = user.name
+      ? user.name
+      : user.email
+        ? user.email.split("@")[0]
+        : "Usuário";
+    const nameInput = document.getElementById("profile-name");
+    const displayName = document.getElementById("hero-display-name");
+    if (nameInput) nameInput.value = nomeExibicao;
+    if (displayName) displayName.textContent = nomeExibicao;
 
     // Preenche medidas e objetivo
-    if (user.weight)
-      document.getElementById("profile-weight").value = user.weight;
-    if (user.height)
-      document.getElementById("profile-height").value = user.height;
-    if (user.goal) document.getElementById("profile-goal").value = user.goal;
+    const weightInput = document.getElementById("profile-weight");
+    const heightInput = document.getElementById("profile-height");
+    const goalInput = document.getElementById("profile-goal");
+
+    if (weightInput && user.weight) weightInput.value = user.weight;
+    if (heightInput && user.height) heightInput.value = user.height;
+    if (goalInput && user.goal) goalInput.value = user.goal;
 
     // Foto de Perfil
     const avatarPreview = document.getElementById("profile-avatar-preview");
-    if (user.photo) {
-      avatarPreview.innerHTML = `<img src="${user.photo}" alt="Foto de Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-    } else {
-      avatarPreview.innerHTML = `<i class="fa-solid fa-user"></i>`;
+    if (avatarPreview) {
+      if (user.photo) {
+        avatarPreview.innerHTML = `<img src="${user.photo}" alt="Foto de Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+      } else {
+        avatarPreview.innerHTML = `<i class="fa-solid fa-user"></i>`;
+      }
     }
   }
 }
@@ -145,7 +161,7 @@ document.addEventListener("click", async (event) => {
 
   // --- NAVEGAÇÃO PRINCIPAL ---
   if (target.closest(".main-logo")) {
-    showHome();
+    await showHome();
   }
 
   if (target.closest(".nav-btn") && target.textContent.includes("Perfil")) {
@@ -154,7 +170,7 @@ document.addEventListener("click", async (event) => {
 
   // --- NAVEGAÇÃO INTERNA (SETAS DE VOLTAR) ---
   if (target.closest(".back-arrow-btn")) {
-    changeForTraining(); // Volta do Treino Ativo para as Bibliotecas
+    await changeForTraining(); // Volta do Treino Ativo para as Bibliotecas
   }
 
   const backExerciseBtn = target.closest(".back-arrow-exercise-btn");
@@ -171,19 +187,24 @@ document.addEventListener("click", async (event) => {
       window.scrollTo({ top: 150, behavior: "smooth" });
     } else {
       // Volta do Exercício para a Biblioteca de Exercícios
-      changeForTraining();
+      await changeForTraining();
     }
   }
 
   // --- ABERTURA DE MODAIS DE CRIAÇÃO/EDIÇÃO ---
   // Modal Treino
-  if (target.closest(".add-new-workout-btn") || target.closest(".add-new-workout")) {
+  if (
+    target.closest(".add-new-workout-btn") ||
+    target.closest(".add-new-workout")
+  ) {
     const modalTitleTreino = document.querySelector("#training-modal-title");
     if (modalTitleTreino) modalTitleTreino.textContent = "Novo Treino";
 
     const modal = document.querySelector("#training-modal");
-    modal.classList.add("active");
-    modal.classList.remove("hidden");
+    if (modal) {
+      modal.classList.add("active");
+      modal.classList.remove("hidden");
+    }
     uiTraining.clearFormTraining();
   }
 
@@ -193,8 +214,10 @@ document.addEventListener("click", async (event) => {
     if (modalTitle) modalTitle.textContent = "Novo Exercício";
 
     const modal = document.querySelector("#exercise-modal");
-    modal.classList.add("active");
-    modal.classList.remove("hidden");
+    if (modal) {
+      modal.classList.add("active");
+      modal.classList.remove("hidden");
+    }
     uiExercises.clearFormExercise();
   }
 
@@ -207,8 +230,10 @@ document.addEventListener("click", async (event) => {
     if (modalTitle) modalTitle.textContent = "Novo Exercício";
 
     const modal = document.querySelector("#exercise-modal");
-    modal.classList.add("active");
-    modal.classList.remove("hidden");
+    if (modal) {
+      modal.classList.add("active");
+      modal.classList.remove("hidden");
+    }
     uiExercises.clearFormExercise();
   }
 
@@ -233,11 +258,13 @@ document.addEventListener("click", async (event) => {
 
   // --- FECHAMENTO DE MODAIS ---
   if (target.closest("#close-x-btn, #cancel-btn")) {
-    document.querySelector("#training-modal").classList.remove("active");
+    const modal = document.querySelector("#training-modal");
+    if (modal) modal.classList.remove("active");
   }
 
   if (target.closest("#close-exercise-modal-btn, #cancel-exercise-btn")) {
-    document.querySelector("#exercise-modal").classList.remove("active");
+    const modal = document.querySelector("#exercise-modal");
+    if (modal) modal.classList.remove("active");
   }
 
   if (target.closest("#close-select-exercise-btn")) {
@@ -271,6 +298,7 @@ document.addEventListener("click", async (event) => {
       modal.classList.add("hidden");
     }
     console.log("Usuário deslogou com sucesso!");
+    window.location.reload(); // Recarrega para limpar o estado da aplicação
   }
 
   // --- NAVEGAÇÃO DE AUTENTICAÇÃO E RECUPERAÇÃO ---
@@ -307,7 +335,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (target.closest(".nav-btn") && target.textContent.includes("Resultados")) {
-    showResults();
+    await showResults();
   }
 });
 
@@ -315,25 +343,29 @@ document.addEventListener("click", async (event) => {
 // EVENTOS FIXOS DIRETOS (BOTÕES QUE NÃO SOMEM)
 // ==========================================================================
 
-document.addEventListener("click", (event) => {
+document.addEventListener("click", async (event) => {
   const target = event.target;
 
   // Se clicou no botão "Treinos" na barra de navegação
-  if (target.closest(".training-btn") || (target.closest(".nav-btn") && target.textContent.includes("Treinos"))) {
-    changeForTraining();
+  if (
+    target.closest(".training-btn") ||
+    (target.closest(".nav-btn") && target.textContent.includes("Treinos"))
+  ) {
+    await changeForTraining();
   }
 
   // Se clicou no botão "Ir para Treinos" do banner de Aviso (Empty State)
   if (target.closest("#go-to-trainings-btn")) {
-    changeForTraining();
+    await changeForTraining();
   }
 });
 
 // ==========================================================================
 // INICIALIZAÇÃO
 // ==========================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  uiTraining.renderTrainings();
+document.addEventListener("DOMContentLoaded", async () => {
+  // Garante que os treinos apareçam na primeira carga
+  await uiTraining.renderTrainings();
   startPage();
-  showHome();
+  await showHome();
 });

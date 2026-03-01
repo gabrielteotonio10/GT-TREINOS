@@ -1,3 +1,5 @@
+import { supabase } from "./supabase.js"; // Importação necessária para salvar o tema
+
 // ==========================================================================
 //  MENU MOBILE (BOTÃO HAMBÚRGUER)
 // ==========================================================================
@@ -66,15 +68,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- OUVE O CLIQUE NO BOTÃO DE TROCA DE TEMA ---
   if (darkModeToggle) {
-    darkModeToggle.addEventListener("change", () => {
+    darkModeToggle.addEventListener("change", async () => {
+      // Adicionado async para o banco
+      const userString = localStorage.getItem("currentUser");
+      const user = userString ? JSON.parse(userString) : null;
+
       if (darkModeToggle.checked) {
         // Ativa a classe no HTML e salva a preferência no banco
         document.body.classList.add("dark-mode");
         localStorage.setItem("dark-mode", "enabled");
+
+        // Salva a preferência no Supabase se o usuário estiver logado
+        if (user) {
+          await supabase
+            .from("users")
+            .update({ theme: "dark" })
+            .eq("email", user.email);
+        }
       } else {
         // Desativa a classe e salva a preferência no banco
         document.body.classList.remove("dark-mode");
         localStorage.setItem("dark-mode", "disabled");
+
+        // Salva a preferência no Supabase se o usuário estiver logado
+        if (user) {
+          await supabase
+            .from("users")
+            .update({ theme: "light" })
+            .eq("email", user.email);
+        }
       }
     });
   }

@@ -26,8 +26,11 @@ const uiTraining = {
         // Limita a largura pra não ficar monstruoso
         const MAX_WIDTH = 400;
         const scaleSize = MAX_WIDTH / img.width;
-        canvas.width = MAX_WIDTH;
-        canvas.height = img.height * scaleSize;
+        const canvasWidth = MAX_WIDTH;
+        const canvasHeight = img.height * scaleSize;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         // Converte pra base64 com compressão de 70% pra não ocupar muito espaço
@@ -93,7 +96,7 @@ const uiTraining = {
       "Editar Treino";
 
     try {
-      // Busca o treino no servidor
+      // Busca o treino no servidor (Supabase via API)
       const training = await trainingApi.getTrainingById(trainingId);
 
       // Coloca todos os dados nos inputs correspondentes
@@ -143,7 +146,7 @@ const uiTraining = {
     document
       .querySelectorAll(".added-label")
       .forEach((badge) => badge.remove());
-    
+
     // Reseta os botões de adicionar/remover exercício pro estado inicial
     document.querySelectorAll(".selectable-exercise-add-btn").forEach((btn) => {
       btn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
@@ -220,7 +223,9 @@ const uiTraining = {
   // Adiciona ou remove um exercício da lista enquanto tá criando o treino
   addExerciseToSelection(exerciseId, btnElement) {
     const exerciseItem = btnElement.closest(".selectable-exercise-item");
-    const infoContainer = exerciseItem.querySelector(".selectable-exercise-info div");
+    const infoContainer = exerciseItem.querySelector(
+      ".selectable-exercise-info div",
+    );
 
     // Se o exercício NÃO tá na lista, adiciona
     if (!selectedExercisesIds.includes(exerciseId)) {
@@ -249,7 +254,9 @@ const uiTraining = {
       }
     } else {
       // Se JÁ tá na lista, remove
-      selectedExercisesIds = selectedExercisesIds.filter( (id) => id !== exerciseId );
+      selectedExercisesIds = selectedExercisesIds.filter(
+        (id) => id !== exerciseId,
+      );
       this.showToastTraining("Exercício removido!", "error");
 
       // Tira o badge e volta o botão pro estado original
@@ -289,7 +296,7 @@ const uiTraining = {
     if (!currentActiveTraining.exercises.includes(exerciseId)) {
       currentActiveTraining.exercises.push(exerciseId);
       try {
-        // Salva a mudança no servidor
+        // Salva a mudança no servidor (Supabase via API)
         await trainingApi.updateTraining(currentActiveTraining);
         this.showToastTraining("Exercício adicionado à ficha!");
 
@@ -315,9 +322,11 @@ const uiTraining = {
       }
     } else {
       // Se já tá no treino, remove
-      currentActiveTraining.exercises = currentActiveTraining.exercises.filter((id) => id !== exerciseId);
+      currentActiveTraining.exercises = currentActiveTraining.exercises.filter(
+        (id) => id !== exerciseId,
+      );
       try {
-        // Atualiza no servidor
+        // Atualiza no servidor (Supabase via API)
         await trainingApi.updateTraining(currentActiveTraining);
         this.showToastTraining("Exercício removido do treino!", "error");
 
@@ -351,7 +360,7 @@ const uiTraining = {
     if (!listContainer) return;
 
     try {
-      // Busca todos os treinos do usuário
+      // Busca todos os treinos do usuário (Supabase via API)
       const allTrainings = await trainingApi.getTrainings();
 
       // Ajusta o estilo do título dependendo de qual aba tá aberta
@@ -495,10 +504,14 @@ const uiTraining = {
     // Pega as referências de todas as seções da página
     const trainingPage = document.querySelector(".active-workout-section");
     const workoutsSection = document.querySelector(".workouts-section");
-    const trainingSection = document.querySelector(".trainings-library-section");
+    const trainingSection = document.querySelector(
+      ".trainings-library-section",
+    );
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
-    const exercisesSection = document.querySelector(".exercises-library-section");
+    const exercisesSection = document.querySelector(
+      ".exercises-library-section",
+    );
     const resultsSection = document.querySelector("#results-section");
 
     // Esconde tudo que não é a tela do treino
@@ -508,14 +521,15 @@ const uiTraining = {
       presentationText,
       websitePresentation,
       exercisesSection,
-      resultsSection
+      resultsSection,
     ].forEach((section) => {
       if (section) section.classList.add("hidden");
     });
 
     // Preenche o título e subtítulo do treino
     trainingPage.querySelector(".active-title").textContent = training.name;
-    trainingPage.querySelector(".active-subtitle").textContent = training.subtitle;
+    trainingPage.querySelector(".active-subtitle").textContent =
+      training.subtitle;
 
     // Configura o botão de editar do treino (com cloneNode pra resetar qualquer evento anterior)
     const btnEdit = document.querySelector(".edit-workout-btn");
@@ -663,14 +677,16 @@ const uiTraining = {
 
     // Botão de confirmar deleta e volta pra lista
     modalOverlay.querySelector("#confirm-delete").onclick = async () => {
-      // Deleta a partir da API
+      // Deleta a partir da API (Supabase via API)
       await trainingApi.deleteTraining(training.id);
       modalOverlay.remove();
 
       // Volta pra lista de treinos
       document.querySelector(".active-workout-section").classList.add("hidden");
       document.querySelector(".workouts-section").classList.remove("hidden");
-      document.querySelector(".exercises-library-section").classList.remove("hidden");
+      document
+        .querySelector(".exercises-library-section")
+        .classList.remove("hidden");
 
       // Rerenderiza a lista sem o treino que foi deletado
       this.renderTrainings();

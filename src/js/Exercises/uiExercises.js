@@ -22,8 +22,11 @@ const uiExercises = {
 
         const MAX_WIDTH = 400;
         const scaleSize = MAX_WIDTH / img.width;
-        canvas.width = MAX_WIDTH;
-        canvas.height = img.height * scaleSize;
+        const canvasWidth = MAX_WIDTH;
+        const canvasHeight = img.height * scaleSize;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 

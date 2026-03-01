@@ -1,24 +1,37 @@
-// Função de cadastro - valida se o email não existe e salva no localStorage
-export function register(name, email, password) {
-  // Pega a lista de usuários salva
-  const users = JSON.parse(localStorage.getItem("users") || "[]");
+import { supabase } from "./supabase.js";
+
+// Função de cadastro - valida se o email não existe e salva no localStorage (agora no Supabase)
+export async function register(name, email, password) {
+  // Pega a lista de usuários salva e verifica se já existe um usuário com esse email
+  const { data: existingUser } = await supabase
+    .from("users")
+    .select("email")
+    .eq("email", email)
+    .maybeSingle();
 
   // Verifica se já existe um usuário com esse email
-  if (users.find((u) => u.email === email))
-    return { success: false, message: "E-mail já cadastrado!" };
+  if (existingUser) return { success: false, message: "E-mail já cadastrado!" };
 
-  // Se não existe, adiciona na lista
-  users.push({ name, email, password });
-  localStorage.setItem("users", JSON.stringify(users));
+  // Se não existe, adiciona na lista (salva no banco de dados)
+  const { error } = await supabase
+    .from("users")
+    .insert([{ name, email, password }]);
+
+  if (error)
+    return { success: false, message: "Erro ao salvar no banco de dados." };
+
   return { success: true };
 }
 
 // Função de login - valida email e senha
-export function login(email, password) {
-  // Pega a lista de usuários
-  const users = JSON.parse(localStorage.getItem("users") || "[]");
-  // Procura um usuário com email e senha corretos
-  const user = users.find((u) => u.email === email && u.password === password);
+export async function login(email, password) {
+  // Pega a lista de usuários e procura um usuário com email e senha corretos no banco
+  const { data: user } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .eq("password", password)
+    .maybeSingle();
 
   // Se encontrou, salva como usuário atual e ativa
   if (user) {
@@ -31,31 +44,25 @@ export function login(email, password) {
 // Verifica se tem um usuário logado e mostra/esconde as seções da página
 export function checkAuth() {
   const user = localStorage.getItem("currentUser");
-  const loginSection = document.getElementById("login-section");
-  const registerSection = document.getElementById("register-section");
-  const header = document.querySelector("header");
-  const footer = document.querySelector("footer");
 
-  // Pega todas as seções principais (exceto login e register)
-  const mainSections = document.querySelectorAll(
-    "main > section:not(#login-section):not(#register-section)",
-  );
+  const appContent = document.querySelector("#app-content");
+  const loginSection = document.querySelector("#login-section");
+  const registerSection = document.querySelector("#register-section");
+
+  // Trava de segurança para não bugar o site
+  if (!appContent || !loginSection) return !!user;
 
   if (!user) {
-    // Usuário NÃO logado: esconde o app e mostra tela de login
-    if (header) header.classList.add("hidden");
-    if (footer) footer.classList.add("hidden");
-
-    mainSections.forEach((sec) => sec.classList.add("hidden"));
-
+    // Esconde o app e mostra o login
+    appContent.classList.add("hidden");
     loginSection.classList.remove("hidden");
     if (registerSection) registerSection.classList.add("hidden");
-  } else {
-    // Usuário LOGADO: esconde as telas de auth e mostra o app
-    if (header) header.classList.remove("hidden");
-    if (footer) footer.classList.remove("hidden");
-
-    loginSection.classList.add("hidden");
-    if (registerSection) registerSection.classList.add("hidden");
+    return false;
   }
+
+  // Esconde o login e mostra o app
+  appContent.classList.remove("hidden");
+  loginSection.classList.add("hidden");
+  if (registerSection) registerSection.classList.add("hidden");
+  return true;
 }

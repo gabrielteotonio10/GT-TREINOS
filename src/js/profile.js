@@ -1,4 +1,5 @@
 import uiTraining from "./Training/uiTraining.js";
+import { supabase } from "./supabase.js"; // Importação para conectar ao banco
 
 // Verifica se o perfil do usuário está completo e mostra alerta se houver campos faltando
 export function checkProfileCompletion() {
@@ -21,6 +22,7 @@ export function checkProfileCompletion() {
     alertContainer.classList.add("hidden");
   }
 
+  // Preenche os campos do formulário com os dados atuais
   document.querySelector("#profile-name").value = currentUser.name || "";
   document.querySelector("#profile-email").value = currentUser.email || "";
   document.querySelector("#profile-weight").value = currentUser.weight || "";
@@ -37,7 +39,8 @@ export function initProfileEvents() {
   // Salvando dados do Perfil
   const profileForm = document.querySelector("#profile-form");
   if (profileForm) {
-    profileForm.addEventListener("submit", (event) => {
+    profileForm.addEventListener("submit", async (event) => {
+      // Adicionado async
       event.preventDefault();
 
       const name = document.querySelector("#profile-name").value;
@@ -51,40 +54,56 @@ export function initProfileEvents() {
         "#profile-password-confirm",
       ).value;
 
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
       let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (!currentUser) return;
 
-      const userIndex = users.findIndex((u) => u.email === currentUser.email);
-      if (userIndex !== -1) {
-        users[userIndex].name = name;
-        users[userIndex].weight = weight;
-        users[userIndex].height = height;
-        users[userIndex].goal = goal;
-        users[userIndex].age = age;
-        users[userIndex].gender = gender;
+      // Monta o objeto de atualização
+      const updates = {
+        name,
+        weight,
+        height,
+        goal,
+        age,
+        gender,
+      };
 
-        // Alteração de Senha
-        if (newPassword.trim() !== "") {
-          if (newPassword === newPasswordConfirm) {
-            users[userIndex].password = newPassword;
-            document.querySelector("#profile-password").value = "";
-            document.querySelector("#profile-password-confirm").value = "";
-          } else {
-            uiTraining.showToastTraining("Erro! Senhas diferentes!", "error");
-            document.querySelector("#profile-password").value = "";
-            document.querySelector("#profile-password-confirm").value = "";
-            return;
-          }
+      // Alteração de Senha
+      if (newPassword.trim() !== "") {
+        if (newPassword === newPasswordConfirm) {
+          updates.password = newPassword; // Adiciona a nova senha ao pacote
+          document.querySelector("#profile-password").value = "";
+          document.querySelector("#profile-password-confirm").value = "";
+        } else {
+          uiTraining.showToastTraining("Erro! Senhas diferentes!", "error");
+          document.querySelector("#profile-password").value = "";
+          document.querySelector("#profile-password-confirm").value = "";
+          return;
         }
+      }
 
-        localStorage.setItem("users", JSON.stringify(users));
-        localStorage.setItem("currentUser", JSON.stringify(users[userIndex]));
+      try {
+        // --- SALVA NO SUPABASE ---
+        const { error } = await supabase
+          .from("users")
+          .update(updates)
+          .eq("email", currentUser.email);
+
+        if (error) throw error;
+
+        // Atualiza o LocalStorage para refletir as mudanças no site sem deslogar
+        const newUserState = { ...currentUser, ...updates };
+        localStorage.setItem("currentUser", JSON.stringify(newUserState));
 
         uiTraining.showToastTraining("Perfil atualizado com sucesso! ✅");
-        document.getElementById("hero-display-name").textContent = name;
+
+        const heroName = document.getElementById("hero-display-name");
+        if (heroName) heroName.textContent = name;
 
         // Remove alerta se tudo estiver preenchido
         checkProfileCompletion();
+      } catch (error) {
+        console.error("Erro ao atualizar perfil:", error);
+        alert("Erro ao salvar os dados no banco de dados.");
       }
     });
   }
@@ -96,25 +115,35 @@ export function initProfileEvents() {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
+          // Adicionado async
           const base64Image = e.target.result;
           const avatarPreview = document.querySelector(
             "#profile-avatar-preview",
           );
-          avatarPreview.innerHTML = `<img src="${base64Image}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+          if (avatarPreview) {
+            avatarPreview.innerHTML = `<img src="${base64Image}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+          }
 
-          const users = JSON.parse(localStorage.getItem("users") || "[]");
           let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-          const userIndex = users.findIndex(
-            (u) => u.email === currentUser.email,
-          );
 
-          if (userIndex !== -1) {
-            users[userIndex].photo = base64Image;
+          try {
+            // --- SALVA A FOTO NO SUPABASE ---
+            const { error } = await supabase
+              .from("users")
+              .update({ photo: base64Image })
+              .eq("email", currentUser.email);
+
+            if (error) throw error;
+
+            // Atualiza memória local
             currentUser.photo = base64Image;
-            localStorage.setItem("users", JSON.stringify(users));
             localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
             uiTraining.showToastTraining("Foto atualizada com sucesso! 📸");
+          } catch (error) {
+            console.error("Erro ao salvar foto:", error);
+            alert("Não foi possível salvar a foto no banco de dados.");
           }
         };
         reader.readAsDataURL(file);

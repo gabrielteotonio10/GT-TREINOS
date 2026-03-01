@@ -1,23 +1,23 @@
-const BASE_URL = "http://localhost:3000";
+import { supabase } from "../supabase.js";
 
 const loadsApi = {
   // Procura as cargas registrados
   async getLoads() {
     try {
-      const response = await fetch(`${BASE_URL}/loads`);
-      if (!response.ok) throw new Error("Erro ao buscar as cargas");
-      const allLoads = await response.json();
-
       // Vê quem está logado
       const userString = localStorage.getItem("currentUser");
       const loggedEmail = userString ? JSON.parse(userString).email : null;
       if (!loggedEmail) return [];
-      // Só devolve as cargas que pertencem a quem está logado
-      const myLoads = allLoads.filter(
-        (loads) => loads.userEmail === loggedEmail,
-      );
 
-      return myLoads;
+      // Só devolve as cargas que pertencem a quem está logado (Busca direto no Supabase)
+      const { data, error } = await supabase
+        .from("loads")
+        .select("*")
+        .eq("userEmail", loggedEmail);
+
+      if (error) throw error;
+
+      return data || [];
     } catch (error) {
       alert("Erro ao buscar os cargas");
       throw error;
@@ -27,9 +27,14 @@ const loadsApi = {
   // Procura uma carga pelo Id
   async getLoadById(id) {
     try {
-      const response = await fetch(`${BASE_URL}/loads/${id}`);
-      if (!response.ok) throw new Error("Carga não encontrada no servidor");
-      return await response.json();
+      const { data, error } = await supabase
+        .from("loads")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) throw new Error("Carga não encontrada no servidor");
+      return data;
     } catch (error) {
       alert("Erro ao buscar carga por ID");
       throw error;
@@ -38,30 +43,28 @@ const loadsApi = {
 
   // Salva uma carga
   async createLoads(loads) {
-    const response = await fetch(`${BASE_URL}/loads`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loads),
-    });
-    if (!response.ok) {
-      throw new Error(`Erro no servidor: ${response.status}`);
+    const { data, error } = await supabase
+      .from("loads")
+      .insert([loads])
+      .select();
+
+    if (error) {
+      throw new Error(`Erro no servidor: ${error.message}`);
     }
-    return await response.json();
+    return data[0];
   },
 
   // Edita uma carga
   async updateloads(loads) {
     try {
-      const response = await fetch(`${BASE_URL}/loads/${loads.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loads),
-      });
-      return await response.json();
+      const { data, error } = await supabase
+        .from("loads")
+        .update(loads)
+        .eq("id", loads.id)
+        .select();
+
+      if (error) throw error;
+      return data[0];
     } catch (error) {
       alert("Erro ao editar carga");
       throw error;
@@ -71,11 +74,10 @@ const loadsApi = {
   // Deleta uma carga
   async deleteloads(id) {
     try {
-      const response = await fetch(`${BASE_URL}/loads/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error(`Erro no servidor: ${response.status}`);
+      const { error } = await supabase.from("loads").delete().eq("id", id);
+
+      if (error) {
+        throw new Error(`Erro no servidor: ${error.message}`);
       }
       return true;
     } catch (error) {
