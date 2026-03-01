@@ -79,3 +79,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+const scrollTopBtn = document.querySelector(".scrollTop");
+if (scrollTopBtn) {
+  scrollTopBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Lógica do SCROLL (Serve apenas para esconder/mostrar o botão)
+  window.addEventListener("scroll", () => {
+    const posicaoAtual = window.scrollY;
+
+    // Se descer mais de 200px
+    if (posicaoAtual > 200) {
+      scrollTopBtn.classList.remove("hidden");
+    } else {
+      scrollTopBtn.classList.add("hidden");
+    }
+  });
+}

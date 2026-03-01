@@ -5,7 +5,7 @@ import uiTraining from "./Training/uiTraining.js";
 import uiExercises from "./Exercises/uiExercises.js";
 import apiExercises from "./Exercises/apiExercises.js";
 import { checkAuth } from "./auth.js";
-import { renderDashboard } from "./main.js";
+import { renderDashboard } from "./dashboard.js";
 
 // ==========================================================================
 // SELEÇÃO DE SEÇÕES GERAIS (PÁGINAS)

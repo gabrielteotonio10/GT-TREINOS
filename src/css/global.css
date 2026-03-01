@@ -247,3 +247,36 @@ main {
   color: white;
   transform: scale(1.1);
 }
+
+/* ================= BOTÃO VOLTAR AO TOPO ================= */
+.scrollTop {
+  position: fixed;
+  top: 80px; 
+  right: 40px; 
+  width: 45px;
+  height: 45px;
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999; 
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s;
+}
+
+.scrollTop:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); 
+}
+
+/* Ocultando de forma suave */
+.scrollTop.hidden {
+  opacity: 0;
+  pointer-events: none; 
+  transform: translateY(-10px); 
+}

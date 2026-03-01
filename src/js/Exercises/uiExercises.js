@@ -1,7 +1,9 @@
 import exercisesApi from "./apiExercises.js";
+import uiLoads from "../Loads/uiLoads.js";
 
 // Variável global para armazenar a foto temporariamente durante a criação/edição
 let convertedPhotoExercise = "";
+let currentActiveExercise = null;
 
 const uiExercises = {
   // =================================================================
@@ -323,20 +325,25 @@ const uiExercises = {
 
   // Abre a página de detalhes de um exercício específico
   openExercise(exercise) {
-    const exercisePage = document.querySelector(".active-exercise-details-section");
-    const exercisesSection = document.querySelector(".exercises-library-section");
+    const exercisePage = document.querySelector(
+      ".active-exercise-details-section",
+    );
+    const exercisesSection = document.querySelector(
+      ".exercises-library-section",
+    );
     const workoutsSection = document.querySelector(".workouts-section");
     const presentationText = document.querySelector(".presentation-text");
     const websitePresentation = document.querySelector(".website-presentation");
     const resultsSection = document.querySelector("#results-section");
 
+    currentActiveExercise = exercise;
     // Esconde as outras seções
     [
       exercisesSection,
       workoutsSection,
       presentationText,
       websitePresentation,
-      resultsSection
+      resultsSection,
     ].forEach((section) => {
       if (section) section.classList.add("hidden");
     });
@@ -410,6 +417,9 @@ const uiExercises = {
     btnDeleteClone.onclick = () => {
       this.confirmDeletionExercise(exercise);
     };
+
+    // Renderiza as cargas daquele exercício específico na tela de detalhes
+    uiLoads.renderLoadsForExercise(exercise.id);
 
     // Exibe a página finalmente
     exercisePage.classList.remove("hidden");
@@ -520,6 +530,9 @@ const uiExercises = {
     exerciseCard.onclick = () => this.openExercise(exercise);
 
     exercisesGrid.appendChild(exerciseCard);
+
+    // Renderiza as cargas daquele exercício específico na tela de detalhes
+    uiLoads.renderLoadsForExercise(exercise.id);
   },
 
   // Modal de Confirmação de Exclusão
@@ -556,6 +569,10 @@ const uiExercises = {
 
       this.renderExercises();
     };
+  },
+
+  getCurrentActiveExerciseData() {
+    return currentActiveExercise;
   },
 };
 

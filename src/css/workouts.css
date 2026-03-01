@@ -824,3 +824,12 @@
     font-size: 1rem;
   }
 }
+
+.export-pdf-btn{
+  background: none; 
+  border: none; 
+  font-size: 1.8rem; 
+  cursor: pointer;
+  color: #007bff;
+  margin-right: 20px;
+}

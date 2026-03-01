@@ -34,7 +34,7 @@
       "equipment": "Barra",
       "series": "3",
       "repetitions": "8",
-      "load": "26",
+      "load": 55,
       "description": "",
       "userEmail": "gabrielteotonio80@gmail.com",
       "times_completed": 4
@@ -87,6 +87,24 @@
       "training_name": "Treino A",
       "duration_minutes": 0,
       "userEmail": "gabrielteotonio80@gmail.com"
+    }
+  ],
+  "loads": [
+    {
+      "id": "load_1772385993416",
+      "exerciseId": "e5f6",
+      "userEmail": "gabrielteotonio80@gmail.com",
+      "load": 10,
+      "reps": 2,
+      "date": "2026-03-01T17:26:33.416Z"
+    },
+    {
+      "id": "load_1772386543318",
+      "exerciseId": "a44d",
+      "userEmail": "gabrielteotonio80@gmail.com",
+      "load": 55,
+      "reps": 3,
+      "date": "2026-03-01T17:35:43.318Z"
     }
   ]
 }
