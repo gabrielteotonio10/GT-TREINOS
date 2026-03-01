@@ -2,7 +2,7 @@
 
 > **Sua ficha de academia digital, inteligente e na nuvem.** Uma aplicação de alta performance para quem busca foco total nos treinos e acompanhamento real de evolução.
 
-🔗 **[Acesse a aplicação ao vivo aqui](https://www.google.com/search?q=COLOQUE_SEU_LINK_DO_NETLIFY_AQUI)**
+🔗 **[Acesse a aplicação ao vivo aqui](https://gttreinos.netlify.app)**
 
 ---
 
