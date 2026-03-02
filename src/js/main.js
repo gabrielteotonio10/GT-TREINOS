@@ -6,7 +6,7 @@ import uiTraining from "./Training/uiTraining.js";
 import apiExercises from "./Exercises/apiExercises.js";
 import uiExercises from "./Exercises/uiExercises.js";
 import uiLoads from "./Loads/uiLoads.js";
-import loadsApi from "./Loads/apiLoads.js";
+import apiLoads from "./Loads/apiLoads.js";
 import { register, login, checkAuth } from "./auth.js";
 import { renderDashboard } from "./dashboard.js";
 import { checkProfileCompletion, initProfileEvents } from "./profile.js";
@@ -42,32 +42,44 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (trainingForm) {
     trainingForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-
       // Pega os dados do formulário
       const trainingData = uiTraining.getFormDataTraining();
+      // Pega o e-mail real do usuário logado
+      const userString = localStorage.getItem("currentUser");
+      const user = userString ? JSON.parse(userString) : null;
+      if (!user) {
+        alert("Erro: Usuário não identificado.");
+        return;
+      }
       try {
         if (trainingData.id) {
-          // Busca os dados originais do treino no banco
-          const oldTrainingData = await apiTraining.getTrainingById(
-            trainingData.id,
-          );
-          // Mescla os dados
+          // MODO EDIÇÃO
+          const oldTrainingData = await apiTraining.getTrainingById(trainingData.id);
           const mergedTrainingData = { ...oldTrainingData, ...trainingData };
-          await apiTraining.updateTraining(mergedTrainingData); // Edita
-
+          await apiTraining.updateTraining(mergedTrainingData);
+          // Atualizar a tela 
           const currentActive = uiTraining.getCurrentActiveTrainingData();
           if (currentActive && currentActive.id === trainingData.id) {
-            const freshTraining = await apiTraining.getTrainingById(
-              trainingData.id,
-            );
+            const freshTraining = await apiTraining.getTrainingById(trainingData.id);
             uiTraining.openTraining(freshTraining);
           }
         } else {
-          // Se não tem ID, é um treino novo
-          await apiTraining.createTraining(trainingData);
+          // MODO CRIAÇÃO
+          // Cria o treino primeiro e pega a resposta
+          const createdTraining = await apiTraining.createTraining(trainingData);
+          // Só cria a carga se o formulário tiver peso e repetições preenchidos
+          if (trainingData.weight && trainingData.reps) {
+            const newLoad = {
+              exerciseId: createdTraining.id, 
+              userEmail: user.email, 
+              load: Number(trainingData.weight),
+              reps: Number(trainingData.reps),
+              date: new Date().toISOString(),
+            };
+            await apiLoads.createLoads(newLoad);
+          }
         }
 
-        // Limpa o formulário e fecha os modais
         uiTraining.clearFormTraining();
         closeAllModals();
 
@@ -93,47 +105,68 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // ========================================================================
-  // EVENTOS DE FORMULÁRIO: EXERCÍCIOS
+// ========================================================================
+  // EVENTOS DE FORMULÁRIO: EXERCÍCIOS (Cria exercício e salva carga)
   // ========================================================================
   const exerciseForm = document.querySelector("#exercise-form");
   if (exerciseForm) {
     exerciseForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      // Pega os dados do formulário de exercício
       const exerciseData = uiExercises.getFormDataExercise();
+      // Identifica o usuário logado
+      const userString = localStorage.getItem("currentUser");
+      const user = userString ? JSON.parse(userString) : null;
+      if (!user) {
+        alert("Erro: Usuário não identificado.");
+        return;
+      }
       try {
+        let savedExerciseId = exerciseData.id;
         if (exerciseData.id) {
-          // Busca os dados originais no banco primeiro
+          // MODO EDIÇÃO
           const oldData = await apiExercises.getExercisesById(exerciseData.id);
-          // Mescla os antigos (para não perder o times_completed)
           const mergedData = { ...oldData, ...exerciseData };
-          // Salva o pacote completo e mesclado
           await apiExercises.updateExercises(mergedData);
-          // Se a tela de detalhes do exercício estiver aberta, recarrega ela
-          const detailSection = document.querySelector(
-            ".active-exercise-details-section",
-          );
+          // Recarrega a tela de detalhes se estiver aberta
+          const detailSection = document.querySelector(".active-exercise-details-section");
           if (!detailSection.classList.contains("hidden")) {
-            const freshExercise = await apiExercises.getExercisesById(
-              exerciseData.id,
-            );
+            const freshExercise = await apiExercises.getExercisesById(exerciseData.id);
             uiExercises.openExercise(freshExercise);
           }
         } else {
-          await apiExercises.createExercises(exerciseData);
+          // MODO CRIAÇÃO 
+          // Salva o exercício no banco e pega a resposta completa com o ID
+          const createdExercise = await apiExercises.createExercises(exerciseData);
+          if (!createdExercise || !createdExercise.id) {
+             throw new Error("Falha ao obter o ID do exercício recém-criado.");
+          }
+          savedExerciseId = createdExercise.id;
+          // Cria a carga inicial se o usuário digitou peso e repetições sagewrgergergqewg
+          if (exerciseData.load || exerciseData.repetitions) {
+            const newLoad = {
+              exerciseId: savedExerciseId,
+              userEmail: user.email,
+              load: Number(exerciseData.load) || 0,
+              reps: Number(exerciseData.repetitions) || 0,
+              date: new Date().toISOString(),
+            };
+            // Salva na tabela de cargas
+            await apiLoads.createLoads(newLoad);
+          }
         }
-
+        // Limpa tudo e avisa o usuário
         uiExercises.clearFormExercise();
         closeAllModals();
-
         const successMessage = exerciseData.id
           ? "Exercício atualizado com sucesso!"
-          : "Exercício criado com sucesso!";
+          : "Exercício criado com carga inicial salva! 💪";
         uiTraining.showToastTraining(successMessage);
+        // Renderiza a lista novamente para mostrar o novo exercício
         uiExercises.renderExercises();
+
       } catch (error) {
-        console.error("Erro detalhado:", error);
+        console.error("Erro ao salvar exercício ou carga:", error);
         alert("Não foi possível salvar: " + error.message);
       }
     });
@@ -379,7 +412,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         // Salva no banco de dados (Supabase)
-        await loadsApi.createLoads(newLoad);
+        await apiLoads.createLoads(newLoad);
 
         // Limpa os campos digitados
         event.target.reset();
@@ -468,7 +501,7 @@ document.addEventListener("click", async (event) => {
     modalOverlay.querySelector("#confirm-load-delete").onclick = async () => {
       modalOverlay.remove(); // Fecha o aviso
       try {
-        await loadsApi.deleteloads(loadId); // Apaga do banco
+        await apiLoads.deleteloads(loadId); // Apaga do banco
         // Pega qual exercício tá aberto e manda desenhar a lista de novo
         const currentExercise = uiExercises.getCurrentActiveExerciseData();
         if (currentExercise) {
