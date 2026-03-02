@@ -311,7 +311,7 @@ main {
 .scrollTop {
   position: fixed;
   /* Posicionamento adaptado para não cobrir elementos no mobile */
-  bottom: clamp(20px, 5vh, 40px); 
+  top: clamp(250px, 5vh, 40px); 
   right: clamp(15px, 4vw, 40px); 
   width: 45px;
   height: 45px;

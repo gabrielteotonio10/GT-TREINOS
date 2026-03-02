@@ -5,10 +5,14 @@
 /* --- Container Principal --- */
 .main-header {
   background-color: var(--primary-color);
-  padding: clamp(15px, 3vw, 20px) 0; /* Padding dinâmico */
+  padding: clamp(15px, 3vw, 20px) 0;
   border-bottom: var(--secondary-color) 3px solid;
-  position: relative; 
-  z-index: 1001; 
+  
+  /* AS DUAS LINHAS MÁGICAS: */
+  position: sticky !important; 
+  top: 0; 
+  
+  z-index: 1050 !important; /* Aumentado para não ficar atrás de nada */
 }
 
 /* --- Elementos Internos (Flexbox) --- */
@@ -134,5 +138,13 @@
 @media (max-width: 360px) {
   .main-logo {
     width: 150px; 
+  }
+}
+
+/* Levanta o botão de voltar ao topo no celular para não bater no cronômetro */
+@media (max-width: 768px) {
+  .scrollTop {
+    bottom: 120px !important; /* Fica acima da altura do cronômetro */
+    z-index: 999;
   }
 }

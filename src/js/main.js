@@ -817,7 +817,27 @@ document.addEventListener("click", (event) => {
 
     if (runningWorkoutData) {
       dualTimersWrapper.classList.remove("floating-mode");
+
+      // TRAVA DE SEGURANÇA: Esconde TODAS as outras telas antes de abrir o treino
+      const telasParaEsconder = [
+        "#profile-section",
+        "#results-section",
+        ".workouts-section",
+        ".exercises-library-section",
+        ".website-presentation",
+        ".presentation-text",
+      ];
+
+      telasParaEsconder.forEach((seletor) => {
+        const tela = document.querySelector(seletor);
+        if (tela) tela.classList.add("hidden");
+      });
+
+      // Agora sim, abre o treino com a tela limpa!
       uiTraining.openTraining(runningWorkoutData);
+
+      // Rola a página para o topo suavemente
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
