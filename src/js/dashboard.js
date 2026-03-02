@@ -60,12 +60,8 @@ export async function renderDashboard() {
   }
 
   // Busca os dados completos no Supabase usando os IDs do histórico
-  const lastTrainingData = await apiTraining.getTrainingById(
-    lastTrainingLog.training_id,
-  );
-  const sugestedTrainingData = await apiTraining.getTrainingById(
-    sugestedTrainingLog.training_id,
-  );
+  const lastTrainingData = await apiTraining.getTrainingById(lastTrainingLog.training_id);
+  const sugestedTrainingData = await apiTraining.getTrainingById(sugestedTrainingLog.training_id);
 
   // Confere se o usuário treinou nos últimos dias da semana
   // Captura os últimos dias

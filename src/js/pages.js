@@ -77,25 +77,22 @@ function updateUIWithUserData() {
 }
 
 // Mostra a tela inicial (com boas-vindas, dashboard e biblioteca de treinos)
-async function showHome() {
-  // Tira tudo da tela primeiro
+// Mostra a tela inicial (com boas-vindas, dashboard e biblioteca de treinos)
+export async function showHome() {
   hideAllSections();
-  // Mostra o que precisa na home
-  if (presentationTextSection)
-    presentationTextSection.classList.remove("hidden");
-  if (websitePresentationSection)
-    websitePresentationSection.classList.remove("hidden");
+  
+  if (presentationTextSection) presentationTextSection.classList.remove("hidden");
+  if (websitePresentationSection) websitePresentationSection.classList.remove("hidden");
   if (workoutsSection) workoutsSection.classList.remove("hidden");
 
   updateUIWithUserData();
 
-  // Agora esperamos o Supabase responder antes de finalizar a transição
-  await uiTraining.renderTrainings();
-  await renderDashboard();
-
   try {
-    // Garante que o dashboard e os treinos carreguem em paralelo para ser mais rápido
-    await Promise.all([uiTraining.renderTrainings(), renderDashboard()]);
+    // Carrega tudo de uma vez só, sem duplicar chamadas
+    await Promise.all([
+      uiTraining.renderTrainings(), 
+      renderDashboard()
+    ]);
   } catch (error) {
     console.error("Erro ao carregar dados da Home:", error);
   }
@@ -391,21 +388,3 @@ document.addEventListener("click", async (event) => {
     await changeForTraining();
   }
 });
-
-// ==========================================================================
-// INICIALIZAÇÃO
-// ==========================================================================
-document.addEventListener("DOMContentLoaded", async () => {
-  // Garante que os treinos apareçam na primeira carga
-  await uiTraining.renderTrainings();
-  startPage();
-  await showHome();
-});
-
-const btnHambúrguer = document.querySelector(".menu-mobile-btn");
-if (btnHambúrguer) {
-  btnHambúrguer.addEventListener("click", (event) => {
-    event.stopPropagation(); 
-    document.querySelector(".nav-menu").classList.toggle("active");
-  });
-}

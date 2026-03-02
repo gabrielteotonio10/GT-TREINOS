@@ -32,7 +32,7 @@ const trainingApi = {
         .from("trainings")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
