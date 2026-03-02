@@ -22,7 +22,10 @@ export async function renderDashboard() {
   let formattedTime = "--:--";
 
   // Só tenta buscar dados de histórico se o usuário já tiver feito pelo menos 1 treino
+  const allTrainings = await apiTraining.getTrainings();
+
   if (totalTrainingsDone > 0) {
+    // Dados do Último Treino Realizado
     const lastTrainingLog = historyTraining[historyTraining.length - 1];
     const date = new Date(lastTrainingLog.date);
     formattedDate = date.toLocaleDateString("pt-BR", {
@@ -35,25 +38,26 @@ export async function renderDashboard() {
       minute: "2-digit",
     });
 
-    // Lógica de Sugestão
-    let sugestedTrainingLog = lastTrainingLog;
-    if (historyTraining.length > 1) {
-      let randomIndex = Math.floor(Math.random() * historyTraining.length);
-      if (
-        historyTraining[randomIndex].training_id === lastTrainingLog.training_id
-      ) {
-        randomIndex = randomIndex === 0 ? 1 : randomIndex - 1;
-      }
-      sugestedTrainingLog = historyTraining[randomIndex];
-    }
+    lastTrainingData = await apiTraining.getTrainingById(lastTrainingLog.training_id);
 
-    // Busca os detalhes apenas se tiver certeza de que os IDs existem
-    lastTrainingData = await apiTraining.getTrainingById(
-      lastTrainingLog.training_id,
-    );
-    sugestedTrainingData = await apiTraining.getTrainingById(
-      sugestedTrainingLog.training_id,
-    );
+    // Sugestão Inteligente
+    if (allTrainings && allTrainings.length > 1) {
+      // Remove o treino que ele acabou de fazer das opções
+      const availableOptions = allTrainings.filter(
+        (t) => t.id !== lastTrainingLog.training_id,
+      );
+
+      if (availableOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableOptions.length);
+        sugestedTrainingData = availableOptions[randomIndex]; // Sugere da biblioteca!
+      }
+    }
+  } else {
+    // Se o usuário nunca treinou, mas já criou fichas, sugere qualquer uma para começar!
+    if (allTrainings && allTrainings.length > 0) {
+      const randomIndex = Math.floor(Math.random() * allTrainings.length);
+      sugestedTrainingData = allTrainings[randomIndex];
+    }
   }
 
   // ==========================================================================
