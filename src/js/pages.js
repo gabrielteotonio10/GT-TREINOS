@@ -388,3 +388,5 @@ document.addEventListener("click", async (event) => {
     await changeForTraining();
   }
 });
+
+

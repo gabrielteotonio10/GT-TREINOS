@@ -54,24 +54,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       try {
         if (trainingData.id) {
           // MODO EDIÇÃO
-          const oldTrainingData = await apiTraining.getTrainingById(trainingData.id);
+          const oldTrainingData = await apiTraining.getTrainingById(
+            trainingData.id,
+          );
           const mergedTrainingData = { ...oldTrainingData, ...trainingData };
           await apiTraining.updateTraining(mergedTrainingData);
-          // Atualizar a tela 
+          // Atualizar a tela
           const currentActive = uiTraining.getCurrentActiveTrainingData();
           if (currentActive && currentActive.id === trainingData.id) {
-            const freshTraining = await apiTraining.getTrainingById(trainingData.id);
+            const freshTraining = await apiTraining.getTrainingById(
+              trainingData.id,
+            );
             uiTraining.openTraining(freshTraining);
           }
         } else {
           // MODO CRIAÇÃO
           // Cria o treino primeiro e pega a resposta
-          const createdTraining = await apiTraining.createTraining(trainingData);
+          const createdTraining =
+            await apiTraining.createTraining(trainingData);
           // Só cria a carga se o formulário tiver peso e repetições preenchidos
           if (trainingData.weight && trainingData.reps) {
             const newLoad = {
-              exerciseId: createdTraining.id, 
-              userEmail: user.email, 
+              exerciseId: createdTraining.id,
+              userEmail: user.email,
               load: Number(trainingData.weight),
               reps: Number(trainingData.reps),
               date: new Date().toISOString(),
@@ -105,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-// ========================================================================
+  // ========================================================================
   // EVENTOS DE FORMULÁRIO: EXERCÍCIOS (Cria exercício e salva carga)
   // ========================================================================
   const exerciseForm = document.querySelector("#exercise-form");
@@ -146,17 +151,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             await apiLoads.createLoads(newLoad);
           }
           // Recarrega a tela de detalhes se estiver aberta
-          const detailSection = document.querySelector(".active-exercise-details-section");
+          const detailSection = document.querySelector(
+            ".active-exercise-details-section",
+          );
           if (!detailSection.classList.contains("hidden")) {
-            const freshExercise = await apiExercises.getExercisesById(exerciseData.id);
+            const freshExercise = await apiExercises.getExercisesById(
+              exerciseData.id,
+            );
             uiExercises.openExercise(freshExercise);
           }
         } else {
-          // MODO CRIAÇÃO 
+          // MODO CRIAÇÃO
           // Salva o exercício no banco e pega a resposta completa com o ID
-          const createdExercise = await apiExercises.createExercises(exerciseData);
+          const createdExercise =
+            await apiExercises.createExercises(exerciseData);
           if (!createdExercise || !createdExercise.id) {
-             throw new Error("Falha ao obter o ID do exercício recém-criado.");
+            throw new Error("Falha ao obter o ID do exercício recém-criado.");
           }
           savedExerciseId = createdExercise.id;
           // Cria a carga inicial se o usuário digitou peso e repetições sagewrgergergqewg
@@ -181,7 +191,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         uiTraining.showToastTraining(successMessage);
         // Renderiza a lista novamente para mostrar o novo exercício
         uiExercises.renderExercises();
-
       } catch (error) {
         console.error("Erro ao salvar exercício ou carga:", error);
         alert("Não foi possível salvar: " + error.message);
@@ -809,10 +818,27 @@ document.addEventListener("click", (event) => {
     exportWorkoutToPDF();
   }
 
-  // EXPORTAR RESULTADOS GERAIS PARA PDF
+  // Exporta PDF dos Resultados
   if (event.target.closest(".export-results-pdf-btn")) {
     event.preventDefault();
     exportResultsToPDF(); // Chama a nova função
+  }
+
+  // Fechar menu mobile ao clicar fora
+  const navMenu = document.querySelector(".header-menu");
+  if (
+    window.innerWidth <= 770 &&
+    navMenu &&
+    navMenu.classList.contains("active")
+  ) {
+    // Verifica se o clique foi dentro do menu 
+    const clickedInsideMenu = navMenu.contains(target);
+    const clickedOnButton = target.closest(".mobile-menu-btn");
+
+    // Se não clicou no menu e não clicou no botão, fecha.
+    if (!clickedInsideMenu && !clickedOnButton) {
+      navMenu.classList.remove("active");
+    }
   }
 });
 

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Alterna entre abrir e fechar o menu mobile
   function toggleMenu(event) {
+    event.stopPropagation();
     // Evita o disparo duplo em telas touch (mobile)
     if (event.type === "touchstart") event.preventDefault();
 
