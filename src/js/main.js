@@ -128,6 +128,23 @@ document.addEventListener("DOMContentLoaded", async () => {
           const oldData = await apiExercises.getExercisesById(exerciseData.id);
           const mergedData = { ...oldData, ...exerciseData };
           await apiExercises.updateExercises(mergedData);
+          // Pega variáveis para atualização das cargas
+          const oldLoadVal = Number(oldData.load) || 0;
+          const oldRepsVal = Number(oldData.repetitions) || 0;
+          const newLoadVal = Number(exerciseData.load) || 0;
+          const newRepsVal = Number(exerciseData.repetitions) || 0;
+          // Se o peso novo for diferente do velho, ou a repetição nova for diferente da velha
+          if (oldLoadVal !== newLoadVal || oldRepsVal !== newRepsVal) {
+            const newLoad = {
+              exerciseId: exerciseData.id,
+              userEmail: user.email,
+              load: newLoadVal,
+              reps: newRepsVal,
+              date: new Date().toISOString(),
+            };
+            // Salva a nova carga no histórico
+            await apiLoads.createLoads(newLoad);
+          }
           // Recarrega a tela de detalhes se estiver aberta
           const detailSection = document.querySelector(".active-exercise-details-section");
           if (!detailSection.classList.contains("hidden")) {
