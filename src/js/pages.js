@@ -213,7 +213,7 @@ document.addEventListener("click", async (event) => {
         .querySelector(".active-workout-section")
         .classList.remove("hidden");
       backExerciseBtn.removeAttribute("data-from");
-      window.scrollTo({ top: 150, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       // Volta do Exercício para a Biblioteca de Exercícios
       await changeForTraining();

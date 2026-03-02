@@ -552,7 +552,7 @@ const uiTraining = {
     };
 
     trainingPage.classList.remove("hidden");
-    window.scrollTo({ top: 150, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
       const allExercises = await apiExercises.getExercises();

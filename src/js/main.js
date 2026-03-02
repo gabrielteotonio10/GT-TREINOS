@@ -811,14 +811,50 @@ document.addEventListener("click", (event) => {
     }
   }
 
+  let timerOriginalParent = null;
+  let timerOriginalSibling = null;
   // Restaura relógio ao clicar nele
+  // ==========================================================
+  // 1. Transforma relógio em flutuante ao sair da tela
+  // ==========================================================
+  if (
+    target.closest(".back-arrow-btn") ||
+    target.closest(".nav-btn") ||
+    target.closest(".main-logo")
+  ) {
+    if (
+      mainSeconds > 0 &&
+      dualTimersWrapper &&
+      !dualTimersWrapper.classList.contains("floating-mode")
+    ) {
+      // Anota o "endereço original" antes de arrancar ele dali
+      timerOriginalParent = dualTimersWrapper.parentNode;
+      timerOriginalSibling = dualTimersWrapper.nextSibling;
+
+      // Agora sim, transforma em flutuante e joga pra tela toda
+      dualTimersWrapper.classList.add("floating-mode");
+      document.body.appendChild(dualTimersWrapper);
+    }
+  }
+
+  // ==========================================================
+  // 2. Restaura relógio ao clicar nele
+  // ==========================================================
   if (target.closest("#dual-timers-wrapper.floating-mode")) {
     if (target.closest(".timer-btn")) return;
 
     if (runningWorkoutData) {
       dualTimersWrapper.classList.remove("floating-mode");
 
-      // TRAVA DE SEGURANÇA: Esconde TODAS as outras telas antes de abrir o treino
+      // DEVOLVE o cronômetro para o endereço exato dele!
+      if (timerOriginalParent) {
+        timerOriginalParent.insertBefore(
+          dualTimersWrapper,
+          timerOriginalSibling,
+        );
+      }
+
+      // Esconde TODAS as outras telas
       const telasParaEsconder = [
         "#profile-section",
         "#results-section",
@@ -833,8 +869,11 @@ document.addEventListener("click", (event) => {
         if (tela) tela.classList.add("hidden");
       });
 
-      // Agora sim, abre o treino com a tela limpa!
-      uiTraining.openTraining(runningWorkoutData);
+      // Revela a tela de treino intacta (com os checks verdes salvos)
+      const telaTreinoAtivo = document.querySelector(".active-workout-section");
+      if (telaTreinoAtivo) {
+        telaTreinoAtivo.classList.remove("hidden");
+      }
 
       // Rola a página para o topo suavemente
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -860,7 +899,7 @@ document.addEventListener("click", (event) => {
     navMenu &&
     navMenu.classList.contains("active")
   ) {
-    // Verifica se o clique foi dentro do menu 
+    // Verifica se o clique foi dentro do menu
     const clickedInsideMenu = navMenu.contains(target);
     const clickedOnButton = target.closest(".mobile-menu-btn");
 
@@ -1123,3 +1162,61 @@ async function testarConexao() {
 }
 
 testarConexao();
+
+
+// ==========================================================================
+// FUNÇÃO UNIVERSAL: RESTAURAR TREINO ATIVO (Sem perder dados)
+// ==========================================================================
+window.restoreActiveWorkoutScreen = function() {
+  const dualTimersWrapper = document.querySelector("#dual-timers-wrapper");
+  
+  // Devolve o cronômetro pro endereço original
+  if (dualTimersWrapper && dualTimersWrapper.classList.contains("floating-mode")) {
+    dualTimersWrapper.classList.remove("floating-mode");
+    if (window.timerOriginalParent) {
+      window.timerOriginalParent.insertBefore(dualTimersWrapper, window.timerOriginalSibling);
+    }
+  }
+
+  // Esconde todas as outras telas
+  const telasParaEsconder = [
+    "#profile-section", "#results-section", ".workouts-section", 
+    ".exercises-library-section", ".website-presentation", ".presentation-text",
+    ".active-exercise-details-section"
+  ];
+  telasParaEsconder.forEach(seletor => {
+    const tela = document.querySelector(seletor);
+    if (tela) tela.classList.add("hidden");
+  });
+
+  // Revela a tela de treino intacta (com os checks verdes)
+  const telaTreinoAtivo = document.querySelector(".active-workout-section");
+  if (telaTreinoAtivo) {
+    telaTreinoAtivo.classList.remove("hidden");
+  }
+  
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// ==========================================================================
+// INTERCEPTADOR DE CLIQUES (FASE DE CAPTURA)
+// ==========================================================================
+document.addEventListener("click", (event) => {
+  const target = event.target;
+
+  if (!window.runningWorkoutId) return;
+
+  const isNavTreinos = target.closest(".training-btn") || (target.closest(".nav-btn") && target.textContent.includes("Treinos"));
+  
+  const clickedCard = target.closest(".workout-card");
+  let isCurrentWorkoutCard = false;
+  if (clickedCard && String(clickedCard.dataset.id) === String(window.runningWorkoutId)) {
+     isCurrentWorkoutCard = true;
+  }
+
+  if (isNavTreinos || isCurrentWorkoutCard) {
+     event.preventDefault();
+     event.stopPropagation(); 
+     window.restoreActiveWorkoutScreen();
+  }
+}, true); 
