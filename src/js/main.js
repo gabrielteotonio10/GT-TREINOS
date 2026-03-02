@@ -341,16 +341,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       const name = document.querySelector("#register-name").value;
       const email = document.querySelector("#register-email").value;
       const password = document.querySelector("#register-password").value;
-
-      // Espera a resposta do Supabase
+      // Espera a resposta do Supabase para criar a conta
       const response = await register(name, email, password);
       if (response.success) {
-        uiTraining.showToastTraining(
-          "Conta criada com sucesso! Faça seu login. 🎉",
-        );
-        registerForm.reset();
-        document.querySelector("#register-section").classList.add("hidden");
-        document.querySelector("#login-section").classList.remove("hidden");
+        // Faz o login imediatamente com os dados recém-criados
+        const loginSuccess = await login(email, password);
+        if (loginSuccess) {
+          checkAuth(); // Confirma pro sistema que agora tem alguém logado
+          // Força a renderização da página inicial 
+          const logo = document.querySelector(".main-logo");
+          if (logo) logo.click();
+          // Limpa o formulário e dá as boas-vindas
+          uiTraining.showToastTraining(`Conta criada! Bem-vindo(a) ao time, ${name.split(" ")[0]}! 🚀`);
+          registerForm.reset();
+        } else {
+          // Se por algum motivo  o login automático falhar, joga pro login normal
+          document.querySelector("#register-section").classList.add("hidden");
+          document.querySelector("#login-section").classList.remove("hidden");
+          uiTraining.showToastTraining("Conta criada! Por favor, faça seu login.");
+        }
       } else {
         alert(response.message);
       }
