@@ -75,8 +75,13 @@
 }
 
 .exercise-mini-card p {
+  color: black;
   text-align: center;
   margin-top: 10px;
+}
+
+.exercise-mini-card i {
+  color: gray;
 }
 
 .exercise-mini-card:hover {
