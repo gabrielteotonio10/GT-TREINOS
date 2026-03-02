@@ -366,6 +366,15 @@ document.addEventListener("click", async (event) => {
   if (target.closest(".nav-btn") && target.textContent.includes("Resultados")) {
     await showResults();
   }
+
+  // Restaura relógio ao clicar nele
+  if (target.closest("#dual-timers-wrapper.floating-mode")) {
+    if (target.closest(".timer-btn")) return; // Ignora se clicou no pause/play
+    
+    if (window.runningWorkoutId) {
+      window.restoreActiveWorkoutScreen();
+    }
+  }
 });
 
 // ==========================================================================

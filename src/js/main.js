@@ -794,26 +794,11 @@ async function finishAndSaveWorkout() {
 document.addEventListener("click", (event) => {
   const target = event.target;
 
-  // Finalizar
+  // Finalizar Treino
   if (target.closest(".finish-workout-btn")) {
     confirmFinishWorkout();
   }
 
-  // Transforma relógio em flutuante ao sair da tela
-  if (
-    target.closest(".back-arrow-btn") ||
-    target.closest(".nav-btn") ||
-    target.closest(".main-logo")
-  ) {
-    if (mainSeconds > 0 && dualTimersWrapper) {
-      dualTimersWrapper.classList.add("floating-mode");
-      document.body.appendChild(dualTimersWrapper);
-    }
-  }
-
-  let timerOriginalParent = null;
-  let timerOriginalSibling = null;
-  // Restaura relógio ao clicar nele
   // ==========================================================
   // 1. Transforma relógio em flutuante ao sair da tela
   // ==========================================================
@@ -822,16 +807,23 @@ document.addEventListener("click", (event) => {
     target.closest(".nav-btn") ||
     target.closest(".main-logo")
   ) {
+    const dualTimersWrapper = document.querySelector("#dual-timers-wrapper");
+
     if (
-      mainSeconds > 0 &&
       dualTimersWrapper &&
+      mainSeconds > 0 &&
       !dualTimersWrapper.classList.contains("floating-mode")
     ) {
-      // Anota o "endereço original" antes de arrancar ele dali
-      timerOriginalParent = dualTimersWrapper.parentNode;
-      timerOriginalSibling = dualTimersWrapper.nextSibling;
+      // TÉCNICA DA ÂNCORA: Planta um marcador invisível no lugar exato do relógio
+      let anchor = document.querySelector("#timer-anchor");
+      if (!anchor) {
+        anchor = document.createElement("div");
+        anchor.id = "timer-anchor";
+        anchor.style.display = "none";
+        dualTimersWrapper.parentNode.insertBefore(anchor, dualTimersWrapper);
+      }
 
-      // Agora sim, transforma em flutuante e joga pra tela toda
+      // Transforma em flutuante
       dualTimersWrapper.classList.add("floating-mode");
       document.body.appendChild(dualTimersWrapper);
     }
@@ -841,55 +833,27 @@ document.addEventListener("click", (event) => {
   // 2. Restaura relógio ao clicar nele
   // ==========================================================
   if (target.closest("#dual-timers-wrapper.floating-mode")) {
-    if (target.closest(".timer-btn")) return;
+    if (target.closest(".timer-btn")) return; // Ignora se clicou no pause/play
 
-    if (runningWorkoutData) {
-      dualTimersWrapper.classList.remove("floating-mode");
-
-      // DEVOLVE o cronômetro para o endereço exato dele!
-      if (timerOriginalParent) {
-        timerOriginalParent.insertBefore(
-          dualTimersWrapper,
-          timerOriginalSibling,
-        );
-      }
-
-      // Esconde TODAS as outras telas
-      const telasParaEsconder = [
-        "#profile-section",
-        "#results-section",
-        ".workouts-section",
-        ".exercises-library-section",
-        ".website-presentation",
-        ".presentation-text",
-      ];
-
-      telasParaEsconder.forEach((seletor) => {
-        const tela = document.querySelector(seletor);
-        if (tela) tela.classList.add("hidden");
-      });
-
-      // Revela a tela de treino intacta (com os checks verdes salvos)
-      const telaTreinoAtivo = document.querySelector(".active-workout-section");
-      if (telaTreinoAtivo) {
-        telaTreinoAtivo.classList.remove("hidden");
-      }
-
-      // Rola a página para o topo suavemente
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (window.runningWorkoutId) {
+      window.restoreActiveWorkoutScreen();
     }
   }
 
-  // Exporta PDF
+  // ==========================================================
+  // 3. Demais Cliques Globais (PDF, Menu Mobile)
+  // ==========================================================
+
+  // Exporta PDF Treino
   if (event.target.closest(".export-pdf-btn")) {
     event.preventDefault();
     exportWorkoutToPDF();
   }
 
-  // Exporta PDF dos Resultados
+  // Exporta PDF Resultados
   if (event.target.closest(".export-results-pdf-btn")) {
     event.preventDefault();
-    exportResultsToPDF(); // Chama a nova função
+    exportResultsToPDF();
   }
 
   // Fechar menu mobile ao clicar fora
@@ -899,11 +863,9 @@ document.addEventListener("click", (event) => {
     navMenu &&
     navMenu.classList.contains("active")
   ) {
-    // Verifica se o clique foi dentro do menu
     const clickedInsideMenu = navMenu.contains(target);
     const clickedOnButton = target.closest(".mobile-menu-btn");
 
-    // Se não clicou no menu e não clicou no botão, fecha.
     if (!clickedInsideMenu && !clickedOnButton) {
       navMenu.classList.remove("active");
     }
@@ -1169,12 +1131,15 @@ testarConexao();
 // ==========================================================================
 window.restoreActiveWorkoutScreen = function() {
   const dualTimersWrapper = document.querySelector("#dual-timers-wrapper");
+  const anchor = document.querySelector("#timer-anchor"); // Acha a nossa âncora
   
-  // Devolve o cronômetro pro endereço original
+  // Devolve o cronômetro exatamente pro lugar da âncora
   if (dualTimersWrapper && dualTimersWrapper.classList.contains("floating-mode")) {
     dualTimersWrapper.classList.remove("floating-mode");
-    if (window.timerOriginalParent) {
-      window.timerOriginalParent.insertBefore(dualTimersWrapper, window.timerOriginalSibling);
+    
+    // Se a âncora existir, estaciona o relógio antes dela!
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(dualTimersWrapper, anchor);
     }
   }
 
