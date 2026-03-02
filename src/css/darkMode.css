@@ -265,3 +265,54 @@ body.dark-mode .profile-alert {
   border-color: #4d3a00 !important; 
   color: #ffda6a !important; 
 }
+
+/* ==========================================================================
+   7. NOVOS COMPONENTES DO DASHBOARD E AVISOS (JS INJECTS)
+   ========================================================================== */
+
+/* --- Banners de Erro (Ex: Perfil Incompleto) --- */
+/* O fundo que era rosinha claro vira um vermelho bem escuro e a borda fica mais viva */
+body.dark-mode .empty-state-banner.error,
+body.dark-mode div[style*="background: #fff3f3"] {
+  background-color: rgba(220, 53, 69, 0.15) !important; 
+  border-left-color: #ff6b7a !important; 
+}
+
+/* Título e Texto do banner de erro */
+body.dark-mode .empty-state-banner.error h4,
+body.dark-mode div[style*="background: #fff3f3"] h4 {
+  color: #ff6b7a !important;
+}
+body.dark-mode .empty-state-banner.error p,
+body.dark-mode div[style*="background: #fff3f3"] p {
+  color: #cccccc !important;
+}
+
+/* --- Mensagens de Empty States (Caixas pontilhadas de falta de treinos) --- */
+/* O fundo cinza clarinho vira cinza escuro e a borda pontilhada fica sutil */
+body.dark-mode .card-injection-area > p,
+body.dark-mode #home-last-training-container > p,
+body.dark-mode #home-suggested-training-container > p,
+body.dark-mode p[style*="border: 1px dashed"] {
+  background-color: #2c2c2c !important;
+  border-color: #555555 !important;
+  color: #bbbbbb !important;
+}
+
+/* --- Textos de Destaque no Dashboard --- */
+/* Textos como "Concluído em..." e "Ficha realizada X vezes" */
+body.dark-mode .highlight-times-text {
+  color: #9aa0a6 !important;
+}
+
+/* --- Botões de Cancelar nos Novos Modais --- */
+/* Os botões de cancelar que eram branco/gelo ficam no padrão dark */
+body.dark-mode .confirm-actions button[id^="cancel-"] {
+  background-color: #333333 !important;
+  color: #e0e0e0 !important;
+  border-color: #555555 !important;
+}
+
+body.dark-mode .confirm-actions button[id^="cancel-"]:hover {
+  background-color: #444444 !important;
+}
