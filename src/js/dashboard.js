@@ -4,67 +4,61 @@ import uiTraining from "./Training/uiTraining.js";
 import apiExercises from "./Exercises/apiExercises.js";
 import uiExercises from "./Exercises/uiExercises.js";
 
-// Função para desenhar a Home e a aba de Resultados
+// ==========================================================================
+// Função para desenhar a Home e a Aba de Resultados
+// ==========================================================================
 export async function renderDashboard() {
   const historyTraining = await apiTraining.getHistory();
   const totalTrainingsDone = historyTraining ? historyTraining.length : 0;
 
-  const homeDashboard = document.getElementById("home-dashboard");
   const resultsContent = document.getElementById("results-content-area");
 
   // ==========================================================================
-  // VALIDAÇÃO: SE NÃO TIVER TREINOS
+  // VARIÁVEIS DE CONTROLE (Prevenidas contra erro de ID vazio)
   // ==========================================================================
-  if (totalTrainingsDone === 0) {
-    const semTreinoHTML = `
-      <div class="empty-state-banner">
-        <h4>Nenhum treino realizado ainda 😴</h4>
-        <p>Comece sua jornada agora mesmo e acompanhe seus resultados aqui.</p>
-        <button class="action-btn" id="go-to-trainings-btn">Ir para Treinos</button>
-      </div>
-    `;
-    if (homeDashboard) homeDashboard.innerHTML = semTreinoHTML;
-    if (resultsContent) resultsContent.innerHTML = semTreinoHTML;
-    document.querySelectorAll("#go-to-trainings-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const trainingBtn = document.querySelector(".training-btn");
-        if (trainingBtn) trainingBtn.click();
-      });
+  let lastTrainingData = null;
+  let sugestedTrainingData = null;
+  let formattedDate = "--/--/----";
+  let formattedTime = "--:--";
+
+  // Só tenta buscar dados de histórico se o usuário já tiver feito pelo menos 1 treino
+  if (totalTrainingsDone > 0) {
+    const lastTrainingLog = historyTraining[historyTraining.length - 1];
+    const date = new Date(lastTrainingLog.date);
+    formattedDate = date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
-    return;
+    formattedTime = date.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    // Lógica de Sugestão
+    let sugestedTrainingLog = lastTrainingLog;
+    if (historyTraining.length > 1) {
+      let randomIndex = Math.floor(Math.random() * historyTraining.length);
+      if (
+        historyTraining[randomIndex].training_id === lastTrainingLog.training_id
+      ) {
+        randomIndex = randomIndex === 0 ? 1 : randomIndex - 1;
+      }
+      sugestedTrainingLog = historyTraining[randomIndex];
+    }
+
+    // Busca os detalhes apenas se tiver certeza de que os IDs existem
+    lastTrainingData = await apiTraining.getTrainingById(
+      lastTrainingLog.training_id,
+    );
+    sugestedTrainingData = await apiTraining.getTrainingById(
+      sugestedTrainingLog.training_id,
+    );
   }
 
   // ==========================================================================
-  // LÓGICA DE DADOS
+  // LÓGICA DE DADOS (Semana, Saúde e Favoritos) - Roda mesmo zerado!
   // ==========================================================================
-  // Capturando data e hora do último treino
-  const lastTrainingLog = historyTraining[historyTraining.length - 1];
-  const date = new Date(lastTrainingLog.date);
-  const formattedDate = date.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-  const formattedTime = date.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  // Sugerindo um treino difernte do último realizado
-  let sugestedTrainingLog = lastTrainingLog;
-  if (historyTraining.length > 1) {
-    let randomIndex = Math.floor(Math.random() * (historyTraining.length - 1));
-    if (historyTraining[randomIndex] === lastTrainingLog)
-      randomIndex === 0 ? randomIndex++ : randomIndex--;
-    sugestedTrainingLog = historyTraining[randomIndex];
-  }
-
-  // Busca os dados completos no Supabase usando os IDs do histórico
-  const lastTrainingData = await apiTraining.getTrainingById(lastTrainingLog.training_id);
-  const sugestedTrainingData = await apiTraining.getTrainingById(sugestedTrainingLog.training_id);
-
-  // Confere se o usuário treinou nos últimos dias da semana
-  // Captura os últimos dias
   const lastDays = [];
   for (let i = 0; i < 7; i++) {
     let dataObj = new Date();
@@ -77,16 +71,18 @@ export async function renderDashboard() {
     lastDays.push({ obj: dataObj, formatada: dataFormatada });
   }
   lastDays.reverse();
-  // Formata as datas
-  const trainingDates = historyTraining.map((t) =>
-    new Date(t.date).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }),
-  );
 
-  // Confere se treinou no dia, pega qual treino e monta o html
+  // Se não tem histórico, trainingDates fica vazio e a semana toda fica com "bolinha vazia"
+  const trainingDates = historyTraining
+    ? historyTraining.map((t) =>
+        new Date(t.date).toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }),
+      )
+    : [];
+
   let weekHTML = '<ul class="compact-week-list">';
   lastDays.forEach((diaInfo) => {
     const treinouNesseDia = trainingDates.includes(diaInfo.formatada);
@@ -120,7 +116,7 @@ export async function renderDashboard() {
   });
   weekHTML += "</ul>";
 
-  // Pega o treino mais feito
+  // Favoritos (Treino e Exercício)
   let mostCompletedTraining = null;
   const trainings = await apiTraining.getTrainings();
   if (trainings && trainings.length > 0) {
@@ -134,7 +130,6 @@ export async function renderDashboard() {
     }
   }
 
-  // Pega o exercício mais feito
   let mostCompletedExercise = null;
   const exercises = await apiExercises.getExercises();
   if (exercises && exercises.length > 0) {
@@ -148,12 +143,11 @@ export async function renderDashboard() {
     }
   }
 
-  // Pega as informações do LocalStorage e calcula TMB e IMC
+  // Saúde (TMB e IMC)
   const userText = localStorage.getItem("currentUser");
   let healthHTML = "";
   if (userText) {
     const user = JSON.parse(userText);
-    // Calculo da Taxa metabolica basal
     if (user.weight && user.height && user.age && user.gender) {
       let tmb = 0;
       if (user.gender === "masculino" || user.gender === "outro") {
@@ -162,11 +156,9 @@ export async function renderDashboard() {
       } else if (user.gender === "feminino") {
         tmb = 10 * user.weight + 6.25 * user.height - 5 * user.age - 161;
       }
-
-      // Calculo do Índice de Massa Corporal
       const IMC = user.weight / (user.height / 100) ** 2;
-      let imcText = "";
-      let imcColor = "";
+      let imcText = "",
+        imcColor = "";
       switch (true) {
         case IMC < 18.5:
           imcText = "Abaixo do peso";
@@ -185,8 +177,6 @@ export async function renderDashboard() {
           imcColor = "#dc3545";
           break;
       }
-
-      // Adiciona as informações
       healthHTML = `
         <div class="health-card" style="border-left: 5px solid #007bff;">
           <span class="stat-title">TMB Estimada</span>
@@ -199,21 +189,29 @@ export async function renderDashboard() {
       `;
     } else {
       healthHTML = `
-        <div class="empty-state-banner error">
-          <h4>Dados Incompletos ⚠️</h4>
-          <p>Preencha peso, altura, idade e gênero no perfil.</p>
-          <button class="action-btn" id="go-to-profile-btn" style="background: #dc3545;">Completar Perfil</button>
+        <div class="empty-state-banner error" style="padding: 15px; margin-bottom: 15px; border-left: 5px solid #dc3545; background: #fff3f3; border-radius: 8px;">
+          <h4 style="margin: 0 0 5px 0; color: #dc3545;">Dados Incompletos ⚠️</h4>
+          <p style="margin: 0 0 10px 0; font-size: 14px; color: #555;">Preencha peso, altura, idade e gênero no perfil para ver suas métricas.</p>
+          <button class="action-btn" id="go-to-profile-btn" style="background: #dc3545; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer; font-weight: bold;">Completar Perfil</button>
         </div>
       `;
     }
   }
+
   const weeklyTracker = document.getElementById("home-weekly-tracker");
   if (weeklyTracker) weeklyTracker.innerHTML = weekHTML;
 
   // ==========================================================================
+  // TEXTOS DINÂMICOS (SE TEM TREINO MOSTRA A DATA, SE NÃO, MOSTRA MENSAGEM)
+  // ==========================================================================
+  const ultimoTreinoTexto =
+    totalTrainingsDone > 0
+      ? `Concluído em ${formattedDate} às ${formattedTime}`
+      : `Você ainda não concluiu nenhum treino. Vá em "Treinos" para começar!`;
+
+  // ==========================================================================
   // INJETANDO NA ABA DE RESULTADOS
   // ==========================================================================
-  // Mosta o html com todas as informações capturadas
   if (resultsContent) {
     resultsContent.innerHTML = `
       <div style="grid-column: 1 / -1;">
@@ -228,7 +226,7 @@ export async function renderDashboard() {
         </div>
 
         <h3 class="results-topic-title">Último Treino</h3>
-        <p class="highlight-times-text" style="margin-bottom: 5px;">Concluído em ${formattedDate} às ${formattedTime}</p>
+        <p class="highlight-times-text" style="margin-bottom: 5px;">${ultimoTreinoTexto}</p>
         <div id="results-last-training-container" class="card-injection-area"></div>
       </div>
 
@@ -253,53 +251,60 @@ export async function renderDashboard() {
   }
 
   // ==========================================================================
-  // INJEÇÃO DOS CARDS NATIVOS
+  // INJEÇÃO DOS CARDS NATIVOS (Com Fallback para lista vazia)
   // ==========================================================================
-  // Função para injetar os cards dos treinos e exercícios usando as funções originais de renderização
-  const injectCard = (containerId, data, renderFunction, originalGridId) => {
+  const injectCard = (
+    containerId,
+    data,
+    renderFunction,
+    originalGridId,
+    emptyMessage,
+  ) => {
     const container = document.getElementById(containerId);
-    if (!container || !data) return;
+    if (!container) return;
 
-    // Acha a grade original (seja Treino ou Exercício) e troca o ID dela temporariamente
+    if (!data) {
+      // Se não tem dados (ex: usuário novo), mostra a mensagem amigável no lugar do card!
+      container.innerHTML = `<p style="color: #666; font-size: 14px; background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center; border: 1px dashed #ccc;">${emptyMessage}</p>`;
+      return;
+    }
+
     const realGrid = document.getElementById(originalGridId);
     if (realGrid) realGrid.id = originalGridId + "-temp-hidden";
 
-    // Transforma o contêiner vazio na "grade falsa"
     container.innerHTML = `<div id="${originalGridId}" style="width: 100%; display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: center;"></div>`;
-    // Chama a função original (ela vai achar a grade falsa)
     renderFunction(data);
 
-    // Renomeia a grade falsa para não dar conflito no resto do site
     const fakeGrid = container.querySelector(`#${originalGridId}`);
     if (fakeGrid) fakeGrid.id = `injected-${containerId}`;
 
-    // Devolve o ID original para a biblioteca real voltar a funcionar
     if (realGrid) realGrid.id = originalGridId;
   };
 
-  // Injetando na Home
+  // Injetando na Home e Resultados (Com as mensagens personalizadas)
   injectCard(
     "home-last-training-container",
     lastTrainingData,
     uiTraining.addTrainingToList.bind(uiTraining),
     "workouts-grid",
+    "Nenhum treino no histórico. Crie seu primeiro treino!",
   );
+
   injectCard(
     "home-suggested-training-container",
     sugestedTrainingData,
     uiTraining.addTrainingToList.bind(uiTraining),
     "workouts-grid",
+    "Faça alguns treinos para receber sugestões inteligentes.",
   );
 
-  // Injetando na aba Resultados
-  if (lastTrainingData) {
-    injectCard(
-      "results-last-training-container",
-      lastTrainingData,
-      uiTraining.addTrainingToList.bind(uiTraining),
-      "workouts-grid",
-    );
-  }
+  injectCard(
+    "results-last-training-container",
+    lastTrainingData,
+    uiTraining.addTrainingToList.bind(uiTraining),
+    "workouts-grid",
+    "Você ainda não possui treinos recentes.",
+  );
 
   if (mostCompletedTraining && mostCompletedTraining.times_completed > 0) {
     const timeText = document.getElementById("results-favorite-training-times");
@@ -310,7 +315,11 @@ export async function renderDashboard() {
       mostCompletedTraining,
       uiTraining.addTrainingToList.bind(uiTraining),
       "workouts-grid",
+      "",
     );
+  } else {
+    document.getElementById("results-favorite-training-container").innerHTML =
+      "<p style='color: #666; font-size: 14px;'>Termine mais treinos para ver seus favoritos.</p>";
   }
 
   if (mostCompletedExercise && mostCompletedExercise.times_completed > 0) {
@@ -324,16 +333,25 @@ export async function renderDashboard() {
       mostCompletedExercise,
       uiExercises.addExerciseToList.bind(uiExercises),
       "exercises-list",
+      "",
     );
+  } else {
+    document.getElementById("results-favorite-exercise-container").innerHTML =
+      "<p style='color: #666; font-size: 14px;'>Cadastre cargas para descobrir seus exercícios mais fortes.</p>";
   }
 
-  // Evento do botão de perfil caso faltem dados
+  // ==========================================================================
+  // EVENTO DO BOTÃO DE PERFIL (Para quando faltam dados)
+  // ==========================================================================
   const btnProfile = document.getElementById("go-to-profile-btn");
   if (btnProfile) {
     btnProfile.addEventListener("click", () => {
+      // Simula o clique no botão de "Perfil" da barra de navegação
       document.querySelectorAll(".nav-btn").forEach((btn) => {
         if (btn.textContent.includes("Perfil")) btn.click();
       });
+      // Sobe a tela suavemente para o usuário ver o formulário
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 }
